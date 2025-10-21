@@ -1,0 +1,11 @@
+﻿As,I whant to,comments,so i can
+Visitor,"Browse sharred snippets, use filters as tags and languages and sort them by populariity and comment count",,use them for a personal use
+Visitor,Create or register on an account,,access to user-only features
+User,Create/Update/Remove snippets,,test and use them
+User,Share snippets by generating a path,,show them to my collaborators
+User,Remove or change snippet path,,update who can access to my snippets
+User,Set/unset snippet visibility as public,a public snippet displays nmbr of likes and allow to show comments,share/hide snippets to everyone
+User,Comment and note other users snippets,only one comment and like for each snippet,/////
+User,Disconnect/Remove my own account,data will bel removed from ddb,/////
+User,"Filter my snippets by tags, languages and visibility on my dashboard",,//////
+User,Run each of my snippets / public snippets whenever i whant,i’ll use piston api,/////
