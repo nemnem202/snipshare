@@ -1,4 +1,7 @@
 import Headline from "../../ui/components/headline";
+import LanguageSelect from "../../ui/components/language_select";
+import Searchbar from "../../ui/components/searchbar";
+import SortingSelect from "../../ui/components/sorting_select";
 
 export default function Explorer() {
   return (
@@ -11,6 +14,11 @@ export default function Explorer() {
           </div>
         }
       />
+      <Searchbar />
+      <div className="flex gap-5">
+        <SortingSelect />
+        <LanguageSelect />
+      </div>
     </>
   );
 }

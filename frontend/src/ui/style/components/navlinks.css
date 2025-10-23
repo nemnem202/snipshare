@@ -11,4 +11,8 @@
     border-bottom: 2px solid var(--primary);
     color: var(--primary);
   }
+
+  a:hover:not(.active) {
+    border-bottom: 2px solid;
+  }
 }

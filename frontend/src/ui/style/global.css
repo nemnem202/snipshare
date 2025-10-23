@@ -60,7 +60,7 @@
   --strong-body-font-weight: 600;
   --standart-body-font-weight: 400;
 
-  --primary-font: "Cascadia Code", sans-serif;
+  --primary-font: "Cascadia Code", monospace;
 
   --font-sans: var(--body-font);
   --font-mono: var(--primary-font);
@@ -154,5 +154,37 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+
+  .animate {
+    transition: var(--transition) !important;
+  }
+
+  .text-base {
+    font-family: var(--font-sans);
+    font-size: var(--body-font-size);
+    font-weight: var(--standart-body-font-weight);
+    transition: var(--transition);
+  }
+
+  .text-strong {
+    font-family: var(--font-sans);
+    font-size: var(--body-font-size);
+    font-weight: var(--strong-body-font-weight);
+    transition: var(--transition);
+  }
+
+  .heading-lg {
+    font-family: var(--heading-font);
+    font-size: var(--heading-font-size);
+    font-weight: var(--heading-font-weight);
+    transition: var(--transition);
+  }
+
+  .code {
+    font-family: var(--font-mono);
+    font-size: var(--body-font-size);
+    font-weight: var(--standart-body-font-weight);
+    transition: var(--transition);
   }
 }
