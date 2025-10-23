@@ -47,6 +47,8 @@
 :root {
   --radius: 0.625rem;
 
+  --transition: all 0.3s ease;
+
   /* Couleurs principales */
   --background: #1b2028;
   --on-background: #fdffff;

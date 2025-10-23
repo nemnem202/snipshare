@@ -3,10 +3,12 @@ import Account from "./pages/account";
 import Explorer from "./pages/explorer";
 import NotFound from "./pages/not_found";
 import Private from "./pages/private";
+import Header from "../ui/components/header";
 
 export default function Router() {
   return (
     <BrowserRouter>
+      <Header />
       <Routes>
         <Route path="/" element={<Navigate to="/explorer" replace />} />
         <Route path="/explorer" element={<Explorer />} />
