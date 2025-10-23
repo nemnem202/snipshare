@@ -3,6 +3,8 @@
 @plugin "tailwindcss-animate";
 @import "tw-animate-css";
 
+@import url("https://fonts.googleapis.com/css2?family=Cascadia+Code:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap");
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -48,6 +50,20 @@
   --radius: 0.625rem;
 
   --transition: all 0.3s ease;
+
+  --heading-font: "Inter", sans-serif;
+  --heading-font-size: 48px;
+  --heading-font-weight: 700;
+
+  --body-font: "Inter", sans-serif;
+  --body-font-size: 16px;
+  --strong-body-font-weight: 600;
+  --standart-body-font-weight: 400;
+
+  --primary-font: "Cascadia Code", sans-serif;
+
+  --font-sans: var(--body-font);
+  --font-mono: var(--primary-font);
 
   /* Couleurs principales */
   --background: #1b2028;
