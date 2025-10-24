@@ -1,6 +1,7 @@
 import Headline from "../../ui/components/headline";
 import LanguageSelect from "../../ui/components/language_select";
 import Searchbar from "../../ui/components/searchbar";
+import SnippetCard from "../../ui/components/snippet_card";
 import SortingSelect from "../../ui/components/sorting_select";
 import Tag from "../../ui/components/tag";
 
@@ -26,6 +27,11 @@ export default function Explorer() {
       <div className="flex gap-5">
         <SortingSelect />
         <LanguageSelect />
+      </div>
+      <div className="flex flex-col items-center gap-5">
+        {Array.from({ length: 6 }).map((_, id) => (
+          <SnippetCard />
+        ))}
       </div>
     </>
   );
