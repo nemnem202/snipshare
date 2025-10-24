@@ -73,6 +73,7 @@
   --secondary-foreground: #1b2028;
   --error: #ff0000;
   --success: #128922;
+  --warning: rgb(196, 196, 36);
 
   /* Dérivés pour UI */
   --card: #232931; /* légèrement plus clair que background */
@@ -186,4 +187,8 @@
     font-weight: var(--standart-body-font-weight);
     transition: var(--transition);
   }
+}
+
+.npm__react-simple-code-editor__textarea {
+  white-space: break-spaces !important;
 }
