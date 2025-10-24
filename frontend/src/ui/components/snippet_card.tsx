@@ -3,7 +3,11 @@ import SnippetAccordion from "./snippet_accordion";
 import { FaEye } from "react-icons/fa";
 import { FaLink } from "react-icons/fa";
 
-export default function SnippetCard() {
+export default function SnippetCard({
+  setClosed,
+}: {
+  setClosed: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   return (
     <Card className="p-2">
       <CardHeader className="p-0 text-muted-foreground text-sm">username</CardHeader>
@@ -22,7 +26,7 @@ export default function SnippetCard() {
             </div>
           </CardHeader>
           <CardContent>
-            <SnippetAccordion />
+            <SnippetAccordion setClosed={setClosed} />
           </CardContent>
         </Card>
       </CardContent>

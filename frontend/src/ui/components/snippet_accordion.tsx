@@ -3,7 +3,11 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "..
 import SnippetCode from "./snippet_code";
 import SnippetConsole from "./snippet_console";
 
-export default function SnippetAccordion() {
+export default function SnippetAccordion({
+  setClosed,
+}: {
+  setClosed: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   const run = async (content: string) => {
     const body: PistonRequest = {
       files: [
@@ -20,7 +24,13 @@ export default function SnippetAccordion() {
   };
 
   return (
-    <Accordion type="multiple" className="w-[500px]">
+    <Accordion
+      type="multiple"
+      className="w-[500px]"
+      onValueChange={(openItems: string[]) => {
+        setClosed(openItems.length === 0);
+      }}
+    >
       <AccordionItem value="item-1">
         <AccordionTrigger>Language</AccordionTrigger>
         <AccordionContent className="flex flex-col gap-4 text-balance">
