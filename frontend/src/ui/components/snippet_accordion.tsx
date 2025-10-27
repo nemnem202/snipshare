@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import type { PistonRequest } from "../../types/general/piston";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../assets/accordion";
 import SnippetCode from "./snippet_code";
@@ -42,11 +42,17 @@ export default function SnippetAccordion({
   const easeInOutQuad = (t: number) => (t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t);
 
   const accordionRef = useRef<HTMLDivElement>(null);
+  const [openItemsState, setOpenItems] = useState<string[]>([]);
 
   const handleValueChange = (openItems: string[]) => {
     setClosed(openItems.length === 0);
 
-    if (!accordionRef.current || openItems.length === 0) return;
+    if (!accordionRef.current) return;
+
+    if (openItemsState.length > openItems.length) return setOpenItems(openItems);
+
+    setOpenItems(openItems);
+
     smoothScrollTo(
       accordionRef.current.getBoundingClientRect().top +
         accordionRef.current.getBoundingClientRect().height / 2 +
