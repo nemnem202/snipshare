@@ -18,7 +18,7 @@ export default function EditableTextArea({ defaultValue }: { defaultValue: strin
     <div
       onMouseEnter={handleMouseEnter}
       onMouseLeave={() => setShowPen(false)}
-      className="flex w-full justify-between gap-3 align-center"
+      className="flex w-full justify-between gap-3 items-center"
     >
       {editMode ? (
         <TextareaAutosize
@@ -27,7 +27,7 @@ export default function EditableTextArea({ defaultValue }: { defaultValue: strin
           onBlur={handleBlur}
           spellCheck={false}
           autoFocus
-          className="bg-transparent border-none outline-none w-full resize-none
+          className="bg-transparent border-none outline-none resize-none
                      text-inherit font-inherit leading-inherit
                      text-left text-current text-opacity-inherit
                     tracking-inherit

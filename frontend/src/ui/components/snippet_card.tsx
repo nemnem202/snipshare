@@ -2,7 +2,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../as
 import SnippetAccordion from "./snippet_accordion";
 import { FaEye } from "react-icons/fa";
 import { FaLink } from "react-icons/fa";
-import { FaEdit } from "react-icons/fa";
 import { FaSave } from "react-icons/fa";
 import EditableTextArea from "./editable_textarea";
 
@@ -36,7 +35,6 @@ export default function SnippetCard({
                 <div className="flex gap-2">
                   <FaEye className="text-muted-foreground hover:text-secondary transition-colors cursor-pointer" />
                   <FaLink className="text-muted-foreground hover:text-secondary transition-colors cursor-pointer" />
-                  <FaEdit className="text-muted-foreground hover:text-secondary transition-colors cursor-pointer" />
                   <FaSave className="text-muted-foreground hover:text-secondary transition-colors cursor-pointer" />
                 </div>
               )}

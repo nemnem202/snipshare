@@ -6,6 +6,7 @@ import Private from "./pages/private";
 import Header from "../ui/components/header";
 import LoginPage from "./pages/login_page";
 import RegisterPage from "./pages/register_page";
+import SingleSnippetPage from "./pages/single_snippet_page";
 
 export default function Router() {
   return (
@@ -18,6 +19,7 @@ export default function Router() {
         <Route path="/private/:path" element={<Private />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/unrepertoried/:id" element={<SingleSnippetPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
