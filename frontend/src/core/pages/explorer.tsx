@@ -1,7 +1,15 @@
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "../../ui/assets/pagination";
 import Headline from "../../ui/components/headline";
 import LanguageSelect from "../../ui/components/language_select";
 import Searchbar from "../../ui/components/searchbar";
-import SnippetCard from "../../ui/components/snippet_card";
 import SnippetContainer from "../../ui/components/snippet_container";
 import SortingSelect from "../../ui/components/sorting_select";
 import Tag from "../../ui/components/tag";
@@ -34,6 +42,34 @@ export default function Explorer() {
           <SnippetContainer />
         ))}
       </div>
+      <Pagination>
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious href="#" size="default" />
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationLink href="#" size="default">
+              1
+            </PaginationLink>
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationLink href="#" isActive size="default">
+              2
+            </PaginationLink>
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationLink href="#" size="default">
+              3
+            </PaginationLink>
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationEllipsis />
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationNext href="#" size="default" />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
     </>
   );
 }
