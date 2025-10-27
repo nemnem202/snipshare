@@ -19,7 +19,7 @@ export default function Router() {
         <Route path="/private/:path" element={<Private />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/unrepertoried/:id" element={<SingleSnippetPage />} />
+        <Route path="/unref/:id" element={<SingleSnippetPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
