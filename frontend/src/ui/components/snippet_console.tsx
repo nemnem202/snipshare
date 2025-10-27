@@ -27,8 +27,20 @@ export default function SnippetConsole() {
     <Tabs defaultValue="output" className="w-full">
       <TabsList>
         <TabsTrigger value="output">Output</TabsTrigger>
-        <TabsTrigger value="errors">Errors</TabsTrigger>
-        <TabsTrigger value="warnings">Warnings</TabsTrigger>
+        <TabsTrigger
+          value="errors"
+          className="[color:var(--error)]"
+          activeColor="[color:var(--error)]"
+        >
+          Errors
+        </TabsTrigger>
+        <TabsTrigger
+          value="warnings"
+          className="[color:var(--warning)]"
+          activeColor="[color:var(--warning)]"
+        >
+          Warnings
+        </TabsTrigger>
       </TabsList>
       <TabsContent
         value="output"

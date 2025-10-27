@@ -10,6 +10,9 @@ body,
   min-height: 100vh;
   align-items: center;
 }
+#root {
+  margin-bottom: 2rem;
+}
 
 .npm__react-simple-code-editor__textarea {
   white-space: break-spaces !important;
