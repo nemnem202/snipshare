@@ -10,3 +10,31 @@ body,
   min-height: 100vh;
   align-items: center;
 }
+
+.npm__react-simple-code-editor__textarea {
+  white-space: break-spaces !important;
+}
+
+::-webkit-scrollbar {
+  width: 8px; /* Largeur pour scrollbar verticale */
+  height: 8px; /* Hauteur pour scrollbar horizontale */
+}
+
+::-webkit-scrollbar-track {
+  background: transparent; /* Pas de fond */
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(128, 128, 128, 0.5); /* Thumb gris semi-transparent */
+  border-radius: 4px; /* Coins arrondis */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(128, 128, 128, 0.7); /* Plus visible au survol */
+}
+
+/* Pour Firefox */
+* {
+  scrollbar-width: thin; /* Scrollbar fine */
+  scrollbar-color: rgba(128, 128, 128, 0.5) transparent; /* Thumb et track */
+}

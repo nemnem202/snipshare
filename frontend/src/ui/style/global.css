@@ -188,7 +188,3 @@
     transition: var(--transition);
   }
 }
-
-.npm__react-simple-code-editor__textarea {
-  white-space: break-spaces !important;
-}
