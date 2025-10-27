@@ -7,14 +7,17 @@ import Tag from "../../ui/components/tag";
 export default function Explorer() {
   return (
     <div className="main-container">
-      <Headline
-        content={
-          <div>
-            Découvrez les snippets partagés par la communauté. <br />
-            Inspirez-vous, likez et partagez vos propres trouvailles.
-          </div>
-        }
-      />
+      <div className="h-[250px] pt-10 flex w-full justify-center">
+        <Headline
+          content={
+            <div>
+              Découvrez les snippets partagés par la communauté. <br />
+              Inspirez-vous, likez et partagez vos propres trouvailles.
+            </div>
+          }
+        />
+      </div>
+
       <div className="flex flex-col items-center gap-2 h-[100px]">
         <Searchbar />
         <div className="h-5 flex gap-2">

@@ -21,27 +21,39 @@ body,
 }
 
 ::-webkit-scrollbar {
-  width: 8px; /* Largeur pour scrollbar verticale */
-  height: 8px; /* Hauteur pour scrollbar horizontale */
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent; /* Pas de fond */
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(128, 128, 128, 0.5); /* Thumb gris semi-transparent */
-  border-radius: 4px; /* Coins arrondis */
+  background: rgba(128, 128, 128, 0.5);
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(128, 128, 128, 0.7); /* Plus visible au survol */
+  background: rgba(128, 128, 128, 0.7);
 }
 
-/* Pour Firefox */
 * {
-  scrollbar-width: thin; /* Scrollbar fine */
-  scrollbar-color: rgba(128, 128, 128, 0.5) transparent; /* Thumb et track */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(128, 128, 128, 0.5) transparent;
+}
+
+html,
+body,
+#root {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+#root::-webkit-scrollbar {
+  display: none;
 }
 
 .main-container {
