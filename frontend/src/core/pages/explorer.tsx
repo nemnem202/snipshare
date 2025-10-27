@@ -1,22 +1,12 @@
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "../../ui/assets/pagination";
 import Headline from "../../ui/components/headline";
-import LanguageSelect from "../../ui/components/language_select";
 import Searchbar from "../../ui/components/searchbar";
-import SnippetContainer from "../../ui/components/snippet_container";
-import SortingSelect from "../../ui/components/sorting_select";
+import SnippetPage from "../../ui/components/snippet_page";
+import SortSelectGroup from "../../ui/components/sort_select_group";
 import Tag from "../../ui/components/tag";
 
 export default function Explorer() {
   return (
-    <>
+    <div className="main-container">
       <Headline
         content={
           <div>
@@ -25,7 +15,7 @@ export default function Explorer() {
           </div>
         }
       />
-      <div className="flex flex-col items-center gap-2">
+      <div className="flex flex-col items-center gap-2 h-[100px]">
         <Searchbar />
         <div className="h-5 flex gap-2">
           {Array.from({ length: 6 }).map((_, id) => (
@@ -33,43 +23,9 @@ export default function Explorer() {
           ))}
         </div>
       </div>
-      <div className="flex gap-5">
-        <SortingSelect />
-        <LanguageSelect />
-      </div>
-      <div className="flex flex-col items-center gap-5">
-        {Array.from({ length: 6 }).map((_, id) => (
-          <SnippetContainer />
-        ))}
-      </div>
-      <Pagination>
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious href="#" size="default" />
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationLink href="#" size="default">
-              1
-            </PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationLink href="#" isActive size="default">
-              2
-            </PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationLink href="#" size="default">
-              3
-            </PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationEllipsis />
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationNext href="#" size="default" />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
-    </>
+      <SortSelectGroup />
+      <div className="flex gap-5 w-full h-[50px]"></div>
+      <SnippetPage />
+    </div>
   );
 }
