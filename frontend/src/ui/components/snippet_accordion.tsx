@@ -64,7 +64,7 @@ export default function SnippetAccordion({
   return (
     <Accordion
       type="multiple"
-      className="w-[500px]"
+      className="w-full"
       onValueChange={handleValueChange}
       ref={accordionRef}
     >

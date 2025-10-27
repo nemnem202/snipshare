@@ -9,12 +9,12 @@ import {
 } from "../../ui/assets/pagination";
 import SnippetContainer from "./snippet_container";
 
-export default function SnippetPage() {
+export default function SnippetPage({ editables }: { editables: boolean }) {
   return (
     <>
       <div className="flex flex-col items-center gap-5 w-full">
         {Array.from({ length: 6 }).map((_, id) => (
-          <SnippetContainer />
+          <SnippetContainer editables={editables} />
         ))}
         <Pagination>
           <PaginationContent>

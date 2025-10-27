@@ -28,7 +28,7 @@ export default function Explorer() {
       </div>
       <SortSelectGroup />
       <div className="flex gap-5 w-full h-[50px]"></div>
-      <SnippetPage />
+      <SnippetPage editables={false} />
     </div>
   );
 }

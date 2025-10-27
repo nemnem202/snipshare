@@ -21,11 +21,11 @@ export default function AccountTabs() {
             <FaPlus /> Snippet
           </Button>
         </div>
-        <SnippetPage />
+        <SnippetPage editables={true} />
       </TabsContent>
       <TabsContent value="liked" className="w-full flex flex-col items-center gap-[32px] !mt-0">
         <div className="flex gap-[32px] w-full h-[50px]"></div>
-        <SnippetPage />
+        <SnippetPage editables={true} />
       </TabsContent>
     </Tabs>
   );
