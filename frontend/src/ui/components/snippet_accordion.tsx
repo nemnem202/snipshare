@@ -46,7 +46,7 @@ export default function SnippetAccordion({
   const handleValueChange = (openItems: string[]) => {
     setClosed(openItems.length === 0);
 
-    if (!accordionRef.current) return;
+    if (!accordionRef.current || openItems.length === 0) return;
     smoothScrollTo(
       accordionRef.current.getBoundingClientRect().top +
         accordionRef.current.getBoundingClientRect().height / 2 +
