@@ -7,7 +7,7 @@ describe("[Routes Behavior]", async () => {
   const agent = request.agent(app);
 
   for (const test of routesTests) {
-    it(`[${test.url}] ${test.description}`, async () => {
+    it(`[ ${test.url} ] ${test.description}`, async () => {
       const req = test.useAgent ? agent : request(app);
 
       if (test.setupAgent && test.useAgent) {
