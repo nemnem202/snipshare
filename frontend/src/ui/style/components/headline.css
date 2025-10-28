@@ -1,0 +1,11 @@
+.headline-container {
+  width: 100%;
+  display: flex;
+  align-items: top;
+  justify-content: center;
+
+  h1 {
+    text-align: center;
+    max-width: 90vw;
+  }
+}

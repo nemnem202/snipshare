@@ -1,0 +1,18 @@
+.navlinks-container {
+  display: flex;
+  gap: 8px;
+
+  a {
+    border-bottom: 2px solid transparent;
+    transition: var(--transition);
+  }
+
+  .active {
+    border-bottom: 2px solid var(--primary);
+    color: var(--primary);
+  }
+
+  a:hover:not(.active) {
+    border-bottom: 2px solid;
+  }
+}

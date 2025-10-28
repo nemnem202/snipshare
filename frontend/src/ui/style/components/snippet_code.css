@@ -1,0 +1,4 @@
+.editor-wrapper [contenteditable="true"] {
+  outline: none !important;
+  border: none !important;
+}
