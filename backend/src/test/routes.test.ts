@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import request from "supertest";
-import app from "../core/app.js";
 import routesTests from "./tests.js";
+import app from "../core/app.js";
 
 describe("[Routes Behavior]", async () => {
   const agent = request.agent(app);

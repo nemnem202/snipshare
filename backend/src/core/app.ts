@@ -1,9 +1,6 @@
-import { configDotenv } from "dotenv";
 import express from "express";
 import router from "../views/router";
 import { setupSwagger } from "./swagger";
-
-configDotenv({ quiet: true });
 
 const app = express();
 
