@@ -1,0 +1,216 @@
+openapi: 3.0.3
+info:
+  title: API Documentation
+  version: 1.0.0
+  description: |
+    Documentation des routes de ton backend Express.
+    ⚙️ Toutes les routes renvoient actuellement un statut `200 OK`.
+servers:
+  - url: http://localhost:3000
+    description: Serveur local de développement
+
+paths:
+  # --- AUTH ---
+  /auth/login:
+    post:
+      summary: Authentification d’un utilisateur
+      tags: [Auth]
+      responses:
+        "200":
+          description: Succès
+
+  /auth/register:
+    post:
+      summary: Inscription d’un utilisateur
+      tags: [Auth]
+      responses:
+        "200":
+          description: Succès
+
+  /auth/session:
+    get:
+      summary: Vérifie la session de l’utilisateur courant
+      tags: [Auth]
+      responses:
+        "200":
+          description: Succès
+
+  # --- EXPLORER ---
+  /explorer:
+    get:
+      summary: Récupère la liste des éléments explorables
+      tags: [Explorer]
+      responses:
+        "200":
+          description: Succès
+
+  /explorer/pages_number:
+    get:
+      summary: Récupère le nombre total de pages
+      tags: [Explorer]
+      responses:
+        "200":
+          description: Succès
+
+  /explorer/comments/{id}:
+    get:
+      summary: Récupère les commentaires associés à un élément
+      tags: [Explorer]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Identifiant de l’élément
+      responses:
+        "200":
+          description: Succès
+
+  # --- CODE ---
+  /code:
+    post:
+      summary: Crée ou exécute un snippet de code
+      tags: [Code]
+      responses:
+        "200":
+          description: Succès
+
+  # --- DASHBOARD ---
+  /dashboard/change-username/{id}:
+    put:
+      summary: Change le nom d’utilisateur
+      tags: [Dashboard]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Succès
+
+  /dashboard/liked/pages_number:
+    get:
+      summary: Récupère le nombre de pages aimées
+      tags: [Dashboard]
+      responses:
+        "200":
+          description: Succès
+
+  /dashboard/personals/pages_number:
+    get:
+      summary: Récupère le nombre de pages personnelles
+      tags: [Dashboard]
+      responses:
+        "200":
+          description: Succès
+
+  /dashboard/liked/{page}:
+    get:
+      summary: Récupère la page aimée spécifiée
+      tags: [Dashboard]
+      parameters:
+        - in: path
+          name: page
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Succès
+
+  /dashboard/personals/{page}:
+    get:
+      summary: Récupère la page personnelle spécifiée
+      tags: [Dashboard]
+      parameters:
+        - in: path
+          name: page
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Succès
+
+  # --- SOCIAL ---
+  /social/comment/{snippet_id}:
+    post:
+      summary: Publie un commentaire
+      tags: [Social]
+      parameters:
+        - in: path
+          name: snippet_id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Succès
+
+  /social/like/{snippet_id}:
+    get:
+      summary: Aime un snippet
+      tags: [Social]
+      parameters:
+        - in: path
+          name: snippet_id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Succès
+
+  /social/unlike/{snippet_id}:
+    get:
+      summary: Retire un like d’un snippet
+      tags: [Social]
+      parameters:
+        - in: path
+          name: snippet_id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Succès
+
+  # --- SNIPPET ---
+  /snippet/new:
+    post:
+      summary: Crée un nouveau snippet
+      tags: [Snippet]
+      responses:
+        "200":
+          description: Succès
+
+  /snippet/{id}:
+    put:
+      summary: Met à jour un snippet existant
+      tags: [Snippet]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Succès
+
+  /snippet/unref/{path}:
+    get:
+      summary: Supprime la référence d’un snippet
+      tags: [Snippet]
+      parameters:
+        - in: path
+          name: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Succès
