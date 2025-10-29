@@ -1,4 +1,4 @@
-import { RouteTest } from "./types";
+import { RouteTest } from "./types.js";
 import crypto from "crypto";
 
 const routesTests: RouteTest[] = [

@@ -3,8 +3,12 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "tsx --watch src/core/app_bootstrap.ts",
-    "tests": "vitest"
+    "watch": "tsx --watch src/core/app_bootstrap.ts",
+    "dev": "npm run test && npm run watch",
+    "test": "vitest --run",
+    "test:watch": "vitest",
+    "build": "tsc && copyfiles -u 1 src/doc/**/* dist",
+    "start": "npm run test && node dist/core/app_bootstrap.js"
   },
   "keywords": [],
   "author": "",
@@ -23,6 +27,7 @@
     "@types/supertest": "^6.0.3",
     "@types/swagger-ui-express": "^4.1.8",
     "@types/yamljs": "^0.2.34",
+    "copyfiles": "^2.4.1",
     "supertest": "^7.1.4",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3"
