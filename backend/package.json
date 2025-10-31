@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "watch": "tsx --watch src/core/app_bootstrap.ts",
+    "watch": "tsx watch src/core/app_bootstrap.ts",
     "dev": "npm run test && npm run watch",
     "test": "vitest --run",
     "test:watch": "vitest",

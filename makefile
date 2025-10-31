@@ -18,4 +18,4 @@ prod-stop:
 	docker compose -f docker-compose.prod.yml --env-file .env.prod down
 
 dev:
-	docker compose -f docker-compose.dev.yml --env-file .env.dev watch
+	docker compose -f docker-compose.dev.yml --env-file .env.dev up
