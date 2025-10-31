@@ -3,12 +3,9 @@ import path from "path";
 import express from "express";
 import swaggerUi from "swagger-ui-express";
 import YAML from "yamljs";
-import { env } from "../config/env";
 export const setupSwagger = (app: express.Express) => {
-  const filePath = path.join(__dirname, "../doc/openapi.yml");
+  const filePath = path.resolve("src/doc/openapi.yml");
   let yamlText = fs.readFileSync(filePath, "utf8");
-
-  yamlText = yamlText.replace(/\${PORT}/g, env.port);
 
   const swaggerDocument = YAML.parse(yamlText);
 

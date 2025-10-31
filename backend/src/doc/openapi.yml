@@ -6,7 +6,7 @@ info:
     Documentation des routes de ton backend Express.
     ⚙️ Toutes les routes renvoient actuellement un statut `200 OK`.
 servers:
-  - url: http://localhost:${PORT}
+  - url: /
     description: Serveur local de développement
 
 paths:

@@ -1,0 +1,11 @@
+- utiliser tsup // ! pas toujours fonctionnel
+
+- faire les tests avant le build
+
+- avoit un docker file prod qui build (pour l'environnement preprod et prod) et un dockerfile pour le def qui run juste le dev
+
+- pour un bind: port-systeme:port-conteneur (immuable)
+
+-makefile: --buil, utiliser des variables
+
+-pour les tests: tester la bdd fonctionnelle et la reiniitailiser pour utiliser l'environnement

@@ -1,13 +1,15 @@
 import { Custom } from "../lib/tools/logger";
 import app from "./app";
-import { db, env } from "../config/env";
+import { db } from "../config/env";
+
+const PORT = 3000;
 
 const run = () => {
-  Custom.log("env", db, env);
+  Custom.log("env", db);
 
-  app.listen(env.port, () => {
-    Custom.warn("startup", `app is running on port ${env.port}.`);
-    Custom.warn("doc", `Swagger docs available at http://localhost:${env.port}/docs`);
+  app.listen(PORT, () => {
+    Custom.warn("startup", `app is running on port ${PORT}.`);
+    Custom.warn("doc", `Swagger docs available at http://localhost:${PORT}/docs`);
   });
 };
 

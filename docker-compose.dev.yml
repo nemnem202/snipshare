@@ -9,16 +9,7 @@ services:
     volumes:
       - ./backend/db/init:/docker-entrypoint-initdb.d
 
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - ${ADMINER_PORT}
-    depends_on:
-      - db
-
   backend:
-    restart: always
     build:
       context: ./backend
       dockerfile: dockerfile.dev
@@ -43,7 +34,7 @@ services:
       - JWT_RT_TTL=${BACKEND_JWT_RT_TTL}
       - CORS_ALLOWED=${BACKEND_CORS_ALLOWED}
     ports:
-      - ${BACKEND_PORT}:${BACKEND_PORT}
+      - ${BACKEND_PORT}:3000
     depends_on:
       - db
 
@@ -62,4 +53,4 @@ services:
     environment:
       - VITE_API_URL=${FRONTEND_VITE_API_URL}
     ports:
-      - ${FRONTEND_PORT}:5173
+      - ${FRONTEND_PORT}:5000
