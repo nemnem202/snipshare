@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import request from "supertest";
-import routesTests from "./tests.js";
+import routesTests from "./routes-test-arrays.ts"
 import app from "../core/app.js";
 
 describe("[Routes Behavior]", async () => {
