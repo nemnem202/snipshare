@@ -1,0 +1,90 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+//#########################
+
+model UserAccount {
+  id       Int      @id @default(autoincrement())
+  username String   @unique
+  email    String   @unique
+  password String
+
+  snippets        Snippet[]
+  likedSnippets   UserLikesSnippet[]
+  comments        UserCommentSnippet[]
+}
+
+model CodeLanguage {
+  name     String   @id
+  snippets Snippet[]
+}
+
+model Hashtag {
+  name      String     @id
+  filtered  Filtrer[]
+}
+
+model Snippet {
+  code_snippet Int          @id @default(autoincrement())
+  private_url  String?      @unique
+  title        String
+  code         String
+  visibility   Boolean?
+  description  String?
+  
+  // Relations
+  user_id      Int
+  languageName String
+  user         UserAccount @relation(fields: [user_id], references: [id])
+  language     CodeLanguage @relation(fields: [languageName], references: [name])
+
+  likes      UserLikesSnippet[]
+  filters    Filtrer[]
+  comments   UserCommentSnippet[]
+}
+
+model UserLikesSnippet {
+  userId      Int
+  snippetId   Int
+
+  user    UserAccount @relation(fields: [userId], references: [id])
+  snippet Snippet     @relation(fields: [snippetId], references: [code_snippet])
+
+  @@id([userId, snippetId])
+}
+
+model Filtrer {
+  snippetId Int
+  hashtagName String
+
+  snippet Snippet  @relation(fields: [snippetId], references: [code_snippet])
+  hashtag Hashtag @relation(fields: [hashtagName], references: [name])
+
+  @@id([snippetId, hashtagName])
+}
+
+model UserCommentSnippet {
+  userId     Int
+  snippetId  Int
+  content    String
+  commentDate DateTime
+
+  user    UserAccount @relation(fields: [userId], references: [id])
+  snippet Snippet     @relation(fields: [snippetId], references: [code_snippet])
+
+  @@id([userId, snippetId])
+}
