@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "watch": "tsx --watch src/core/app_bootstrap.ts",
+    "watch": "tsx watch src/server/runtime/app_bootstrap.ts",
     "dev": "npm run test && npm run watch",
     "test": "vitest --run",
     "test:watch": "vitest",
-    "start": "npm run test && tsx src/core/app_bootstrap.ts"
+    "start": "npm run test && tsx src/server/runtime/app_bootstrap.ts"
   },
   "keywords": [],
   "author": "",

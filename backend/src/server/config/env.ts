@@ -1,6 +1,6 @@
 import { configDotenv } from "dotenv";
-import { DbVariables } from "../types/global/db_variables";
 import { Custom } from "../lib/tools/logger";
+import { DbVariables } from "../types/global/db_variables";
 
 configDotenv();
 

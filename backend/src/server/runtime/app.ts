@@ -1,6 +1,6 @@
 import express from "express";
-import router from "../views/router";
-import { setupSwagger } from "./swagger";
+import { setupSwagger } from "../../doc/swagger";
+import router from "../routing/router";
 
 const app = express();
 

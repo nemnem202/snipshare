@@ -10,6 +10,7 @@ const run = () => {
   app.listen(PORT, () => {
     Custom.warn("startup", `app is running on port ${PORT}.`);
     Custom.warn("doc", `Swagger docs available at http://localhost:${PORT}/docs`);
+    Custom.warn("change", "Un premier changement");
   });
 };
 
