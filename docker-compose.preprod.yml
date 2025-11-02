@@ -8,6 +8,7 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
 
   backend:
+    image: snipshare-backend:preprod
     build:
       context: ./backend
       dockerfile: dockerfile.prod
@@ -22,6 +23,7 @@ services:
       - db
 
   frontend:
+    image: snipshare-frontend:preprod
     restart: always
     build:
       context: ./frontend

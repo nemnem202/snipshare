@@ -8,6 +8,7 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
 
   backend:
+    image: snipshare-backend:dev
     volumes:
       - /app/node_modules
       - ./backend:/app
@@ -27,6 +28,7 @@ services:
       - db
 
   frontend:
+    image: snipshare-frontend:dev
     restart: always
     build:
       context: ./frontend
