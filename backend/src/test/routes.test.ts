@@ -14,16 +14,20 @@ describe("[Routes Behavior]", async () => {
         await test.setupAgent(agent); // ex: login
       }
 
-      const res = await req[test.method](test.url);
+      let requestBuilder = req[test.method](test.url);
 
-      expect(res.status).toBe(test.expectedStatus);
+      if (test.body) {
+        requestBuilder = requestBuilder.send(test.body);
+      }
+
+      const res = await requestBuilder;
+
+      if (test.expectedStatus) {
+        expect(res.status).toBe(test.expectedStatus);
+      }
 
       if (test.expectedBody) {
         expect(res.body).toEqual(test.expectedBody);
-      } else if (test.expectedBodyType) {
-        const body = res.body;
-        const type = Array.isArray(body) ? "array" : body === null ? "null" : typeof body;
-        expect(type).toBe(test.expectedBodyType);
       }
     });
   }

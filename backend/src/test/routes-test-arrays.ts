@@ -1,5 +1,6 @@
 import { RouteTest } from "./types.js";
 import crypto from "crypto";
+import { faker } from "@faker-js/faker";
 
 const routesTests: RouteTest[] = [
   {
@@ -12,7 +13,15 @@ const routesTests: RouteTest[] = [
     description: "should return 200 on register",
     url: "/auth/register",
     method: "post",
-    expectedStatus: 200,
+    body: {
+      username: faker.internet.username(),
+      password: faker.internet.password(),
+      email: faker.internet.email(),
+    },
+    expectedBody: {
+      message: "Welcome !",
+      success: true,
+    },
   },
   {
     description: "should return 200 on session check",
