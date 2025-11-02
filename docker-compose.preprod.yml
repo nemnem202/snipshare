@@ -13,6 +13,7 @@ services:
       context: ./backend
       dockerfile: dockerfile.prod
     environment:
+      - DATABASE_URL=${DATABASE_URL}
       - PORT=${BACKEND_PORT}
       - JWT_SECRET=${BACKEND_JWT_SECRET}
       - JWT_RT_TTL=${BACKEND_JWT_RT_TTL}
@@ -27,7 +28,7 @@ services:
     restart: always
     build:
       context: ./frontend
-      dockerfile: dockerfile.preprod
+      dockerfile: dockerfile.prod
     environment:
       - VITE_API_URL=${FRONTEND_VITE_API_URL}
     ports:
