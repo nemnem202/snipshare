@@ -4,11 +4,11 @@
   "main": "index.js",
   "scripts": {
     "db_push": "npx prisma db push",
-    "watch": "tsx watch src/core/app_bootstrap.ts",
+    "watch": "tsx watch src/server/runtime/app_bootstrap.ts",
     "dev": "npm run db_push && npm run test && npm run watch",
     "test": "vitest --run",
     "test:watch": "npm run db_push && vitest --watch",
-    "start": "npm run db_push && npm run test && tsx src/core/app_bootstrap.ts"
+    "start": "npm run db_push && npm run test && tsx src/server/runtime/app_bootstrap.ts"
   },
   "keywords": [],
   "author": "",

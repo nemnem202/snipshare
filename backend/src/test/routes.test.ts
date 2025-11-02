@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import request from "supertest";
-import routesTests from "./routes-test-arrays.ts"
-import app from "../server/runtime/app.ts"";
+import routesTests from "./routes-test-arrays.ts";
+import app from "../server/runtime/app.ts";
 
 describe("[Routes Behavior]", async () => {
   const agent = request.agent(app);
