@@ -7,7 +7,7 @@
     "watch": "tsx watch src/core/app_bootstrap.ts",
     "dev": "npm run db_push && npm run test && npm run watch",
     "test": "vitest --run",
-    "test:watch": "vitest",
+    "test:watch": "npm run db_push && vitest --watch",
     "start": "npm run db_push && npm run test && tsx src/core/app_bootstrap.ts"
   },
   "keywords": [],

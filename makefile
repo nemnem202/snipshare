@@ -18,3 +18,7 @@ prod-stop:
 
 dev:
 	docker compose -f docker-compose.dev.yml --env-file .env.dev up
+
+
+test:
+	docker compose -f docker-compose.test.yml --env-file .env.dev up
