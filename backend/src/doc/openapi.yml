@@ -209,48 +209,137 @@ paths:
 
   # --- CODE ---
   /code:
-    post:
-      summary: Crée ou exécute un snippet de code
+    post: # Cette définition est pour l'exécution de code via Piston
+      summary: Exécute un snippet de code via l'API Piston
+      description: Permet d'exécuter du code dans différents langages de programmation en utilisant l'API Piston (emkc.org). Nécessite une authentification.
       tags: [Code]
-      responses:
-        "200":
-          description: Succès
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
-
-  # --- DASHBOARD ---
-  /dashboard/change-username/{id}:
-    put:
-      summary: Change le nom d’utilisateur
-      tags: [Dashboard]
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-            format: uuid
-          description: Identifiant unique de l'utilisateur (peut être un JWT pour l'utilisateur courant)
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
-              properties:
-                username:
-                  type: string
-                  minLength: 3
-                  maxLength: 30
-                  description: Le nouveau nom d'utilisateur
-                  example: newUsername
               required:
-                - username
+                - language
+                - content
+                - version
+              properties:
+                language:
+                  type: string
+                  minLength: 1
+                  maxLength: 50
+                  description: Nom du langage de programmation
+                  example: "python"
+                content:
+                  type: string
+                  minLength: 1
+                  maxLength: 10000
+                  description: Code source à exécuter
+                  example: "print('Hello World')"
+                version:
+                  type: string
+                  pattern: '^\d+(\.\d+)*$'
+                  description: Version du langage (format X.Y.Z)
+                  example: "3.10.0"
       responses:
         "200":
-          description: Succès
+          description: Code exécuté avec succès
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/PistonResponse"
+                  - $ref: "#/components/schemas/ServerResponse"
+              examples:
+                success:
+                  summary: Exécution réussie
+                  value:
+                    language: "python"
+                    version: "3.10.0"
+                    run:
+                      stdout: "Hello World\n"
+                      stderr: ""
+                      code: 0
+                      signal: null
+                      output: "Hello World\n"
+                apiError:
+                  summary: Erreur API Piston
+                  value:
+                    success: false
+                    message: "An error occured while sending data to the code runner api"
+        "400":
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerResponse"
+              examples:
+                emptyCode:
+                  summary: Code vide
+                  value:
+                    success: false
+                    message: "Le code ne peut pas être vide"
+                codeTooLong:
+                  summary: Code trop long
+                  value:
+                    success: false
+                    message: "Le code ne peut excéder 10 000 caractères"
+                invalidLanguage:
+                  summary: Langage invalide
+                  value:
+                    success: false
+                    message: "Le nom du langage ne peut pas être vide."
+                invalidVersion:
+                  summary: Format de version invalide
+                  value:
+                    success: false
+                    message: "An internal error occured, please try again !"
         "401":
           $ref: "#/components/responses/UnauthorizedError"
+        "500":
+          description: Erreur interne du serveur
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerResponse"
+              example:
+                success: false
+                message: "An internal error occured, please try again !"
+    # --- DASHBOARD ---
+    /dashboard/change-username/{id}:
+      put:
+        summary: Change le nom d’utilisateur
+        tags: [Dashboard]
+        parameters:
+          - in: path
+            name: id
+            required: true
+            schema:
+              type: string
+              format: uuid
+            description: Identifiant unique de l'utilisateur (peut être un JWT pour l'utilisateur courant)
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                    minLength: 3
+                    maxLength: 30
+                    description: Le nouveau nom d'utilisateur
+                    example: newUsername
+                required:
+                  - username
+        responses:
+          "200":
+            description: Succès
+          "401":
+            $ref: "#/components/responses/UnauthorizedError"
 
   /dashboard/liked/pages_number:
     get:

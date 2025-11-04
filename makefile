@@ -22,3 +22,15 @@ dev:
 
 test:
 	docker compose -f docker-compose.test.yml --env-file .env.test up
+
+
+rm_containers:
+	docker rm -f $$(docker ps -aq)
+
+rm_images:
+	docker rmi -f $$(docker images -q)
+
+rm_all:
+	@echo "🧹 Nettoyage complet de Docker..."
+	docker system prune -a --volumes -f
+	@echo "✅ Nettoyage terminé !"
