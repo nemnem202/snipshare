@@ -1,8 +1,95 @@
 import { RouteTest } from "./types.js";
 import crypto from "crypto";
 import { faker } from "@faker-js/faker";
+import { Prisma } from "../generated/prisma/index.js";
 
-const routesTests: RouteTest[] = [
+const testUser: Prisma.UserAccountCreateInput = {
+  username: faker.internet.username(),
+  password: faker.internet.password(),
+  email: faker.internet.email(),
+};
+
+const auth: RouteTest[] = [
+  {
+    description: "should return a success on register",
+    url: "/auth/register",
+    method: "post",
+    body: testUser,
+    expectedBody: {
+      message: "Welcome !",
+      success: true,
+    },
+  },
+  {
+    description: "should return an error if password is too short",
+    url: "/auth/register",
+    method: "post",
+    body: {
+      email: testUser.email,
+      username: testUser.username,
+      password: faker.internet.password({ length: 2 }),
+    },
+    expectedBody: {
+      message: "Le mot de passe doit contenir au moins 6 caractères.",
+      success: false,
+    },
+  },
+  {
+    description: "should return an error if password is too long",
+    url: "/auth/register",
+    method: "post",
+    body: {
+      email: testUser.email,
+      username: testUser.username,
+      password: faker.internet.password({ length: 101 }),
+    },
+    expectedBody: {
+      message: "Le mot de passe ne peut pas dépasser 100 caractères.",
+      success: false,
+    },
+  },
+  {
+    description: "should return an error if username is too short",
+    url: "/auth/register",
+    method: "post",
+    body: {
+      email: testUser.email,
+      username: "ab",
+      password: testUser.password,
+    },
+    expectedBody: {
+      message: "Le nom d'utilisateur doit contenir au moins 3 caractères.",
+      success: false,
+    },
+  },
+  {
+    description: "should return an error if username is too long",
+    url: "/auth/register",
+    method: "post",
+    body: {
+      email: testUser.email,
+      username: "a".repeat(31),
+      password: testUser.password,
+    },
+    expectedBody: {
+      message: "Le nom d'utilisateur ne peut pas dépasser 30 caractères.",
+      success: false,
+    },
+  },
+  {
+    description: "should return an error if email is invalid",
+    url: "/auth/register",
+    method: "post",
+    body: {
+      email: "invalid-email",
+      username: testUser.username,
+      password: testUser.password,
+    },
+    expectedBody: {
+      message: "L'adresse e-mail n'est pas valide.",
+      success: false,
+    },
+  },
   {
     description: "should return 200 on login",
     url: "/auth/login",
@@ -10,26 +97,14 @@ const routesTests: RouteTest[] = [
     expectedStatus: 200,
   },
   {
-    description: "should return 200 on register",
-    url: "/auth/register",
-    method: "post",
-    body: {
-      username: faker.internet.username(),
-      password: faker.internet.password(),
-      email: faker.internet.email(),
-    },
-    expectedBody: {
-      message: "Welcome !",
-      success: true,
-    },
-  },
-  {
     description: "should return 200 on session check",
     url: "/auth/session",
     method: "get",
     expectedStatus: 200,
   },
+];
 
+const explorer: RouteTest[] = [
   {
     description: "should return 200 on explorer root",
     url: "/explorer",
@@ -48,14 +123,9 @@ const routesTests: RouteTest[] = [
     method: "get",
     expectedStatus: 200,
   },
+];
 
-  {
-    description: "should return 200 on code post",
-    url: "/code",
-    method: "post",
-    expectedStatus: 200,
-  },
-
+const dashboard: RouteTest[] = [
   {
     description: "should return 200 on change-username",
     url: `/dashboard/change-username/${crypto.randomUUID()}`,
@@ -94,7 +164,18 @@ const routesTests: RouteTest[] = [
     expectedStatus: 200,
     useAgent: true,
   },
+];
 
+const code: RouteTest[] = [
+  {
+    description: "should return 200 on code post",
+    url: "/code",
+    method: "post",
+    expectedStatus: 200,
+  },
+];
+
+const social: RouteTest[] = [
   {
     description: "should return 200 on comment post",
     url: `/social/comment/${crypto.randomUUID()}`,
@@ -116,7 +197,9 @@ const routesTests: RouteTest[] = [
     expectedStatus: 200,
     useAgent: true,
   },
+];
 
+const snippet: RouteTest[] = [
   {
     description: "should return 200 on snippet new",
     url: "/snippet/new",
@@ -139,5 +222,7 @@ const routesTests: RouteTest[] = [
     useAgent: true,
   },
 ];
+
+const routesTests: RouteTest[][] = [auth, explorer, dashboard, code, social, snippet];
 
 export default routesTests;

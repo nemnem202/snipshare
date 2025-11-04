@@ -34,7 +34,18 @@ paths:
       responses:
         "200":
           description: Succès
-
+    delete:
+      summary: Déconnecte l'utilisateur
+      tags: [Auth]
+      responses:
+        "200":
+          description: Succès
+  /auth/account:
+    delete:
+      summary: Supprime le compte utilisateur
+      tags: [Auth]
+      responses:
+        "200": description:Succès
   # --- EXPLORER ---
   /explorer:
     get:

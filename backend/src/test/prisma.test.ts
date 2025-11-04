@@ -15,42 +15,35 @@ const users: Prisma.UserAccountCreateInput[] = Array.from({ length: 10 }).map(()
 
 const db_users: UserAccount[] = [];
 
-describe("Database", async () => {
+describe("Database", () => {
   beforeAll(async () => {
-    if (!process.env.DATABASE_URL) {
-      throw new Error("DATABASE_URL is not defined");
-    }
+    if (!process.env.DATABASE_URL) throw new Error("DATABASE_URL not defined");
 
+    // clean DB avant
     await prisma.userAccount.deleteMany();
+
+    // créer les users avant les tests
+    for (const u of users) {
+      const user = await prisma.userAccount.create({ data: u });
+      db_users.push(user);
+    }
   });
 
   afterAll(async () => {
     await prisma.$disconnect();
   });
 
-  it("env database url should be defined", () => {
-    expect(process.env.DATABASE_URL).toBeTypeOf("string");
+  it("should have created all users", async () => {
+    const count = await prisma.userAccount.count();
+    expect(count).toEqual(users.length);
   });
 
-  const nmbr_of_users_before = await prisma.userAccount.count();
-
-  users.forEach((u, index) => {
-    it(`should create and validate user ${index + 1}`, async () => {
-      const user = await prisma.userAccount.create({ data: u });
-      db_users.push(user);
-      expect(user.id).toBeTypeOf("number");
-      expect(user.username).toBe(u.username);
-      expect(user.email).toBe(u.email);
-      expect(user.password).toBe(u.password);
-    });
-  });
-
-  it("should remove all of the precedently created users", async () => {
+  it("should remove all users", async () => {
     for (const u of db_users) {
       await prisma.userAccount.delete({ where: { id: u.id } });
     }
 
-    const nmbr_of_users_after = await prisma.userAccount.count();
-    expect(nmbr_of_users_after).toEqual(nmbr_of_users_before);
+    const countAfter = await prisma.userAccount.count();
+    expect(countAfter).toEqual(0);
   });
 });

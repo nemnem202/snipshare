@@ -4,6 +4,7 @@ import SchemaParser from "../lib/middlewares/schemaParser";
 import { ZodError } from "zod";
 import prisma from "../runtime/prisma";
 import { Custom } from "../lib/tools/logger";
+import argon2 from "argon2";
 
 export default class AuthController {
   static login = async (
@@ -25,15 +26,21 @@ export default class AuthController {
 
       SchemaParser.UserAccount({ username, email, password });
 
-      const user = await prisma.userAccount.create({ data: { username, email, password } });
+      const parsedPassword = await argon2.hash(password);
 
-      Custom.log("User", user);
+      const user = await prisma.userAccount.create({
+        data: { username, email, password: parsedPassword },
+      });
+
+      Custom.log("User creation", user);
 
       return res.json({ message: "Welcome !", success: true });
     } catch (err) {
       if (err instanceof ZodError) {
-        return res.json({ message: err.message, success: false });
+        const firstMessage = err.issues[0].message;
+        return res.json({ success: false, message: firstMessage });
       }
+      Custom.warn("user create", err);
       return res.json({ message: "An internal error occured, please try again !", success: false });
     }
   };

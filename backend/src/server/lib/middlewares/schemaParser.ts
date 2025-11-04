@@ -16,9 +16,8 @@ export default class SchemaParser {
 
     const parsed = schema.safeParse(data);
     if (!parsed.success) {
-      throw new Error(parsed.error.issues.map((e) => e.message).join(" "));
+      throw parsed.error;
     }
-    return parsed.data;
   }
 
   static CodeLanguage(data: unknown) {
@@ -31,9 +30,8 @@ export default class SchemaParser {
 
     const parsed = schema.safeParse(data);
     if (!parsed.success) {
-      throw new Error(parsed.error.issues.map((e) => e.message).join(" "));
+      throw parsed.error;
     }
-    return parsed.data;
   }
 
   static Hashtag(data: unknown) {
@@ -46,9 +44,8 @@ export default class SchemaParser {
 
     const parsed = schema.safeParse(data);
     if (!parsed.success) {
-      throw new Error(parsed.error.issues.map((e) => e.message).join(" "));
+      throw parsed.error;
     }
-    return parsed.data;
   }
 
   static Snippet(data: unknown) {
@@ -79,9 +76,8 @@ export default class SchemaParser {
 
     const parsed = schema.safeParse(data);
     if (!parsed.success) {
-      throw new Error(parsed.error.issues.map((e) => e.message).join(" "));
+      throw parsed.error;
     }
-    return parsed.data;
   }
 
   static UserLikesSnippet(data: unknown) {
@@ -92,7 +88,8 @@ export default class SchemaParser {
 
     const parsed = schema.safeParse(data);
     if (!parsed.success) {
-      throw new Error("Impossible de traiter votre action : données invalides.");
+      parsed.error.message = "Impossible de traiter cette action !";
+      throw parsed.error;
     }
     return parsed.data;
   }
@@ -108,9 +105,8 @@ export default class SchemaParser {
 
     const parsed = schema.safeParse(data);
     if (!parsed.success) {
-      throw new Error(parsed.error.issues.map((e) => e.message).join(" "));
+      throw parsed.error;
     }
-    return parsed.data;
   }
 
   static UserCommentSnippet(data: unknown) {
@@ -126,8 +122,7 @@ export default class SchemaParser {
 
     const parsed = schema.safeParse(data);
     if (!parsed.success) {
-      throw new Error(parsed.error.issues.map((e) => e.message).join(" "));
+      throw parsed.error;
     }
-    return parsed.data;
   }
 }
