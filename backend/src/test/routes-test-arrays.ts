@@ -2,11 +2,18 @@ import { RouteTest } from "./types.js";
 import crypto from "crypto";
 import { faker } from "@faker-js/faker";
 import { Prisma } from "../generated/prisma/index.js";
+import { ServerResponse } from "../server/types/global/response.js";
 
 const testUser: Prisma.UserAccountCreateInput = {
   username: faker.internet.username(),
   password: faker.internet.password(),
   email: faker.internet.email(),
+};
+
+const unauthorizedResponse: ServerResponse = {
+  message: "Cannot access to this feature yet, try to anthenticate !",
+  success: false,
+  redirect: "/login",
 };
 
 const register: RouteTest[] = [
@@ -243,6 +250,81 @@ const login: RouteTest[] = [
   },
 ];
 
+const unauthorizedRoutes: RouteTest[] = [
+  {
+    description: "DELETE /auth/session should reject unauthorized user",
+    method: "delete",
+    url: "/auth/session",
+    expectedBody: unauthorizedResponse,
+  },
+  {
+    description: "DELETE /auth/account should reject unauthorized user",
+    method: "delete",
+    url: "/auth/account",
+    expectedBody: unauthorizedResponse,
+  },
+  {
+    description: "POST /code should reject unauthorized user",
+    method: "post",
+    url: "/code",
+    expectedBody: unauthorizedResponse,
+  },
+  {
+    description: "PUT /dashboard/change-username/:id should reject unauthorized user",
+    method: "put",
+    url: "/dashboard/change-username/1",
+    expectedBody: unauthorizedResponse,
+  },
+  {
+    description: "GET /dashboard/liked/pages_number should reject unauthorized user",
+    method: "get",
+    url: "/dashboard/liked/pages_number",
+    expectedBody: unauthorizedResponse,
+  },
+  {
+    description: "GET /dashboard/personals/pages_number should reject unauthorized user",
+    method: "get",
+    url: "/dashboard/personals/pages_number",
+    expectedBody: unauthorizedResponse,
+  },
+  {
+    description: "GET /dashboard/liked/:page should reject unauthorized user",
+    method: "get",
+    url: "/dashboard/liked/1",
+    expectedBody: unauthorizedResponse,
+  },
+  {
+    description: "GET /dashboard/personals/:page should reject unauthorized user",
+    method: "get",
+    url: "/dashboard/personals/1",
+    expectedBody: unauthorizedResponse,
+  },
+  {
+    description: "POST /snippet/new should reject unauthorized user",
+    method: "post",
+    url: "/snippet/new",
+    expectedBody: unauthorizedResponse,
+  },
+  {
+    description: "POST /social/comment/:snippet_id should reject unauthorized user",
+    method: "post",
+    url: "/social/comment/123",
+    expectedBody: unauthorizedResponse,
+  },
+  {
+    description: "GET /social/like/:snippet_id should reject unauthorized user",
+    method: "get",
+    url: "/social/like/456",
+    expectedBody: unauthorizedResponse,
+  },
+  {
+    description: "GET /social/unlike/:snippet_id should reject unauthorized user",
+    method: "get",
+    url: "/social/unlike/789",
+    expectedBody: unauthorizedResponse,
+  },
+];
+
 const session: RouteTest[] = [
   {
     description: "should return 200 on session check",
@@ -320,6 +402,7 @@ const code: RouteTest[] = [
     url: "/code",
     method: "post",
     expectedStatus: 200,
+    useAgent: true,
   },
 ];
 
@@ -374,6 +457,7 @@ const snippet: RouteTest[] = [
 const routesTests: RouteTest[][] = [
   register,
   login,
+  unauthorizedRoutes,
   session,
   explorer,
   dashboard,

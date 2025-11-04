@@ -15,7 +15,7 @@ export default class AuthMiddleware {
       req.userId = session;
       return next();
     }
-    return res.json({
+    return res.status(401).json({
       message: "Cannot access to this feature yet, try to anthenticate !",
       success: false,
       redirect: "/login",
