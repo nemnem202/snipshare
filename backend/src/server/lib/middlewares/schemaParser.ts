@@ -60,7 +60,10 @@ export default class SchemaParser {
         .string()
         .min(3, "Le titre doit contenir au moins 3 caractères.")
         .max(100, "Le titre ne peut pas dépasser 100 caractères."),
-      code: z.string().min(1, "Le code ne peut pas être vide."),
+      code: z
+        .string()
+        .min(1, "Le code ne peut pas être vide.")
+        .max(10_000, "Le code ne peut pas excéder 10 000 caractères."),
       visibility: z.boolean().nullable().optional(),
       description: z
         .string()

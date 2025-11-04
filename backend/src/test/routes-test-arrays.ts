@@ -16,6 +16,17 @@ const unauthorizedResponse: ServerResponse = {
   redirect: "/login",
 };
 
+const validCodeBody = {
+  language: "typescript",
+  version: "5.0.3",
+  content: "console.log('Hello world !')",
+};
+
+const zodErrorResponse = (message: string) => ({
+  success: false,
+  message,
+});
+
 const register: RouteTest[] = [
   {
     description: "should return an error if username is missing",
@@ -398,11 +409,66 @@ const dashboard: RouteTest[] = [
 
 const code: RouteTest[] = [
   {
-    description: "should return 200 on code post",
+    description: "Doit exécuter le code correctement",
     url: "/code",
     method: "post",
-    expectedStatus: 200,
     useAgent: true,
+    body: validCodeBody,
+    expectedStatus: 200,
+  },
+  {
+    description: "Doit échouer si le code est vide",
+    url: "/code",
+    method: "post",
+    useAgent: true,
+    body: { ...validCodeBody, content: "" },
+    expectedBody: zodErrorResponse("Le code ne peut as être vide"),
+  },
+  {
+    description: "Doit échouer si le code dépasse 10 000 caractères",
+    url: "/code",
+    method: "post",
+    useAgent: true,
+    body: { ...validCodeBody, content: "a".repeat(10_001) },
+    expectedBody: zodErrorResponse("Le code ne peut excéder 10 000 caractères"),
+  },
+  {
+    description: "Doit échouer si le langage est vide",
+    url: "/code",
+    method: "post",
+    useAgent: true,
+    body: { ...validCodeBody, language: "" },
+    expectedBody: zodErrorResponse("Le nom du langage ne peut pas être vide."),
+  },
+  {
+    description: "Doit échouer si le langage dépasse 50 caractères",
+    url: "/code",
+    method: "post",
+    useAgent: true,
+    body: { ...validCodeBody, language: "a".repeat(51) },
+    expectedBody: zodErrorResponse("Le nom du langage est trop long (maximum 50 caractères)."),
+  },
+  {
+    description: "Doit échouer si la version n'est pas au format X.Y.Z",
+    url: "/code",
+    method: "post",
+    useAgent: true,
+    body: { ...validCodeBody, version: "abc" },
+    expectedBody: {
+      success: false,
+      message: "An internal error occured, please try again !",
+    },
+  },
+  {
+    description: "Doit échouer si le body est incomplet",
+    url: "/code",
+    method: "post",
+    useAgent: true,
+    body: { language: "typescript" },
+    expectedBody: {
+      success: false,
+      message: "Invalid input: expected string, received undefined",
+    },
   },
 ];
 
