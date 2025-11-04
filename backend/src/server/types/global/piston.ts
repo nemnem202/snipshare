@@ -14,12 +14,10 @@ export type PistonResponse = {
 };
 
 export type PistonRequest = {
-  langage: string;
+  language: string;
   version: string;
-  files: [
-    {
-      name: string;
-      content: string;
-    }
-  ];
+  files: Array<{
+    name: string;
+    content: string;
+  }>;
 };

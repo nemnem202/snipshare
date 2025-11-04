@@ -14,7 +14,7 @@ export type PistonResponse = {
 };
 
 export type PistonRequest = {
-  langage: string;
+  language: string;
   version: string;
   files: [
     {

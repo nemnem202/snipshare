@@ -422,7 +422,8 @@ const code: RouteTest[] = [
     method: "post",
     useAgent: true,
     body: { ...validCodeBody, content: "" },
-    expectedBody: zodErrorResponse("Le code ne peut as être vide"),
+    expectedStatus: 400,
+    expectedBody: zodErrorResponse("Le code ne peut pas être vide"),
   },
   {
     description: "Doit échouer si le code dépasse 10 000 caractères",
@@ -430,6 +431,7 @@ const code: RouteTest[] = [
     method: "post",
     useAgent: true,
     body: { ...validCodeBody, content: "a".repeat(10_001) },
+    expectedStatus: 400,
     expectedBody: zodErrorResponse("Le code ne peut excéder 10 000 caractères"),
   },
   {
@@ -438,6 +440,7 @@ const code: RouteTest[] = [
     method: "post",
     useAgent: true,
     body: { ...validCodeBody, language: "" },
+    expectedStatus: 400,
     expectedBody: zodErrorResponse("Le nom du langage ne peut pas être vide."),
   },
   {
@@ -446,6 +449,7 @@ const code: RouteTest[] = [
     method: "post",
     useAgent: true,
     body: { ...validCodeBody, language: "a".repeat(51) },
+    expectedStatus: 400,
     expectedBody: zodErrorResponse("Le nom du langage est trop long (maximum 50 caractères)."),
   },
   {
@@ -454,21 +458,17 @@ const code: RouteTest[] = [
     method: "post",
     useAgent: true,
     body: { ...validCodeBody, version: "abc" },
-    expectedBody: {
-      success: false,
-      message: "An internal error occured, please try again !",
-    },
+    expectedStatus: 400,
+    expectedBody: zodErrorResponse("Le format de version est invalide (ex: 5.0.3)"),
   },
   {
     description: "Doit échouer si le body est incomplet",
     url: "/code",
     method: "post",
     useAgent: true,
-    body: { language: "typescript" },
-    expectedBody: {
-      success: false,
-      message: "Invalid input: expected string, received undefined",
-    },
+    body: { ...validCodeBody, content: "" }, // Manque content + version
+    expectedStatus: 400,
+    expectedBody: zodErrorResponse("Le code ne peut pas être vide"),
   },
 ];
 
