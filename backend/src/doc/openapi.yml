@@ -15,17 +15,138 @@ paths:
     post:
       summary: Authentification d’un utilisateur
       tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: L'adresse e-mail de l'utilisateur
+                  example: user@example.com
+                password:
+                  type: string
+                  description: Le mot de passe de l'utilisateur
+                  example: MySuperSecretPassword123!
+              required:
+                - email
+                - password
       responses:
         "200":
-          description: Succès
+          description: Succès de la connexion
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Welcome !
+                  success:
+                    type: boolean
+                    example: true
+        "400":
+          description: Erreur de validation (email ou mot de passe manquant)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: No email provided
+                  success:
+                    type: boolean
+                    example: false
+        "401":
+          description: Identifiants invalides
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Invalid credentials
+                  success:
+                    type: boolean
+                    example: false
 
   /auth/register:
     post:
       summary: Inscription d’un utilisateur
       tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  minLength: 3
+                  maxLength: 30
+                  description: Nom d'utilisateur unique
+                  example: myusername
+                email:
+                  type: string
+                  format: email
+                  description: L'adresse e-mail de l'utilisateur
+                  example: user@example.com
+                password:
+                  type: string
+                  minLength: 6
+                  maxLength: 100
+                  description: Le mot de passe de l'utilisateur
+                  example: MySuperSecretPassword123!
+              required:
+                - username
+                - email
+                - password
       responses:
         "200":
-          description: Succès
+          description: Succès de l'inscription
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Welcome !
+                  success:
+                    type: boolean
+                    example: true
+        "400":
+          description: Erreur de validation (champs manquants ou invalides)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: No username provided
+                  success:
+                    type: boolean
+                    example: false
+        "409":
+          description: Conflit (email ou nom d'utilisateur déjà existant)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Account already existing, try to login !
+                  success:
+                    type: boolean
+                    example: false
 
   /auth/session:
     get:
@@ -33,19 +154,26 @@ paths:
       tags: [Auth]
       responses:
         "200":
-          description: Succès
+          description: Succès (session active)
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
     delete:
       summary: Déconnecte l'utilisateur
       tags: [Auth]
       responses:
         "200":
-          description: Succès
+          description: Succès de la déconnexion
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
   /auth/account:
     delete:
       summary: Supprime le compte utilisateur
       tags: [Auth]
       responses:
-        "200": description:Succès
+        "200":
+          description: Succès de la suppression du compte
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
   # --- EXPLORER ---
   /explorer:
     get:
@@ -73,7 +201,8 @@ paths:
           required: true
           schema:
             type: string
-          description: Identifiant de l’élément
+            format: uuid
+          description: Identifiant unique de l’élément
       responses:
         "200":
           description: Succès
@@ -86,6 +215,8 @@ paths:
       responses:
         "200":
           description: Succès
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
 
   # --- DASHBOARD ---
   /dashboard/change-username/{id}:
@@ -98,9 +229,28 @@ paths:
           required: true
           schema:
             type: string
+            format: uuid
+          description: Identifiant unique de l'utilisateur (peut être un JWT pour l'utilisateur courant)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  minLength: 3
+                  maxLength: 30
+                  description: Le nouveau nom d'utilisateur
+                  example: newUsername
+              required:
+                - username
       responses:
         "200":
           description: Succès
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
 
   /dashboard/liked/pages_number:
     get:
@@ -109,6 +259,8 @@ paths:
       responses:
         "200":
           description: Succès
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
 
   /dashboard/personals/pages_number:
     get:
@@ -117,6 +269,8 @@ paths:
       responses:
         "200":
           description: Succès
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
 
   /dashboard/liked/{page}:
     get:
@@ -128,9 +282,12 @@ paths:
           required: true
           schema:
             type: string
+          description: Numéro ou identifiant de la page aimée
       responses:
         "200":
           description: Succès
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
 
   /dashboard/personals/{page}:
     get:
@@ -142,14 +299,17 @@ paths:
           required: true
           schema:
             type: string
+          description: Numéro ou identifiant de la page personnelle
       responses:
         "200":
           description: Succès
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
 
   # --- SOCIAL ---
   /social/comment/{snippet_id}:
     post:
-      summary: Publie un commentaire
+      summary: Publie un commentaire sur un snippet
       tags: [Social]
       parameters:
         - in: path
@@ -157,9 +317,26 @@ paths:
           required: true
           schema:
             type: string
+            format: uuid
+          description: Identifiant unique du snippet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                comment:
+                  type: string
+                  description: Le contenu du commentaire
+                  example: "Ceci est un commentaire intéressant !"
+              required:
+                - comment
       responses:
         "200":
           description: Succès
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
 
   /social/like/{snippet_id}:
     get:
@@ -171,9 +348,13 @@ paths:
           required: true
           schema:
             type: string
+            format: uuid
+          description: Identifiant unique du snippet à aimer
       responses:
         "200":
           description: Succès
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
 
   /social/unlike/{snippet_id}:
     get:
@@ -185,18 +366,47 @@ paths:
           required: true
           schema:
             type: string
+            format: uuid
+          description: Identifiant unique du snippet à "unliker"
       responses:
         "200":
           description: Succès
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
 
   # --- SNIPPET ---
   /snippet/new:
     post:
       summary: Crée un nouveau snippet
       tags: [Snippet]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: Titre du snippet
+                  example: Mon super snippet
+                code:
+                  type: string
+                  description: Le code du snippet
+                  example: console.log("Hello World");
+                language:
+                  type: string
+                  description: Langage du code
+                  example: javascript
+              required:
+                - title
+                - code
+                - language
       responses:
         "200":
           description: Succès
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
 
   /snippet/{id}:
     put:
@@ -208,9 +418,32 @@ paths:
           required: true
           schema:
             type: string
+            format: uuid
+          description: Identifiant unique du snippet à mettre à jour
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: Nouveau titre du snippet
+                  example: Mon snippet mis à jour
+                code:
+                  type: string
+                  description: Nouveau code du snippet
+                  example: console.log("Updated Hello World");
+                language:
+                  type: string
+                  description: Nouveau langage du code
+                  example: javascript
       responses:
         "200":
           description: Succès
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
 
   /snippet/unref/{path}:
     get:
@@ -222,6 +455,32 @@ paths:
           required: true
           schema:
             type: string
+            format: uuid # Assumant que 'path' est un UUID pour l'exemple
+          description: Identifiant unique ou chemin du snippet à déréférencer
       responses:
         "200":
           description: Succès
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+
+components:
+  schemas:
+    UnauthorizedResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Cannot access to this feature yet, try to anthenticate !"
+        success:
+          type: boolean
+          example: false
+        redirect:
+          type: string
+          example: "/login"
+  responses:
+    UnauthorizedError:
+      description: Non autorisé
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/UnauthorizedResponse"
