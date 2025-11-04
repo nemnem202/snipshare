@@ -3,7 +3,7 @@
 .env.prod
 .env.preprod
 
-/node_modules
+node_modules
 
 /dist
 /src/generated/prisma

@@ -9,15 +9,44 @@ const testUser: Prisma.UserAccountCreateInput = {
   email: faker.internet.email(),
 };
 
-const auth: RouteTest[] = [
+const register: RouteTest[] = [
   {
-    description: "should return a success on register",
+    description: "should return an error if username is missing",
     url: "/auth/register",
     method: "post",
-    body: testUser,
+    body: {
+      email: testUser.email,
+      password: testUser.password,
+    },
     expectedBody: {
-      message: "Welcome !",
-      success: true,
+      message: "No username provided",
+      success: false,
+    },
+  },
+  {
+    description: "should return an error if email is missing",
+    url: "/auth/register",
+    method: "post",
+    body: {
+      username: testUser.username,
+      password: testUser.password,
+    },
+    expectedBody: {
+      message: "No email provided",
+      success: false,
+    },
+  },
+  {
+    description: "should return an error if password is missing",
+    url: "/auth/register",
+    method: "post",
+    body: {
+      username: testUser.username,
+      email: testUser.email,
+    },
+    expectedBody: {
+      message: "No password provided",
+      success: false,
     },
   },
   {
@@ -91,11 +120,130 @@ const auth: RouteTest[] = [
     },
   },
   {
-    description: "should return 200 on login",
+    description: "should return a success on register",
+    url: "/auth/register",
+    method: "post",
+    useAgent: true,
+    body: testUser,
+    expectedCookie: "session",
+    expectedBody: {
+      message: "Welcome !",
+      success: true,
+    },
+  },
+  {
+    description: "should return an error if email already exists",
+    url: "/auth/register",
+    method: "post",
+    body: {
+      username: "newUsername",
+      email: testUser.email,
+      password: testUser.password,
+    },
+    expectedBody: {
+      message: "Account already existing, try to login !",
+      success: false,
+    },
+  },
+  {
+    description: "should return an error if username already exists",
+    url: "/auth/register",
+    method: "post",
+    body: {
+      username: testUser.username,
+      email: "newemail@example.com",
+      password: testUser.password,
+    },
+    expectedBody: {
+      message: "Duplicate username, try another one !",
+      success: false,
+    },
+  },
+];
+
+const login: RouteTest[] = [
+  {
+    description: "should return a success on login",
     url: "/auth/login",
     method: "post",
-    expectedStatus: 200,
+    useAgent: true,
+    body: testUser,
+    expectedBody: {
+      message: "Welcome !",
+      success: true,
+    },
+    expectedCookie: "session",
   },
+
+  {
+    description: "should return an error if email is missing",
+    url: "/auth/login",
+    method: "post",
+    body: {
+      password: testUser.password,
+    },
+    expectedBody: {
+      message: "No email provided",
+      success: false,
+    },
+  },
+
+  {
+    description: "should return an error if password is missing",
+    url: "/auth/login",
+    method: "post",
+    body: {
+      email: testUser.email,
+    },
+    expectedBody: {
+      message: "No password provided",
+      success: false,
+    },
+  },
+
+  {
+    description: "should return an error if email does not exist",
+    url: "/auth/login",
+    method: "post",
+    body: {
+      email: "unknown@example.com",
+      password: testUser.password,
+    },
+    expectedBody: {
+      message: "Invalid credentials",
+      success: false,
+    },
+  },
+
+  {
+    description: "should return an error if password is invalid",
+    url: "/auth/login",
+    method: "post",
+    body: {
+      email: testUser.email,
+      password: "wrongPassword123!",
+    },
+    expectedBody: {
+      message: "Invalid credentials",
+      success: false,
+    },
+  },
+
+  {
+    description: "should set a session cookie on login",
+    url: "/auth/login",
+    method: "post",
+    useAgent: true,
+    body: testUser,
+    expectedBody: {
+      message: "Welcome !",
+      success: true,
+    },
+    expectedCookie: "session",
+  },
+];
+
+const session: RouteTest[] = [
   {
     description: "should return 200 on session check",
     url: "/auth/session",
@@ -223,6 +371,15 @@ const snippet: RouteTest[] = [
   },
 ];
 
-const routesTests: RouteTest[][] = [auth, explorer, dashboard, code, social, snippet];
+const routesTests: RouteTest[][] = [
+  register,
+  login,
+  session,
+  explorer,
+  dashboard,
+  code,
+  social,
+  snippet,
+];
 
 export default routesTests;

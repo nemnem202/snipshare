@@ -4,9 +4,9 @@ import AuthMiddleware from "../../lib/middlewares/authMiddleware";
 
 const auth = Router();
 
-auth.post("/login", (req, res) => res.sendStatus(200));
+auth.post("/login", (req, res) => AuthController.login(req, res));
 
-auth.post("/register", (req, res) => AuthController.login(req, res));
+auth.post("/register", (req, res) => AuthController.register(req, res));
 
 auth.get("/session", (req, res) => res.sendStatus(200));
 

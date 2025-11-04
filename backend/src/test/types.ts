@@ -8,6 +8,7 @@ export type RouteTest = {
   expectedStatus?: number;
   body?: object;
   expectedBody?: ServerResponse;
+  expectedCookie?: string;
   useAgent?: boolean; // indique si on doit utiliser un agent (auth)
   setupAgent?: (agent: TestAgent) => Promise<void> | void; // pour login etc.
 };
