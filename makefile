@@ -21,4 +21,4 @@ dev:
 
 
 test:
-	docker compose -f docker-compose.test.yml --env-file .env.dev up
+	docker compose -f docker-compose.test.yml --env-file .env.test up
