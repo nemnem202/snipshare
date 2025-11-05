@@ -263,6 +263,12 @@ const login: RouteTest[] = [
 
 const unauthorizedRoutes: RouteTest[] = [
   {
+    description: "GET /auth/session should reject unauthorized user",
+    method: "get",
+    url: "/auth/session",
+    expectedBody: unauthorizedResponse,
+  },
+  {
     description: "DELETE /auth/session should reject unauthorized user",
     method: "delete",
     url: "/auth/session",
@@ -341,6 +347,7 @@ const session: RouteTest[] = [
     description: "should return 200 on session check",
     url: "/auth/session",
     method: "get",
+    useAgent: true,
     expectedStatus: 200,
   },
 ];
