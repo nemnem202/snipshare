@@ -7,6 +7,7 @@ import Header from "../ui/components/header";
 import LoginPage from "./pages/login_page";
 import RegisterPage from "./pages/register_page";
 import SingleSnippetPage from "./pages/single_snippet_page";
+import { Toaster } from "../ui/assets/sonner";
 
 export default function Router() {
   return (
@@ -22,6 +23,7 @@ export default function Router() {
         <Route path="/unref/:id" element={<SingleSnippetPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
+      <Toaster />
     </BrowserRouter>
   );
 }

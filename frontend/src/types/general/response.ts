@@ -1,4 +1,5 @@
-export type Response = {
+export type ServerResponse = {
   success: boolean;
   message: string;
+  redirect?: string;
 };

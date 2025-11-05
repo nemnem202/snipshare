@@ -7,6 +7,7 @@ import { email, z } from "zod";
 import { Button } from "../assets/button";
 import { Card, CardContent } from "../assets/card";
 import { NavLink } from "react-router-dom";
+import Fetcher from "../../lib/fetcher";
 
 const formSchema = z.object({
   username: z.string().min(5, {
@@ -35,8 +36,8 @@ export default function RegisterForm({
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    await Fetcher.post(values, "/auth/register");
     behaviorOnSuccess();
   };
   return (
@@ -69,6 +70,7 @@ export default function RegisterForm({
                   <FormLabel>Email</FormLabel>
                   <FormControl>
                     <Input
+                      autoComplete="email"
                       placeholder="john-doe@gmail.com"
                       {...field}
                       className="animate w-[200px]"
@@ -86,7 +88,12 @@ export default function RegisterForm({
                 <FormItem>
                   <FormLabel>Mot de passe</FormLabel>
                   <FormControl>
-                    <Input type="password" {...field} className="animate w-[200px]" />
+                    <Input
+                      autoComplete="current-password"
+                      type="password"
+                      {...field}
+                      className="animate w-[200px]"
+                    />
                   </FormControl>
                   <FormMessage className="w-[200px]" />
                 </FormItem>
