@@ -1,6 +1,7 @@
 import { Router } from "express";
 import AuthController from "../../controllers/authController";
 import AuthMiddleware from "../../lib/middlewares/authMiddleware";
+import { Custom } from "../../lib/tools/logger";
 
 const auth = Router();
 
@@ -8,7 +9,14 @@ auth.post("/login", (req, res) => AuthController.login(req, res));
 
 auth.post("/register", (req, res) => AuthController.register(req, res));
 
-auth.get("/session", (req, res) => res.sendStatus(200));
+auth.get(
+  "/session",
+  (req, res, next) => AuthMiddleware.protectUser(req, res, next),
+  (req, res) => {
+    Custom.warn("session", "authorized for user with", req.userId);
+    res.json({ session: true });
+  }
+);
 
 auth.delete(
   "/session",

@@ -8,8 +8,12 @@ import LoginPage from "./pages/login_page";
 import RegisterPage from "./pages/register_page";
 import SingleSnippetPage from "./pages/single_snippet_page";
 import { Toaster } from "../ui/assets/sonner";
+import { useEffect } from "react";
+import useGetSession from "../hooks/get_session";
 
 export default function Router() {
+  useGetSession();
+
   return (
     <BrowserRouter>
       <Header />

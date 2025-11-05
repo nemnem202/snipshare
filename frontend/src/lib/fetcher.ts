@@ -23,6 +23,7 @@ export default class Fetcher {
 
       const res = await fetch(fullUrl, {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -56,6 +57,50 @@ export default class Fetcher {
     } catch (err) {
       Custom.error("fetcher", "Unknown error during POST request", err);
       Toaster.toastServer({ message: "Unknown error", success: false });
+      return this.defaultRes;
+    }
+  };
+
+  static get = async <Success>(
+    path: string,
+    silent?: boolean
+  ): Promise<Success | ServerResponse> => {
+    try {
+      const res = await fetch(this.url + this.formatPath(path), {
+        method: "Get",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!res.ok) {
+        const msg = `Fetch failed with status ${res.status} ${res.statusText}`;
+        Custom.error("fetcher", msg);
+        !silent && Toaster.toastServer({ message: msg, success: false });
+        return { message: msg, success: false };
+      }
+
+      let data: unknown;
+      try {
+        data = await res.json();
+      } catch (jsonErr) {
+        Custom.error("fetcher", "Failed to parse JSON response", jsonErr);
+        !silent && Toaster.toastServer({ message: "Invalid JSON response", success: false });
+        return { message: "Invalid JSON response", success: false };
+      }
+
+      Custom.log("fetcher", "Received response", data);
+
+      if (data && typeof data === "object" && "message" in data && "success" in data) {
+        !silent && Toaster.toastServer(data as ServerResponse);
+        return data as ServerResponse;
+      }
+
+      return data as Success;
+    } catch (err) {
+      Custom.error("fetcher", "Unknown error during POST request", err);
+      !silent && Toaster.toastServer({ message: "Unknown error", success: false });
       return this.defaultRes;
     }
   };

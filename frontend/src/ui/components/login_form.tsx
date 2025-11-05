@@ -9,6 +9,10 @@ import { Card, CardContent } from "../assets/card";
 import { NavLink } from "react-router-dom";
 import Fetcher from "../../lib/fetcher";
 import { toast } from "sonner";
+import type { ServerResponse } from "../../types/general/response";
+import { useContext } from "react";
+import { SessionContext } from "../../provider/session_provider";
+import { Custom } from "../../lib/logger";
 
 const formSchema = z.object({
   password: z.string().min(6, {
@@ -34,10 +38,19 @@ export default function LoginForm({
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    await Fetcher.post(values, "/auth/login");
+  const ctx = useContext(SessionContext);
 
-    behaviorOnSuccess();
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const res = await Fetcher.post<ServerResponse>(values, "/auth/login");
+
+    if (!ctx) return Custom.error("SessionProvider error");
+
+    const { session, setSession } = ctx;
+
+    if (res.success) {
+      setSession(true);
+      behaviorOnSuccess();
+    }
   };
   return (
     <Card className="p-5 bg-background">

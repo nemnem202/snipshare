@@ -3,6 +3,7 @@ import { setupSwagger } from "../../doc/swagger";
 import router from "../routing/router";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import { Custom } from "../lib/tools/logger";
 
 const app = express();
 
@@ -16,6 +17,8 @@ app.use(
     credentials: true,
   })
 );
+
+Custom.log("cors", "allowed for http://localhost:" + process.env.FRONTEND_PORT);
 
 app.use(router);
 
