@@ -6,9 +6,15 @@ import { Button } from "../assets/button";
 import { faker } from "@faker-js/faker";
 import { useState } from "react";
 import LoginDialog from "./login_dialog";
+import useGetSession from "../../hooks/get_session";
 export default function CommentCard({ closed }: { closed: boolean }) {
   const [open, setOpenLogin] = useState(false);
-
+  const session = useGetSession();
+  const send = async () => {
+    if (!session) {
+      setOpenLogin(true);
+    }
+  };
   return (
     <>
       <Card
@@ -37,7 +43,7 @@ export default function CommentCard({ closed }: { closed: boolean }) {
               minRows={3}
             />
             <div className="flex w-full justify-end">
-              <Button onClick={() => setOpenLogin(true)}>Envoyer</Button>
+              <Button onClick={() => send()}>Envoyer</Button>
             </div>
           </div>
           <div className="my-4 border" />

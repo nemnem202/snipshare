@@ -23,9 +23,15 @@ export default function LoginDialog({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
         {mode === "login" ? (
-          <LoginForm behaviorOnSuccess={() => {}} changeMode={() => setMode("register")} />
+          <LoginForm
+            behaviorOnSuccess={() => setOpen(false)}
+            changeMode={() => setMode("register")}
+          />
         ) : (
-          <RegisterForm behaviorOnSuccess={() => {}} changeMode={() => setMode("login")} />
+          <RegisterForm
+            behaviorOnSuccess={() => setOpen(false)}
+            changeMode={() => setMode("login")}
+          />
         )}
       </DialogContent>
     </Dialog>

@@ -5,6 +5,7 @@ import "prismjs/components/prism-typescript";
 import "prismjs/themes/prism-tomorrow.css";
 import "../style/components/snippet_code.css";
 import { Button } from "../assets/button";
+import { Spinner } from "../assets/spinner";
 
 const TEXTVALUE = `class Person {
   name: string;
@@ -23,7 +24,13 @@ const TEXTVALUE = `class Person {
 const naim = new Person("Naïm", 21);
 console.log(naim.greet());`;
 
-export default function SnippetCode({ run }: { run: (content: string) => any }) {
+export default function SnippetCode({
+  run,
+  runLoading,
+}: {
+  run: (content: string) => any;
+  runLoading: boolean;
+}) {
   const [code, setCode] = useState(TEXTVALUE);
   const lines = code.split("\n");
 
@@ -51,7 +58,7 @@ export default function SnippetCode({ run }: { run: (content: string) => any }) 
         />
       </div>
       <div className="flex justify-end w-full">
-        <Button onClick={() => run(code)}>RUN</Button>
+        <Button onClick={() => run(code)}>{runLoading ? <Spinner /> : "RUN"}</Button>
       </div>
     </>
   );
