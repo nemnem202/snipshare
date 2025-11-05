@@ -53,7 +53,7 @@ export default class AuthController {
         data: { username, email, password: parsedPassword },
       });
 
-      Custom.log("User creation", user);
+      Custom.log("User creation");
 
       CookieParser.addSession(res, user.id);
 

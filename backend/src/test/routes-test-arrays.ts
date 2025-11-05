@@ -355,7 +355,7 @@ const session: RouteTest[] = [
 const explorer: RouteTest[] = [
   {
     description: "should return 200 on explorer root",
-    url: "/explorer",
+    url: "/explorer/1",
     method: "get",
     expectedStatus: 200,
   },

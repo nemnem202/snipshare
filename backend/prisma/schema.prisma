@@ -46,6 +46,7 @@ model Snippet {
   code         String
   visibility   Boolean?
   description  String?
+  date DateTime
   
   // Relations
   user_id      Int

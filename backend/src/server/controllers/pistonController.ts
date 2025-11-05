@@ -26,32 +26,24 @@ export default class PistonController {
   ): Promise<Response<ServerResponse | PistonResponse>> => {
     const { language, content, version } = req.body;
 
-    Custom.log("piston", "Received request", {
-      language,
-      contentLength: content?.length || 0,
-      version,
-    });
+    Custom.log("piston", "Received request");
 
     try {
       const parsedContent = this.codeSchema.safeParse(content);
       if (!parsedContent.success) {
-        Custom.error("piston", "Content validation failed", parsedContent.error.issues);
+        Custom.error("piston", "Content validation failed");
         throw parsedContent.error;
       }
 
       const parsedLanguage = this.codeLanguage.safeParse(language);
       if (!parsedLanguage.success) {
-        Custom.error("piston", "Language validation failed", parsedLanguage.error.issues);
+        Custom.error("piston", "Language validation failed");
         throw parsedLanguage.error;
       }
 
       const parsedVersion = this.versionSchema.safeParse(version);
       if (!parsedVersion.success) {
-        Custom.error("piston", "Version validation failed", {
-          version,
-          type: typeof version,
-          errors: parsedVersion.error.issues,
-        });
+        Custom.error("piston", "Version validation failed");
         throw parsedVersion.error;
       }
 
@@ -66,12 +58,7 @@ export default class PistonController {
         ],
       };
 
-      Custom.log("piston", "Sending request to Piston API", {
-        url: this.postUrl,
-        language: body.language,
-        version: body.version,
-        filesCount: body.files.length,
-      });
+      Custom.log("piston", "Sending request to Piston API");
 
       const response = await fetch(this.postUrl, {
         method: "POST",
@@ -81,11 +68,7 @@ export default class PistonController {
         body: JSON.stringify(body),
       });
 
-      Custom.log("piston", "Received response from Piston API", {
-        status: response.status,
-        statusText: response.statusText,
-        ok: response.ok,
-      });
+      Custom.log("piston", "Received response from Piston API");
 
       let data: any;
 
@@ -93,24 +76,17 @@ export default class PistonController {
         data = await response.json();
         Custom.log("piston", "Response parsed successfully");
       } catch (parseError) {
-        Custom.error("piston", "Failed to parse response JSON", {
-          error: parseError,
-          status: response.status,
-        });
+        Custom.error("piston", "Failed to parse response JSON");
         return res.status(500).json({
           message: "Failed to parse response from code runner API",
           success: false,
         });
       }
 
-      Custom.warn("piston response", JSON.stringify(data, null, 2));
+      Custom.warn("piston", "response sent");
 
       if (!response.ok) {
-        Custom.error("piston", "Piston API returned an error", {
-          status: response.status,
-          statusText: response.statusText,
-          data,
-        });
+        Custom.error("piston", "Piston API returned an error");
         return res.status(response.status).json({
           message: "An error occured while sending data to the code runner api",
           success: false,
@@ -118,27 +94,20 @@ export default class PistonController {
       }
 
       if (!data.run) {
-        Custom.error("piston", "Unexpected response structure from Piston", data);
+        Custom.error("piston", "Unexpected response structure from Piston");
         return res.status(500).json({
           message: "Unexpected response structure from code runner API",
           success: false,
         });
       }
 
-      Custom.log("piston", "Request completed successfully", {
-        stdout: data.run.stdout?.substring(0, 50),
-        stderr: data.run.stderr?.substring(0, 50),
-        exitCode: data.run.code,
-      });
+      Custom.log("piston", "Request completed successfully");
 
       return res.json(data as PistonResponse);
     } catch (err) {
       if (err instanceof ZodError) {
         const firstIssue = err.issues[0];
-        Custom.warn("piston", "Validation error", {
-          path: firstIssue.path,
-          message: firstIssue.message,
-        });
+        Custom.warn("piston", "Validation error");
         return res.status(400).json({
           success: false,
           message: firstIssue.message,
@@ -146,18 +115,14 @@ export default class PistonController {
       }
 
       if (err instanceof TypeError && err.message.includes("fetch")) {
-        Custom.error("piston", "Network error while contacting Piston API", err);
+        Custom.error("piston", "Network error while contacting Piston API");
         return res.status(503).json({
           message: "Unable to contact code runner API. Please try again later.",
           success: false,
         });
       }
 
-      Custom.error("piston", "Unexpected error", {
-        error: err,
-        message: err instanceof Error ? err.message : "Unknown error",
-        stack: err instanceof Error ? err.stack : undefined,
-      });
+      Custom.error("piston", "Unexpected error");
 
       return res.status(500).json({
         message: "An internal error occured, please try again!",

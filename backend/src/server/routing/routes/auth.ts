@@ -13,7 +13,7 @@ auth.get(
   "/session",
   (req, res, next) => AuthMiddleware.protectUser(req, res, next),
   (req, res) => {
-    Custom.warn("session", "authorized for user with", req.userId);
+    Custom.warn("session", "authorized for user");
     res.json({ session: true });
   }
 );

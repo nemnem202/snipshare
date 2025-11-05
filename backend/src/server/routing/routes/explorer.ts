@@ -1,11 +1,10 @@
 import { Router } from "express";
+import ExplorerController from "../../controllers/explorerController";
 
 const explorer = Router();
 
-explorer.get("/pages_number", (_, res) => res.sendStatus(200));
+explorer.get("/pages_number", (req, res) => ExplorerController.getPageNumber(req, res));
 
-explorer.get("/comments/:snippet_id", (req, res) => res.sendStatus(200));
-
-explorer.get("/", (_, res) => res.sendStatus(200));
+explorer.get("/:page_index", (req, res) => ExplorerController.getAPage(req, res));
 
 export default explorer;
