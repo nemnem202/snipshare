@@ -14,7 +14,7 @@ export default class ExplorerController {
       let index = parseInt(req.params.page_index);
       if (isNaN(index) || index < 0) index = 0;
 
-      const language = req.query.lang ? String(req.query.lang) : "javascript";
+      const language = req.query.lang ? String(req.query.lang) : null;
       const tags = Array.isArray(req.query.tags)
         ? req.query.tags.map(String)
         : req.query.tags
@@ -23,7 +23,7 @@ export default class ExplorerController {
 
       const snippets = await prisma.snippet.findMany({
         where: {
-          languageName: language,
+          ...(language && { languageName: language }),
           ...(tags.length > 0 && {
             filters: {
               some: {
@@ -55,16 +55,18 @@ export default class ExplorerController {
     res: Response
   ): Promise<Response<ServerResponse | { number: number }>> => {
     try {
-      const language = req.query.lang ? String(req.query.lang) : "javascript";
+      const language = req.query.lang ? String(req.query.lang) : null;
       const tags = Array.isArray(req.query.tags)
         ? req.query.tags.map(String)
         : req.query.tags
         ? [String(req.query.tags)]
         : [];
 
+      Custom.log("getPageNumber called", { language, tags });
+
       const snippetsNumber = await prisma.snippet.count({
         where: {
-          languageName: language,
+          ...(language && { languageName: language }),
           ...(tags.length > 0 && {
             filters: {
               some: {
@@ -75,9 +77,11 @@ export default class ExplorerController {
         },
       });
 
+      Custom.log("Number of snippets found", snippetsNumber);
+
       return res.json({ number: snippetsNumber });
     } catch (err) {
-      console.error("Error in getPageNumber:", err);
+      Custom.log("Error in getPageNumber", err);
       return res.status(500).json({
         message: "Internal server error",
         success: false,

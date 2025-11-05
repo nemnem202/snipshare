@@ -8,6 +8,7 @@ import { Custom } from "../../lib/logger";
 import useGetSession from "../../hooks/get_session";
 import LoginDialog from "./login_dialog";
 import { boolean } from "zod";
+import { useSnippet } from "./snippet_container";
 
 export default function SnippetAccordion({
   setClosed,
@@ -55,9 +56,10 @@ export default function SnippetAccordion({
 
   const accordionRef = useRef<HTMLDivElement>(null);
   const [openItemsState, setOpenItems] = useState<string[]>([]);
-
+  const { snippet, setSnippet } = useSnippet();
   const handleValueChange = (openItems: string[]) => {
     Custom.log("open items", openItems);
+
     setClosed(openItems.length === 0);
 
     if (!accordionRef.current) return;
@@ -107,28 +109,30 @@ export default function SnippetAccordion({
   }, [openItemsState]);
 
   return (
-    <>
-      <Accordion
-        type="multiple"
-        className="w-full"
-        onValueChange={handleValueChange}
-        ref={accordionRef}
-        value={openItemsState}
-      >
-        <AccordionItem value="item-1">
-          <AccordionTrigger>Language</AccordionTrigger>
-          <AccordionContent className="flex flex-col gap-4 text-balance">
-            <SnippetCode run={run} runLoading={runLoading} />
-          </AccordionContent>
-        </AccordionItem>
-        <AccordionItem value="item-2">
-          <AccordionTrigger>Console</AccordionTrigger>
-          <AccordionContent className="flex flex-col gap-4 text-balance">
-            <SnippetConsole console={console} />
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
-      <LoginDialog open={openLogin} setOpen={setOpenLogin} />
-    </>
+    snippet && (
+      <>
+        <Accordion
+          type="multiple"
+          className="w-full"
+          onValueChange={handleValueChange}
+          ref={accordionRef}
+          value={openItemsState}
+        >
+          <AccordionItem value="item-1">
+            <AccordionTrigger>{snippet.languageName}</AccordionTrigger>
+            <AccordionContent className="flex flex-col gap-4 text-balance">
+              <SnippetCode run={run} runLoading={runLoading} />
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-2">
+            <AccordionTrigger>Console</AccordionTrigger>
+            <AccordionContent className="flex flex-col gap-4 text-balance">
+              <SnippetConsole console={console} />
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+        <LoginDialog open={openLogin} setOpen={setOpenLogin} />
+      </>
+    )
   );
 }

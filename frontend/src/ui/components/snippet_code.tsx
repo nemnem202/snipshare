@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Editor from "react-simple-code-editor";
 import Prism from "prismjs";
 import "prismjs/components/prism-typescript";
@@ -6,23 +6,7 @@ import "prismjs/themes/prism-tomorrow.css";
 import "../style/components/snippet_code.css";
 import { Button } from "../assets/button";
 import { Spinner } from "../assets/spinner";
-
-const TEXTVALUE = `class Person {
-  name: string;
-  age: number;
-
-  constructor(name: string, age: number) {
-    this.name = name;
-    this.age = age;
-  }
-
-  greet(): string {
-    return \`Salut, je m'appelle \${this.name} et j'ai \${this.age} ans.\`;
-  }
-}
-
-const naim = new Person("Naïm", 21);
-console.log(naim.greet());`;
+import { useSnippet } from "./snippet_container";
 
 export default function SnippetCode({
   run,
@@ -31,8 +15,15 @@ export default function SnippetCode({
   run: (content: string) => any;
   runLoading: boolean;
 }) {
-  const [code, setCode] = useState(TEXTVALUE);
+  const [code, setCode] = useState("");
   const lines = code.split("\n");
+
+  const { snippet, setSnippet } = useSnippet();
+
+  useEffect(() => {
+    if (!snippet) return;
+    setCode(snippet.code);
+  }, [snippet]);
 
   return (
     <>
