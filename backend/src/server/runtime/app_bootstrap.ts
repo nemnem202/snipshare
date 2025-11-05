@@ -1,3 +1,4 @@
+import populateDb from "../gen/generator";
 import { Custom } from "../lib/tools/logger";
 import app from "./app";
 
@@ -9,5 +10,7 @@ const run = () => {
     Custom.warn("doc", `Swagger docs available at http://localhost:${PORT}/docs`);
   });
 };
+
+populateDb();
 
 run();

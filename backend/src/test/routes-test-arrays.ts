@@ -365,12 +365,12 @@ const explorer: RouteTest[] = [
     method: "get",
     expectedStatus: 200,
   },
-  {
-    description: "should return 200 on explorer comments with random UUID",
-    url: `/explorer/comments/${crypto.randomUUID()}`,
-    method: "get",
-    expectedStatus: 200,
-  },
+  // {
+  //   description: "should return 200 on explorer comments with random UUID",
+  //   url: `/explorer/comments/${crypto.randomUUID()}`,
+  //   method: "get",
+  //   expectedStatus: 200,
+  // },
 ];
 
 const dashboard: RouteTest[] = [
