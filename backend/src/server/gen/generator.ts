@@ -1,10 +1,17 @@
+import { Custom } from "../lib/tools/logger";
 import prisma from "../runtime/prisma";
 import { faker } from "@faker-js/faker";
 
 export default async function populateDb() {
-  console.log("🌱 Starting database population...");
+  Custom.log("Gen", "🌱 Starting database population...");
 
   try {
+    const langsCount = await prisma.codeLanguage.count();
+    if (langsCount > 0) {
+      Custom.log("Gen", "⚠️ Database already populated — skipping seed.");
+      return;
+    }
+
     // 1. Créer des langages de programmation
     const languages = [
       "JavaScript",
@@ -21,7 +28,7 @@ export default async function populateDb() {
       "Kotlin",
     ];
 
-    console.log("Creating languages...");
+    Custom.log("Gen", "Creating languages...");
     for (const lang of languages) {
       await prisma.codeLanguage.upsert({
         where: { name: lang },
@@ -49,7 +56,7 @@ export default async function populateDb() {
       "best-practices",
     ];
 
-    console.log("Creating hashtags...");
+    Custom.log("Gen", "Creating hashtags...");
     for (const tag of hashtags) {
       await prisma.hashtag.upsert({
         where: { name: tag },
@@ -59,7 +66,7 @@ export default async function populateDb() {
     }
 
     // 3. Créer des utilisateurs
-    console.log("Creating users...");
+    Custom.log("Gen", "Creating users...");
     const userIds: number[] = [];
     for (let i = 0; i < 50; i++) {
       const user = await prisma.userAccount.create({
@@ -73,7 +80,7 @@ export default async function populateDb() {
     }
 
     // 4. Créer des snippets
-    console.log("Creating snippets...");
+    Custom.log("Gen", "Creating snippets...");
     const snippetIds: number[] = [];
     const codeExamples = [
       "function hello() {\n  console.log('Hello World');\n}",
@@ -102,7 +109,7 @@ export default async function populateDb() {
     }
 
     // 5. Créer des associations hashtag-snippet
-    console.log("Creating snippet-hashtag associations...");
+    Custom.log("Gen", "Creating snippet-hashtag associations...");
     for (let i = 0; i < 500; i++) {
       try {
         await prisma.filtrer.create({
@@ -117,7 +124,7 @@ export default async function populateDb() {
     }
 
     // 6. Créer des likes
-    console.log("Creating likes...");
+    Custom.log("Gen", "Creating likes...");
     for (let i = 0; i < 800; i++) {
       try {
         await prisma.userLikesSnippet.create({
@@ -132,7 +139,7 @@ export default async function populateDb() {
     }
 
     // 7. Créer des commentaires
-    console.log("Creating comments...");
+    Custom.log("Gen", "Creating comments...");
     for (let i = 0; i < 400; i++) {
       try {
         await prisma.userCommentSnippet.create({
@@ -148,10 +155,10 @@ export default async function populateDb() {
       }
     }
 
-    console.log("✅ Database population completed!");
-    console.log(`Created: ${userIds.length} users, ${snippetIds.length} snippets`);
+    Custom.log("Gen", "db population completed");
+    Custom.log("Gen", `Created: ${userIds.length} users, ${snippetIds.length} snippets`);
   } catch (error) {
-    console.error("❌ Error populating database:", error);
+    Custom.error("❌ Error populating database:", error);
     throw error;
   }
 }

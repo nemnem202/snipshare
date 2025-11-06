@@ -16,7 +16,7 @@ services:
   backend:
     image: snipshare-backend:dev
     volumes:
-      - /app/node_modules
+      # - /app/node_modules
       - ./backend:/app
     restart: always
     build:
