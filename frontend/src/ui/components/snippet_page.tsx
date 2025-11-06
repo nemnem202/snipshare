@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   Pagination,
   PaginationContent,
@@ -13,14 +13,11 @@ import type { Snippet } from "../../types/general/snippet";
 import Fetcher from "../../lib/fetcher";
 import { Custom } from "../../lib/logger";
 import type { Filters } from "../../types/general/explorerFilters";
+import { FilterContext } from "../../provider/filters_provider";
 
-export default function SnippetPage({
-  forPrivate,
-  filters,
-}: {
-  forPrivate: boolean;
-  filters: Filters;
-}) {
+export default function SnippetPage({ forPrivate }: { forPrivate: boolean }) {
+  const filtersContext = useContext(FilterContext);
+  if (!filtersContext) return;
   const [snippets, setSnippets] = useState<Snippet[]>([]);
   const [pages, setPages] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(0);
@@ -36,36 +33,51 @@ export default function SnippetPage({
       getBaseRoute(forPrivate) + "pages_number"
     );
     if ("success" in response) return;
-    const pages: number = response?.number ?? 0;
-    Custom.log("Set pages ...", pages);
-    setPages(pages);
+    const pagesNumber: number = response?.number ?? 0;
+    Custom.log("Set pages ...", pagesNumber);
+    setPages(pagesNumber);
   };
 
   useEffect(() => {
+    Custom.log("Filters", "changed");
     getPages();
   }, []);
 
   const joinFilters = (filtersToJoin: Filters): string => {
-    if (!filters || (!filtersToJoin.language && !filtersToJoin.tags)) return "";
-    Custom.log("Filters", filtersToJoin);
-    return "?language=" + filtersToJoin?.language + filtersToJoin.tags?.map((t) => "&tag=" + t);
+    if (
+      !filtersToJoin ||
+      (!filtersToJoin.language && !filtersToJoin.tags && !filtersToJoin.orderByPopularity)
+    )
+      return "";
+
+    const params = new URLSearchParams();
+
+    if (filtersToJoin.language) params.append("language", filtersToJoin.language);
+    filtersToJoin.tags?.forEach((tag) => params.append("tag", tag));
+    params.append("orderBy", filtersToJoin.orderByPopularity ? "popularity" : "date");
+
+    return "?" + params.toString();
   };
 
   const getSnippets = async (page: number) => {
-    Custom.log("Get Snippets ...", getBaseRoute(forPrivate) + page + joinFilters(filters));
+    Custom.log(
+      "Get Snippets ...",
+      getBaseRoute(forPrivate) + page + joinFilters(filtersContext.filters)
+    );
     const snippets = await Fetcher.get<Snippet[]>(
-      getBaseRoute(forPrivate) + page + joinFilters(filters)
+      getBaseRoute(forPrivate) + page + joinFilters(filtersContext.filters)
     );
 
     if ("success" in snippets) return;
 
-    Custom.log("snippets", snippets);
+    Custom.log("snippets !");
     setSnippets(snippets);
   };
 
   useEffect(() => {
+    Custom.log("Filters", filtersContext.filters);
     getSnippets(currentPage);
-  }, [pages, currentPage]);
+  }, [pages, currentPage, filtersContext.filters]);
 
   const getPaginationItems = () => {
     const items = [];

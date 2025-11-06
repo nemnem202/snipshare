@@ -3,7 +3,6 @@ import { PrismaClient, Snippet } from "../../generated/prisma";
 import { Custom } from "../lib/tools/logger";
 import { ServerResponse } from "../types/global/response";
 import prisma from "../runtime/prisma";
-import { number } from "zod";
 
 export default class ExplorerController {
   static getAPage = async (
@@ -21,6 +20,10 @@ export default class ExplorerController {
         ? [String(req.query.tags)]
         : [];
 
+      const orderBy = req.query.orderBy;
+
+      Custom.log("Get a page", { index, language, tags, orderBy });
+
       const snippets = await prisma.snippet.findMany({
         where: {
           ...(language && { languageName: language }),
@@ -32,7 +35,7 @@ export default class ExplorerController {
             },
           }),
         },
-        orderBy: req.query.orderBy === "likes" ? { likes: { _count: "desc" } } : { date: "desc" },
+        orderBy: orderBy === "popularity" ? { likes: { _count: "desc" } } : { date: "desc" },
         skip: index * 10,
         take: 10,
         include: {
@@ -62,8 +65,6 @@ export default class ExplorerController {
         ? [String(req.query.tags)]
         : [];
 
-      Custom.log("getPageNumber called", { language, tags });
-
       const snippetsNumber = await prisma.snippet.count({
         where: {
           ...(language && { languageName: language }),
@@ -79,7 +80,7 @@ export default class ExplorerController {
 
       Custom.log("Number of snippets found", snippetsNumber);
 
-      return res.json({ number: snippetsNumber });
+      return res.json({ number: Math.ceil(snippetsNumber / 10) });
     } catch (err) {
       Custom.log("Error in getPageNumber", err);
       return res.status(500).json({
