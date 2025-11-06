@@ -1,4 +1,11 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../assets/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../assets/card";
 import SnippetAccordion from "./snippet_accordion";
 import { FaEye } from "react-icons/fa";
 import { FaLink } from "react-icons/fa";
@@ -51,6 +58,11 @@ export default function SnippetCard({
             </CardContent>
           </Card>
         </CardContent>
+        <CardFooter className="p-1 gap-3">
+          {snippet.filters.map((f) => (
+            <div className="text-sm bold italic opacity-70">#{f.hashtagName}</div>
+          ))}
+        </CardFooter>
       </Card>
     )
   );

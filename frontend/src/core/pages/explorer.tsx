@@ -1,11 +1,24 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Headline from "../../ui/components/headline";
 import Searchbar from "../../ui/components/searchbar";
 import SnippetPage from "../../ui/components/snippet_page";
 import SortSelectGroup from "../../ui/components/sort_select_group";
 import Tag from "../../ui/components/tag";
-import type { Filters } from "../../types/general/explorerFilters";
-import FiltersProvider from "../../provider/filters_provider";
+import FiltersProvider, { FilterContext } from "../../provider/filters_provider";
+
+function SearchBarContainer() {
+  const filtersContext = useContext(FilterContext);
+  if (!filtersContext) return;
+  return (
+    <div className="flex flex-col items-center gap-2 h-[100px]">
+      <Searchbar />
+      <div className="h-5 flex gap-2">
+        {filtersContext.filters.tags &&
+          filtersContext.filters.tags.map((tag, index) => <Tag content={tag} key={index} />)}
+      </div>
+    </div>
+  );
+}
 
 export default function Explorer() {
   return (
@@ -22,14 +35,7 @@ export default function Explorer() {
       </div>
 
       <FiltersProvider>
-        <div className="flex flex-col items-center gap-2 h-[100px]">
-          <Searchbar />
-          <div className="h-5 flex gap-2">
-            {Array.from({ length: 6 }).map((_, id) => (
-              <Tag content={`Tag ${id}`} key={id} />
-            ))}
-          </div>
-        </div>
+        <SearchBarContainer />
         <SortSelectGroup />
         <div className="flex gap-5 w-full h-[50px]"></div>
         <SnippetPage forPrivate={false} />

@@ -56,7 +56,7 @@ export default function SnippetPage({ forPrivate }: { forPrivate: boolean }) {
     const params = new URLSearchParams();
 
     if (filtersToJoin.language) params.append("language", filtersToJoin.language);
-    filtersToJoin.tags?.forEach((tag) => params.append("tag", tag));
+    filtersToJoin.tags?.forEach((tag) => params.append("tags", tag));
     params.append("orderBy", filtersToJoin.orderByPopularity ? "popularity" : "date");
 
     return "?" + params.toString();
