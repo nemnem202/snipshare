@@ -113,7 +113,9 @@ export default function SnippetAccordion({
           value={openItemsState}
         >
           <AccordionItem value="item-1">
-            <AccordionTrigger>{snippet.languageName}</AccordionTrigger>
+            <AccordionTrigger>
+              <div>{snippet.language.language}</div>
+            </AccordionTrigger>
             <AccordionContent className="flex flex-col gap-4 text-balance">
               <SnippetCode run={run} runLoading={runLoading} />
             </AccordionContent>

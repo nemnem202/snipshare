@@ -9,18 +9,20 @@ import {
   PaginationPrevious,
 } from "../../ui/assets/pagination";
 import SnippetContainer from "./snippet_container";
-import type { Snippet } from "../../types/general/snippet";
 import Fetcher from "../../lib/fetcher";
 import { Custom } from "../../lib/logger";
 import type { Filters } from "../../types/general/explorerFilters";
 import { FilterContext } from "../../provider/filters_provider";
+import { Spinner } from "../assets/spinner";
+import type { ExplorerSnippet } from "../../types/general/explorersnippet";
 
 export default function SnippetPage({ forPrivate }: { forPrivate: boolean }) {
   const filtersContext = useContext(FilterContext);
   if (!filtersContext) return;
-  const [snippets, setSnippets] = useState<Snippet[]>([]);
+  const [snippets, setSnippets] = useState<ExplorerSnippet[]>([]);
   const [pages, setPages] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(0);
+  const [pageLoading, setPageLoading] = useState(true);
 
   const getBaseRoute = (priv: boolean): string => {
     if (priv) return "/dashboard/";
@@ -28,9 +30,10 @@ export default function SnippetPage({ forPrivate }: { forPrivate: boolean }) {
   };
 
   const getPages = async () => {
-    Custom.log("get pages...", getBaseRoute(forPrivate) + "pages_number");
+    Custom.log("get pages...", getBaseRoute(forPrivate) + "pages_number") +
+      joinFilters(filtersContext.filters);
     const response = await Fetcher.get<{ number: number }>(
-      getBaseRoute(forPrivate) + "pages_number"
+      getBaseRoute(forPrivate) + "pages_number" + joinFilters(filtersContext.filters)
     );
     if ("success" in response) return;
     const pagesNumber: number = response?.number ?? 0;
@@ -41,7 +44,7 @@ export default function SnippetPage({ forPrivate }: { forPrivate: boolean }) {
   useEffect(() => {
     Custom.log("Filters", "changed");
     getPages();
-  }, []);
+  }, [filtersContext.filters]);
 
   const joinFilters = (filtersToJoin: Filters): string => {
     if (
@@ -64,7 +67,7 @@ export default function SnippetPage({ forPrivate }: { forPrivate: boolean }) {
       "Get Snippets ...",
       getBaseRoute(forPrivate) + page + joinFilters(filtersContext.filters)
     );
-    const snippets = await Fetcher.get<Snippet[]>(
+    const snippets = await Fetcher.get<ExplorerSnippet[]>(
       getBaseRoute(forPrivate) + page + joinFilters(filtersContext.filters)
     );
 
@@ -72,9 +75,11 @@ export default function SnippetPage({ forPrivate }: { forPrivate: boolean }) {
 
     Custom.log("snippets !");
     setSnippets(snippets);
+    setPageLoading(false);
   };
 
   useEffect(() => {
+    setPageLoading(true);
     Custom.log("Filters", filtersContext.filters);
     getSnippets(currentPage);
   }, [pages, currentPage, filtersContext.filters]);
@@ -124,65 +129,69 @@ export default function SnippetPage({ forPrivate }: { forPrivate: boolean }) {
     setCurrentPage(page);
   };
 
-  return (
+  return pageLoading ? (
+    <Spinner className="size-24" />
+  ) : (
     <>
       <div className="flex flex-col items-center gap-5 w-full">
         {snippets.map((snipp, index) => (
           <SnippetContainer editables={forPrivate} key={index} snipp={snipp} />
         ))}
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                href="#"
-                size="default"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (currentPage > 0) handlePageChange(currentPage - 1);
-                }}
-                className={currentPage === 0 ? "pointer-events-none opacity-50" : ""}
-              />
-            </PaginationItem>
+        {pages >= 2 && (
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  href="#"
+                  size="default"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (currentPage > 0) handlePageChange(currentPage - 1);
+                  }}
+                  className={currentPage === 0 ? "pointer-events-none opacity-50" : ""}
+                />
+              </PaginationItem>
 
-            {getPaginationItems().map((pageNum, index) => {
-              if (pageNum < 0) {
+              {getPaginationItems().map((pageNum, index) => {
+                if (pageNum < 0) {
+                  return (
+                    <PaginationItem key={`ellipsis-${index}`}>
+                      <PaginationEllipsis />
+                    </PaginationItem>
+                  );
+                }
+
                 return (
-                  <PaginationItem key={`ellipsis-${index}`}>
-                    <PaginationEllipsis />
+                  <PaginationItem key={pageNum}>
+                    <PaginationLink
+                      href="#"
+                      size="default"
+                      isActive={currentPage === pageNum}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handlePageChange(pageNum);
+                      }}
+                    >
+                      {pageNum + 1}
+                    </PaginationLink>
                   </PaginationItem>
                 );
-              }
+              })}
 
-              return (
-                <PaginationItem key={pageNum}>
-                  <PaginationLink
-                    href="#"
-                    size="default"
-                    isActive={currentPage === pageNum}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handlePageChange(pageNum);
-                    }}
-                  >
-                    {pageNum + 1}
-                  </PaginationLink>
-                </PaginationItem>
-              );
-            })}
-
-            <PaginationItem>
-              <PaginationNext
-                href="#"
-                size="default"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (currentPage < pages - 1) handlePageChange(currentPage + 1);
-                }}
-                className={currentPage === pages - 1 ? "pointer-events-none opacity-50" : ""}
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+              <PaginationItem>
+                <PaginationNext
+                  href="#"
+                  size="default"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (currentPage < pages - 1) handlePageChange(currentPage + 1);
+                  }}
+                  className={currentPage === pages - 1 ? "pointer-events-none opacity-50" : ""}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        )}
       </div>
     </>
   );

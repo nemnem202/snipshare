@@ -3,17 +3,20 @@ import { PrismaClient, Snippet } from "../../generated/prisma";
 import { Custom } from "../lib/tools/logger";
 import { ServerResponse } from "../types/global/response";
 import prisma from "../runtime/prisma";
+import languages from "../config/languages";
+import { Langage } from "../types/global/language";
+import { ExplorerSnippet } from "../types/global/explorerSnippet";
 
 export default class ExplorerController {
   static getAPage = async (
     req: Request,
     res: Response<Snippet[] | ServerResponse>
-  ): Promise<Response<Snippet[] | ServerResponse>> => {
+  ): Promise<Response<ExplorerSnippet[] | ServerResponse>> => {
     try {
       let index = parseInt(req.params.page_index);
       if (isNaN(index) || index < 0) index = 0;
 
-      const language = req.query.lang ? String(req.query.lang) : null;
+      const language = req.query.language ? String(req.query.language) : null;
       const tags = Array.isArray(req.query.tags)
         ? req.query.tags.map(String)
         : req.query.tags
@@ -26,7 +29,11 @@ export default class ExplorerController {
 
       const snippets = await prisma.snippet.findMany({
         where: {
-          ...(language && { languageName: language }),
+          ...(language && {
+            language: {
+              language: language,
+            },
+          }),
           ...(tags.length > 0 && {
             filters: {
               some: {
@@ -39,6 +46,13 @@ export default class ExplorerController {
         skip: index * 10,
         take: 10,
         include: {
+          filters: true,
+          user: {
+            select: {
+              username: true,
+            },
+          },
+          language: true,
           _count: { select: { likes: true } },
         },
       });
@@ -58,7 +72,7 @@ export default class ExplorerController {
     res: Response
   ): Promise<Response<ServerResponse | { number: number }>> => {
     try {
-      const language = req.query.lang ? String(req.query.lang) : null;
+      const language = req.query.language ? String(req.query.language) : null;
       const tags = Array.isArray(req.query.tags)
         ? req.query.tags.map(String)
         : req.query.tags
@@ -67,7 +81,11 @@ export default class ExplorerController {
 
       const snippetsNumber = await prisma.snippet.count({
         where: {
-          ...(language && { languageName: language }),
+          ...(language && {
+            language: {
+              language: language,
+            },
+          }),
           ...(tags.length > 0 && {
             filters: {
               some: {
@@ -83,6 +101,24 @@ export default class ExplorerController {
       return res.json({ number: Math.ceil(snippetsNumber / 10) });
     } catch (err) {
       Custom.log("Error in getPageNumber", err);
+      return res.status(500).json({
+        message: "Internal server error",
+        success: false,
+      });
+    }
+  };
+
+  static getAvailablesLanguages = async (
+    req: Request,
+    res: Response
+  ): Promise<Response<string[] | Langage[]>> => {
+    try {
+      const onlyNames = req.query.onlyNames;
+      return onlyNames === "true"
+        ? res.json(languages.map((l) => l.language))
+        : res.json(languages);
+    } catch (err) {
+      console.error("Error in getAvailablesLanguages:", err);
       return res.status(500).json({
         message: "Internal server error",
         success: false,

@@ -4,11 +4,14 @@ import Router from "./core/router";
 import "./ui/style/global.css";
 import "./ui/style/general.css";
 import SessionProvider from "./provider/session_provider";
+import { CodeLangagesProvider } from "./provider/language_procider";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <SessionProvider>
-      <Router />
+      <CodeLangagesProvider>
+        <Router />
+      </CodeLangagesProvider>
     </SessionProvider>
   </StrictMode>
 );

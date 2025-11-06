@@ -9,11 +9,11 @@ import {
 } from "react";
 import CommentCard from "./comment_card";
 import SnippetCard from "./snippet_card";
-import type { Snippet } from "../../types/general/snippet";
+import type { ExplorerSnippet } from "../../types/general/explorersnippet";
 
 const SnippetContext = createContext<{
-  snippet: Snippet | null;
-  setSnippet: Dispatch<SetStateAction<Snippet | null>>;
+  snippet: ExplorerSnippet | null;
+  setSnippet: Dispatch<SetStateAction<ExplorerSnippet | null>>;
 } | null>(null);
 
 interface SnippetProviderProps {
@@ -21,7 +21,7 @@ interface SnippetProviderProps {
 }
 
 export const SnippetProvider: React.FC<SnippetProviderProps> = ({ children }) => {
-  const [snippet, setSnippet] = useState<Snippet | null>(null);
+  const [snippet, setSnippet] = useState<ExplorerSnippet | null>(null);
   return (
     <SnippetContext.Provider value={{ snippet, setSnippet }}>{children}</SnippetContext.Provider>
   );
@@ -38,7 +38,7 @@ export default function SnippetContainer({
   snipp,
 }: {
   editables: boolean;
-  snipp: Snippet;
+  snipp: ExplorerSnippet;
 }) {
   const [closed, setClosed] = useState(true);
 
@@ -61,7 +61,7 @@ function InnerSnippetContainer({
   setClosed,
 }: {
   editables: boolean;
-  snipp: Snippet;
+  snipp: ExplorerSnippet;
   closed: boolean;
   setClosed: Dispatch<SetStateAction<boolean>>;
 }) {

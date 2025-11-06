@@ -18,7 +18,9 @@ export default function SnippetCard({
   return (
     snippet && (
       <Card className="p-2">
-        <CardHeader className="p-0 text-muted-foreground text-sm">{snippet.user_id}</CardHeader>
+        <CardHeader className="p-0 text-muted-foreground text-sm">
+          _{snippet.user.username}
+        </CardHeader>
         <CardContent>
           <Card className="w-[500px] border-none shadow-none">
             <CardHeader>
