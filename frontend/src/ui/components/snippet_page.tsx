@@ -12,14 +12,29 @@ import SnippetContainer from "./snippet_container";
 import type { Snippet } from "../../types/general/snippet";
 import Fetcher from "../../lib/fetcher";
 import { Custom } from "../../lib/logger";
+import type { Filters } from "../../types/general/explorerFilters";
 
-export default function SnippetPage({ editables }: { editables: boolean }) {
+export default function SnippetPage({
+  forPrivate,
+  filters,
+}: {
+  forPrivate: boolean;
+  filters: Filters;
+}) {
   const [snippets, setSnippets] = useState<Snippet[]>([]);
   const [pages, setPages] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(0);
 
+  const getBaseRoute = (priv: boolean): string => {
+    if (priv) return "/dashboard/";
+    return "/explorer/";
+  };
+
   const getPages = async () => {
-    const response = await Fetcher.get<{ number: number }>("/explorer/pages_number");
+    Custom.log("get pages...", getBaseRoute(forPrivate) + "pages_number");
+    const response = await Fetcher.get<{ number: number }>(
+      getBaseRoute(forPrivate) + "pages_number"
+    );
     if ("success" in response) return;
     const pages: number = response?.number ?? 0;
     Custom.log("Set pages ...", pages);
@@ -30,9 +45,17 @@ export default function SnippetPage({ editables }: { editables: boolean }) {
     getPages();
   }, []);
 
+  const joinFilters = (filtersToJoin: Filters): string => {
+    if (!filters || (!filtersToJoin.language && !filtersToJoin.tags)) return "";
+    Custom.log("Filters", filtersToJoin);
+    return "?language=" + filtersToJoin?.language + filtersToJoin.tags?.map((t) => "&tag=" + t);
+  };
+
   const getSnippets = async (page: number) => {
-    Custom.log("Get Snippets ...", "");
-    const snippets = await Fetcher.get<Snippet[]>("/explorer/" + page);
+    Custom.log("Get Snippets ...", getBaseRoute(forPrivate) + page + joinFilters(filters));
+    const snippets = await Fetcher.get<Snippet[]>(
+      getBaseRoute(forPrivate) + page + joinFilters(filters)
+    );
 
     if ("success" in snippets) return;
 
@@ -44,51 +67,41 @@ export default function SnippetPage({ editables }: { editables: boolean }) {
     getSnippets(currentPage);
   }, [pages, currentPage]);
 
-  // Fonction pour générer les numéros de pages à afficher
   const getPaginationItems = () => {
     const items = [];
-    const maxVisible = 5; // Nombre de pages visibles autour de la page courante
-    const showEllipsisThreshold = 7; // Si moins de pages, on affiche tout
+    const maxVisible = 5;
+    const showEllipsisThreshold = 7;
 
     if (pages <= showEllipsisThreshold) {
-      // Si peu de pages, on affiche tout
       for (let i = 0; i < pages; i++) {
         items.push(i);
       }
     } else {
-      // Toujours afficher la première page
       items.push(0);
 
-      // Calculer la plage autour de la page courante
       let start = Math.max(1, currentPage - 1);
       let end = Math.min(pages - 2, currentPage + 1);
 
-      // Ajuster si on est proche du début
       if (currentPage < 3) {
         end = 3;
       }
 
-      // Ajuster si on est proche de la fin
       if (currentPage > pages - 4) {
         start = pages - 4;
       }
 
-      // Ellipsis au début
       if (start > 1) {
-        items.push(-1); // -1 représente une ellipsis
+        items.push(-1);
       }
 
-      // Pages du milieu
       for (let i = start; i <= end; i++) {
         items.push(i);
       }
 
-      // Ellipsis à la fin
       if (end < pages - 2) {
-        items.push(-2); // -2 représente une autre ellipsis
+        items.push(-2);
       }
 
-      // Toujours afficher la dernière page
       items.push(pages - 1);
     }
 
@@ -103,7 +116,7 @@ export default function SnippetPage({ editables }: { editables: boolean }) {
     <>
       <div className="flex flex-col items-center gap-5 w-full">
         {snippets.map((snipp, index) => (
-          <SnippetContainer editables={editables} key={index} snipp={snipp} />
+          <SnippetContainer editables={forPrivate} key={index} snipp={snipp} />
         ))}
         <Pagination>
           <PaginationContent>

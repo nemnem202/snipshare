@@ -40,8 +40,10 @@ export default function LanguageSelect() {
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            {languages.map((l) => (
-              <SelectItem value={l}>{l}</SelectItem>
+            {languages.map((l, index) => (
+              <SelectItem value={l} key={index}>
+                {l}
+              </SelectItem>
             ))}
           </SelectGroup>
         </SelectContent>

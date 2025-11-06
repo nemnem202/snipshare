@@ -28,7 +28,7 @@ export default function Explorer() {
       </div>
       <SortSelectGroup />
       <div className="flex gap-5 w-full h-[50px]"></div>
-      <SnippetPage editables={false} />
+      <SnippetPage forPrivate={false} filters={{}} />
     </div>
   );
 }
