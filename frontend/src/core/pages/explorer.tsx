@@ -1,10 +1,10 @@
 import { useContext, useEffect, useState } from "react";
 import Headline from "../../ui/components/items/headline";
 import Searchbar from "../../ui/components/explorer/searchbar";
-import SnippetPage from "../../ui/components/snippet_page";
-import SortSelectGroup from "../../ui/components/sort_select_group";
 import Tag from "../../ui/components/items/tag";
 import FiltersProvider, { FilterContext } from "../../provider/filters_provider";
+import SortSelectGroup from "../../ui/components/nav/sort_select_group";
+import SnippetPage from "../../ui/components/snippet/snippet_page";
 
 function SearchBarContainer() {
   const filtersContext = useContext(FilterContext);

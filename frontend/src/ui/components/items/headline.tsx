@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import "../style/components/headline.css";
+import "../../style/components/headline.css";
 
 export default function Headline({ content }: { content: string | ReactNode }) {
   return (

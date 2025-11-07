@@ -11,39 +11,23 @@ import { FaLink } from "react-icons/fa";
 import { FaSave } from "react-icons/fa";
 import EditableTextArea from "../items/editable_textarea";
 import type { SnippetForm } from "../../../types/general/snippetForm";
-import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "../../assets/accordion";
+import { useContext, useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import useGetSession from "../../../hooks/get_session";
-import Editor from "react-simple-code-editor";
-import { Button } from "../../assets/button";
-import { Spinner } from "../../assets/spinner";
+import { SnippetFormContext } from "./snippet_card_modal";
+import SnippetFormAccordion from "./snippet_form_accordion";
 
 export default function SnippetFormCard({
   setClosed,
-  snippet,
-  setSnippet,
 }: {
   setClosed: React.Dispatch<React.SetStateAction<boolean>>;
-  editable?: boolean;
-  snippet: SnippetForm;
-  setSnippet: Dispatch<SetStateAction<SnippetForm>>;
 }) {
+  const snippetFormContext = useContext(SnippetFormContext);
   const session = useGetSession();
-  const [code, setCode] = useState("");
-  const lines = code.split("\n");
+  if (!snippetFormContext || !session) return;
 
-  if (!session) return;
-
-  useEffect(() => {
-    setCode(snippet.code);
-  }, [snippet]);
+  const { snippetForm, setSnippetForm } = snippetFormContext;
   return (
-    snippet && (
+    snippetForm && (
       <Card className="p-2">
         <CardHeader className="p-0 text-muted-foreground text-sm">_{session}</CardHeader>
         <CardContent>
@@ -52,10 +36,10 @@ export default function SnippetFormCard({
               <div className="flex justify-between items-top w-full gap-5">
                 <div className="w-full">
                   <CardTitle className="w-full">
-                    <EditableTextArea defaultValue={snippet.title} />
+                    <EditableTextArea defaultValue={snippetForm.title} />
                   </CardTitle>
                   <CardDescription className="w-full">
-                    <EditableTextArea defaultValue={snippet.description ?? ""} />
+                    <EditableTextArea defaultValue={snippetForm.description ?? "Description"} />
                   </CardDescription>
                 </div>
 
@@ -66,11 +50,13 @@ export default function SnippetFormCard({
                 </div>
               </div>
             </CardHeader>
-            <CardContent></CardContent>
+            <CardContent>
+              <SnippetFormAccordion setClosed={() => {}} />
+            </CardContent>
           </Card>
         </CardContent>
         <CardFooter className="p-1 gap-3">
-          {snippet.filters.map((f) => (
+          {snippetForm.filters.map((f) => (
             <div className="text-sm bold italic opacity-70 cursor-pointer hover:opacity-100 animate">
               #{f}
             </div>

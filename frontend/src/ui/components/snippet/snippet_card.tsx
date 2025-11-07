@@ -17,10 +17,8 @@ import { useSnippet } from "./snippet_container";
 
 export default function SnippetCard({
   setClosed,
-  editable = true,
 }: {
   setClosed: React.Dispatch<React.SetStateAction<boolean>>;
-  editable?: boolean;
 }) {
   const { snippet, setSnippet } = useSnippet();
   const filtersContext = useContext(FilterContext);
@@ -38,24 +36,9 @@ export default function SnippetCard({
             <CardHeader>
               <div className="flex justify-between items-top w-full gap-5">
                 <div className="w-full">
-                  <CardTitle className="w-full">
-                    {editable ? <EditableTextArea defaultValue={snippet.title} /> : snippet.title}
-                  </CardTitle>
-                  <CardDescription className="w-full">
-                    {editable ? (
-                      <EditableTextArea defaultValue={snippet.description ?? ""} />
-                    ) : (
-                      snippet.description ?? ""
-                    )}
-                  </CardDescription>
+                  <CardTitle className="w-full">{snippet.title}</CardTitle>
+                  <CardDescription className="w-full">{snippet.description}</CardDescription>
                 </div>
-                {editable && (
-                  <div className="flex gap-2">
-                    <FaEye className="text-muted-foreground hover:text-secondary transition-colors cursor-pointer" />
-                    <FaLink className="text-muted-foreground hover:text-secondary transition-colors cursor-pointer" />
-                    <FaSave className="text-muted-foreground hover:text-secondary transition-colors cursor-pointer" />
-                  </div>
-                )}
               </div>
             </CardHeader>
             <CardContent>

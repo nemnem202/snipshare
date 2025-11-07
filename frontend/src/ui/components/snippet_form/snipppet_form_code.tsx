@@ -1,11 +1,12 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Editor from "react-simple-code-editor";
 import Prism from "prismjs";
 import "prismjs/components/prism-typescript";
 import "prismjs/themes/prism-tomorrow.css";
-import "../style/components/snippet_code.css";
+import "../../style/components/snippet_code.css";
 import { Button } from "../../assets/button";
 import { Spinner } from "../../assets/spinner";
+import { SnippetFormContext } from "./snippet_card_modal";
 
 export default function SnippetFormCode({
   run,
@@ -17,12 +18,16 @@ export default function SnippetFormCode({
   const [code, setCode] = useState("");
   const lines = code.split("\n");
 
-  const { snippet, setSnippet } = useSnippet();
+  const snippetFormContext = useContext(SnippetFormContext);
 
-  useEffect(() => {
-    if (!snippet) return;
-    setCode(snippet.code);
-  }, [snippet]);
+  // useEffect(() => {
+  //   if (!snippetFormContext) return;
+  //   setCode(snippet.code);
+  // }, [snippetFormContext?.snippetForm]);
+
+  if (!snippetFormContext) return;
+
+  const { snippetForm, setSnippetForm } = snippetFormContext;
 
   return (
     <>

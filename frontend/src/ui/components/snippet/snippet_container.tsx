@@ -36,13 +36,7 @@ export const useSnippet = () => {
   return context;
 };
 
-export default function SnippetContainer({
-  editables,
-  snipp,
-}: {
-  editables: boolean;
-  snipp: ExplorerSnippet;
-}) {
+export default function SnippetContainer({ snipp }: { snipp: ExplorerSnippet }) {
   const [closed, setClosed] = useState(true);
   const [snippetComments, setSnippetComments] = useState<ExplorerComment[]>([]);
 
@@ -64,7 +58,6 @@ export default function SnippetContainer({
     <SnippetProvider>
       <InnerSnippetContainer
         snipp={snipp}
-        editables={editables}
         closed={closed}
         setClosed={setClosed}
         comments={snippetComments}
@@ -75,14 +68,12 @@ export default function SnippetContainer({
 }
 
 function InnerSnippetContainer({
-  editables,
   snipp,
   closed,
   setClosed,
   comments,
   setComments,
 }: {
-  editables: boolean;
   snipp: ExplorerSnippet;
   closed: boolean;
   setClosed: Dispatch<SetStateAction<boolean>>;
@@ -97,7 +88,7 @@ function InnerSnippetContainer({
 
   return (
     <div className="flex gap-3">
-      <SnippetCard setClosed={setClosed} editable={editables} />
+      <SnippetCard setClosed={setClosed} />
       <CommentCard closed={closed} comments={comments} setComments={setComments} />
     </div>
   );

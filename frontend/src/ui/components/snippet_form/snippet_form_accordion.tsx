@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type Dispatch, type SetStateAction } from "react";
+import { useContext, useEffect, useRef, useState, type Dispatch, type SetStateAction } from "react";
 import type { PistonRequest, PistonResponse } from "../../../types/general/piston";
 import {
   Accordion,
@@ -14,6 +14,7 @@ import { boolean } from "zod";
 import SnippetFormCode from "./snipppet_form_code";
 import { useSnippet } from "../snippet/snippet_container";
 import SnippetConsole from "../snippet/snippet_console";
+import { SnippetFormContext } from "./snippet_card_modal";
 
 export default function SnippetFormAccordion({
   setClosed,
@@ -41,6 +42,13 @@ export default function SnippetFormAccordion({
   });
   const [openLogin, setOpenLogin] = useState<boolean>(false);
   const session = useGetSession();
+  const accordionRef = useRef<HTMLDivElement>(null);
+  const [openItemsState, setOpenItems] = useState<string[]>([]);
+  const snippetFormContext = useContext(SnippetFormContext);
+
+  if (!snippetFormContext || !session) return;
+
+  const { snippetForm, setSnippetForm } = snippetFormContext;
 
   const smoothScrollTo = (targetY: number, duration = 300) => {
     const startY = window.scrollY;
@@ -59,9 +67,6 @@ export default function SnippetFormAccordion({
   };
   const easeInOutQuad = (t: number) => (t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t);
 
-  const accordionRef = useRef<HTMLDivElement>(null);
-  const [openItemsState, setOpenItems] = useState<string[]>([]);
-  const { snippet, setSnippet } = useSnippet();
   const handleValueChange = (openItems: string[]) => {
     setClosed(openItems.length === 0);
 
@@ -108,7 +113,7 @@ export default function SnippetFormAccordion({
   };
 
   return (
-    snippet && (
+    snippetForm && (
       <>
         <Accordion
           type="multiple"
@@ -119,7 +124,7 @@ export default function SnippetFormAccordion({
         >
           <AccordionItem value="item-1">
             <AccordionTrigger>
-              <div>{snippet.language.language}</div>
+              <div>{snippetForm.language.languageName}</div>
             </AccordionTrigger>
             <AccordionContent className="flex flex-col gap-4 text-balance">
               <SnippetFormCode run={run} runLoading={runLoading} />

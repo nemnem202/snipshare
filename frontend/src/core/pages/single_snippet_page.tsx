@@ -1,4 +1,4 @@
-import SnippetCard from "../../ui/components/snippet_card";
+import SnippetCard from "../../ui/components/snippet/snippet_card";
 
 export default function SingleSnippetPage() {
   return (

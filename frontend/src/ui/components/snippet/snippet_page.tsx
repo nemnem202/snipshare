@@ -143,7 +143,7 @@ export default function SnippetPage({ forPrivate }: { forPrivate: boolean }) {
     <>
       <div className="flex flex-col items-center gap-5 w-full">
         {snippets.map((snipp, index) => (
-          <SnippetContainer editables={forPrivate} key={index} snipp={snipp} />
+          <SnippetContainer key={index} snipp={snipp} />
         ))}
         {pages >= 2 && (
           <Pagination>

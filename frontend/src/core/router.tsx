@@ -3,13 +3,13 @@ import Account from "./pages/account";
 import Explorer from "./pages/explorer";
 import NotFound from "./pages/not_found";
 import Private from "./pages/private";
-import Header from "../ui/components/header";
 import LoginPage from "./pages/login_page";
 import RegisterPage from "./pages/register_page";
 import SingleSnippetPage from "./pages/single_snippet_page";
 import { Toaster } from "../ui/assets/sonner";
 import { useEffect } from "react";
 import useGetSession from "../hooks/get_session";
+import Header from "../ui/components/nav/header";
 
 export default function Router() {
   useGetSession();

@@ -1,6 +1,6 @@
 import Logo from "../items/logo";
 import NavLinks from "./navlinks";
-import "../style/components/header.css";
+import "../../style/components/header.css";
 
 export default function Header() {
   return (
