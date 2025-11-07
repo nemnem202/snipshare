@@ -15,6 +15,8 @@ import SnippetFormCode from "./snipppet_form_code";
 import { useSnippet } from "../snippet/snippet_container";
 import SnippetConsole from "../snippet/snippet_console";
 import { SnippetFormContext } from "./snippet_card_modal";
+import { Button } from "../../assets/button";
+import SnippetFormLangSelect from "./snippet_form__language_select";
 
 export default function SnippetFormAccordion({
   setClosed,
@@ -88,12 +90,13 @@ export default function SnippetFormAccordion({
     if (!session) {
       return setOpenLogin(true);
     }
+    if (!snippetForm) return;
 
     setRunLoading(true);
     const body = {
       content: content,
-      language: "typescript",
-      version: "5.0.3",
+      language: snippetForm.language.language,
+      version: snippetForm.language.version,
     };
 
     const res = await Fetcher.post<PistonResponse>(body, "/code");
@@ -124,7 +127,7 @@ export default function SnippetFormAccordion({
         >
           <AccordionItem value="item-1">
             <AccordionTrigger>
-              <div>{snippetForm.language.languageName}</div>
+              <div>{snippetForm.language.language}</div>
             </AccordionTrigger>
             <AccordionContent className="flex flex-col gap-4 text-balance">
               <SnippetFormCode run={run} runLoading={runLoading} />

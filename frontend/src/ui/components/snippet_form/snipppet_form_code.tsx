@@ -7,6 +7,7 @@ import "../../style/components/snippet_code.css";
 import { Button } from "../../assets/button";
 import { Spinner } from "../../assets/spinner";
 import { SnippetFormContext } from "./snippet_card_modal";
+import SnippetFormLangSelect from "./snippet_form__language_select";
 
 export default function SnippetFormCode({
   run,
@@ -56,7 +57,8 @@ export default function SnippetFormCode({
           }}
         />
       </div>
-      <div className="flex justify-end w-full">
+      <div className="flex justify-between w-full">
+        <SnippetFormLangSelect />
         <Button onClick={() => run(code)}>{runLoading ? <Spinner /> : "RUN"}</Button>
       </div>
     </>

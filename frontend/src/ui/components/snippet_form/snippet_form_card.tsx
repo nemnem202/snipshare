@@ -38,7 +38,7 @@ export default function SnippetFormCard({
                   <CardTitle className="w-full">
                     <EditableTextArea
                       defaultValue={snippetForm.title}
-                      width={100}
+                      width={80}
                       onValueChange={(value) =>
                         setSnippetForm((prev) => ({ ...prev, title: value }))
                       }
@@ -47,7 +47,7 @@ export default function SnippetFormCard({
                   <div className="h-2"></div>
                   <CardDescription className="w-full">
                     <EditableTextArea
-                      width={100}
+                      width={80}
                       defaultValue={snippetForm.description ?? "Description"}
                       onValueChange={(value) =>
                         setSnippetForm((prev) => ({ ...prev, description: value }))
@@ -82,17 +82,22 @@ export default function SnippetFormCard({
           </Card>
         </CardContent>
         <CardFooter className="p-1 gap-3">
-          <div className="text-sm bold italic opacity-70 cursor-pointer hover:opacity-100 animate">
-            <EditableTextArea
-              width={120}
-              defaultValue={snippetForm.filters.map((f) => `${f}`).join(" ")}
-              onValueChange={(value) =>
-                setSnippetForm((prev) => ({
-                  ...prev,
-                  filters: value.split(" ").map((e) => (e.startsWith("#") ? e.slice(1) : e)),
-                }))
-              }
-            ></EditableTextArea>
+          <div className="flex flex-col w-full gap-3">
+            <div className="text-sm bold italic opacity-70 cursor-pointer hover:opacity-100 animate">
+              <EditableTextArea
+                width={120}
+                defaultValue={snippetForm.filters.map((f) => `${f}`).join(" ")}
+                onValueChange={(value) =>
+                  setSnippetForm((prev) => ({
+                    ...prev,
+                    filters: value.split(" ").map((e) => (e.startsWith("#") ? e.slice(1) : e)),
+                  }))
+                }
+              ></EditableTextArea>
+            </div>
+            <div className="w-full flex justify-end">
+              <Button>Save</Button>
+            </div>
           </div>
         </CardFooter>
       </Card>

@@ -25,8 +25,10 @@ export function SnippetProvider({ children }: { children: React.ReactNode }) {
     description: "Snippet description",
     filters: ["easy", "beguinner", "advanced"],
     language: {
-      languageName: "javascript",
+      language: "javascript",
       version: "1.32.3",
+      aliases: ["deno-js"],
+      runtime: "deno",
     },
   });
 
