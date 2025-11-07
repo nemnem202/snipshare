@@ -10,6 +10,7 @@ import type { SnippetForm } from "../../../types/general/snippetForm";
 import { Dialog, DialogContent, DialogTitle } from "../../assets/dialog";
 import SnippetFormCard from "./snippet_form_card";
 import { Custom } from "../../../lib/logger";
+import { defaultSnippetForm } from "../../../config/defaultSnippetForm";
 
 export const SnippetFormContext = createContext<{
   snippetForm: SnippetForm | null;
@@ -17,20 +18,7 @@ export const SnippetFormContext = createContext<{
 } | null>(null);
 
 export function SnippetProvider({ children }: { children: React.ReactNode }) {
-  const [snippetForm, setSnippetForm] = useState<SnippetForm>({
-    visibility: false,
-    private_url: false,
-    code: "console.log('Hello world !')",
-    title: "New snippet",
-    description: "Snippet description",
-    filters: ["easy", "beguinner", "advanced"],
-    language: {
-      language: "javascript",
-      version: "1.32.3",
-      aliases: ["deno-js"],
-      runtime: "deno",
-    },
-  });
+  const [snippetForm, setSnippetForm] = useState<SnippetForm>(defaultSnippetForm);
 
   useEffect(() => {
     Custom.log("Snippet Form update", snippetForm);

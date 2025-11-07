@@ -16,16 +16,32 @@ import useGetSession from "../../../hooks/get_session";
 import { SnippetFormContext } from "./snippet_card_modal";
 import SnippetFormAccordion from "./snippet_form_accordion";
 import { Button } from "../../assets/button";
+import Fetcher from "../../../lib/fetcher";
+import type { ServerResponse } from "../../../types/general/response";
+import { defaultSnippetForm } from "../../../config/defaultSnippetForm";
 
 export default function SnippetFormCard({
   setClosed,
 }: {
   setClosed: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
+  const [formSubmitLoading, setFormLoading] = useState(false);
   const snippetFormContext = useContext(SnippetFormContext);
   const session = useGetSession();
   if (!snippetFormContext || !session) return;
   const { snippetForm, setSnippetForm } = snippetFormContext;
+
+  const submitForm = async () => {
+    if (formSubmitLoading || !snippetForm) return;
+    setFormLoading(true);
+
+    const posted = await Fetcher.post<ServerResponse>(snippetForm, "/snippet/new");
+
+    if (posted.success) {
+      setSnippetForm(defaultSnippetForm);
+      window.location.reload();
+    }
+  };
   return (
     snippetForm && (
       <Card className="p-2">
@@ -96,7 +112,7 @@ export default function SnippetFormCard({
               ></EditableTextArea>
             </div>
             <div className="w-full flex justify-end">
-              <Button>Save</Button>
+              <Button onClick={submitForm}>Save</Button>
             </div>
           </div>
         </CardFooter>
