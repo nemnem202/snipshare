@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import useGetSession from "../../hooks/get_session";
-import AccountTabs from "../../ui/components/account_tabs";
-import EditableTextArea from "../../ui/components/editable_textarea";
-import Headline from "../../ui/components/headline";
+import AccountTabs from "../../ui/components/account/account_tabs";
+import EditableTextArea from "../../ui/components/items/editable_textarea";
+import Headline from "../../ui/components/items/headline";
 import { useNavigate } from "react-router-dom";
 import { Spinner } from "../../ui/assets/spinner";
 import FiltersProvider, { FilterContext } from "../../provider/filters_provider";

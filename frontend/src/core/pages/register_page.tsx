@@ -1,6 +1,6 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
-import Headline from "../../ui/components/headline";
-import RegisterForm from "../../ui/components/register_form";
+import Headline from "../../ui/components/items/headline";
+import RegisterForm from "../../ui/components/auth/register_form";
 
 export default function RegisterPage() {
   const nav = useNavigate();

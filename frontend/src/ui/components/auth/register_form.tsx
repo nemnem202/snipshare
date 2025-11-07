@@ -1,17 +1,17 @@
 import { useForm } from "react-hook-form";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../assets/form";
-import { Input } from "../assets/input";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../assets/form";
+import { Input } from "../../assets/input";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { email, z } from "zod";
-import { Button } from "../assets/button";
-import { Card, CardContent } from "../assets/card";
+import { Button } from "../../assets/button";
+import { Card, CardContent } from "../../assets/card";
 import { NavLink } from "react-router-dom";
-import Fetcher from "../../lib/fetcher";
-import type { ServerResponse } from "../../types/general/response";
+import Fetcher from "../../../lib/fetcher";
+import type { ServerResponse } from "../../../types/general/response";
 import { useContext } from "react";
-import { SessionContext } from "../../provider/session_provider";
-import { Custom } from "../../lib/logger";
+import { SessionContext } from "../../../provider/session_provider";
+import { Custom } from "../../../lib/logger";
 
 const formSchema = z.object({
   username: z.string().min(5, {

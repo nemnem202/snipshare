@@ -1,4 +1,4 @@
-import Logo from "./logo";
+import Logo from "../items/logo";
 import NavLinks from "./navlinks";
 import "../style/components/header.css";
 

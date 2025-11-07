@@ -5,7 +5,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "../assets/dialog";
+} from "../../assets/dialog";
 import LoginForm from "./login_form";
 import { useState } from "react";
 import RegisterForm from "./register_form";

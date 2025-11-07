@@ -4,8 +4,8 @@ import Prism from "prismjs";
 import "prismjs/components/prism-typescript";
 import "prismjs/themes/prism-tomorrow.css";
 import "../style/components/snippet_code.css";
-import { Button } from "../assets/button";
-import { Spinner } from "../assets/spinner";
+import { Button } from "../../assets/button";
+import { Spinner } from "../../assets/spinner";
 import { useSnippet } from "./snippet_container";
 
 export default function SnippetCode({

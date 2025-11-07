@@ -1,4 +1,10 @@
 import { useContext, useEffect, useState } from "react";
+import SnippetContainer from "./snippet_container";
+import { FilterContext } from "../../../provider/filters_provider";
+import type { ExplorerSnippet } from "../../../types/general/explorersnippet";
+import { Custom } from "../../../lib/logger";
+import Fetcher from "../../../lib/fetcher";
+import type { Filters } from "../../../types/general/explorerFilters";
 import {
   Pagination,
   PaginationContent,
@@ -7,14 +13,8 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "../../ui/assets/pagination";
-import SnippetContainer from "./snippet_container";
-import Fetcher from "../../lib/fetcher";
-import { Custom } from "../../lib/logger";
-import type { Filters } from "../../types/general/explorerFilters";
-import { FilterContext } from "../../provider/filters_provider";
-import { Spinner } from "../assets/spinner";
-import type { ExplorerSnippet } from "../../types/general/explorersnippet";
+} from "../../assets/pagination";
+import { Spinner } from "../../assets/spinner";
 
 export default function SnippetPage({ forPrivate }: { forPrivate: boolean }) {
   const filtersContext = useContext(FilterContext);

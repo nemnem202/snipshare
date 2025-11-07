@@ -7,12 +7,12 @@ import {
   type ReactNode,
   type SetStateAction,
 } from "react";
-import CommentCard from "./comment_card";
 import SnippetCard from "./snippet_card";
-import type { ExplorerSnippet } from "../../types/general/explorersnippet";
-import { Custom } from "../../lib/logger";
-import Fetcher from "../../lib/fetcher";
-import type { ExplorerComment } from "../../types/general/explorerComment";
+import type { ExplorerSnippet } from "../../../types/general/explorersnippet";
+import type { ExplorerComment } from "../../../types/general/explorerComment";
+import { Custom } from "../../../lib/logger";
+import Fetcher from "../../../lib/fetcher";
+import CommentCard from "./comment_card";
 
 const SnippetContext = createContext<{
   snippet: ExplorerSnippet | null;

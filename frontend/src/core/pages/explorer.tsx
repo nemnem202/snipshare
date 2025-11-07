@@ -1,9 +1,9 @@
 import { useContext, useEffect, useState } from "react";
-import Headline from "../../ui/components/headline";
-import Searchbar from "../../ui/components/searchbar";
+import Headline from "../../ui/components/items/headline";
+import Searchbar from "../../ui/components/explorer/searchbar";
 import SnippetPage from "../../ui/components/snippet_page";
 import SortSelectGroup from "../../ui/components/sort_select_group";
-import Tag from "../../ui/components/tag";
+import Tag from "../../ui/components/items/tag";
 import FiltersProvider, { FilterContext } from "../../provider/filters_provider";
 
 function SearchBarContainer() {

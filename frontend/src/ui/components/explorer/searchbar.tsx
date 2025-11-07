@@ -1,7 +1,7 @@
 import { useContext, useEffect, useRef, useState, type FormEvent } from "react";
-import { Input } from "../assets/input";
+import { Input } from "../../assets/input";
 import Typed from "typed.js";
-import { FilterContext } from "../../provider/filters_provider";
+import { FilterContext } from "../../../provider/filters_provider";
 
 export default function Searchbar() {
   const inputRef = useRef<HTMLInputElement | null>(null);

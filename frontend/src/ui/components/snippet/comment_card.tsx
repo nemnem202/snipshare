@@ -1,16 +1,16 @@
-import { Card, CardContent, CardHeader } from "../assets/card";
+import { Card, CardContent, CardHeader } from "../../assets/card";
 import { FaHeart } from "react-icons/fa";
 import TextareaAutosize from "react-textarea-autosize";
-import { Label } from "../assets/label";
-import { Button } from "../assets/button";
+import { Label } from "../../assets/label";
+import { Button } from "../../assets/button";
 import { useContext, useEffect, useState, type Dispatch, type SetStateAction } from "react";
-import LoginDialog from "./login_dialog";
-import useGetSession from "../../hooks/get_session";
+import LoginDialog from "../auth/login_dialog";
+import useGetSession from "../../../hooks/get_session";
 import { useSnippet } from "./snippet_container";
-import type { ExplorerComment } from "../../types/general/explorerComment";
-import Fetcher from "../../lib/fetcher";
-import type { ServerResponse } from "../../types/general/response";
-import { Custom } from "../../lib/logger";
+import type { ExplorerComment } from "../../../types/general/explorerComment";
+import Fetcher from "../../../lib/fetcher";
+import type { ServerResponse } from "../../../types/general/response";
+import { Custom } from "../../../lib/logger";
 
 export default function CommentCard({
   closed,

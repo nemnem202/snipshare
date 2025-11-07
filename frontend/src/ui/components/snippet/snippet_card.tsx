@@ -5,15 +5,15 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "../assets/card";
+} from "../../assets/card";
 import SnippetAccordion from "./snippet_accordion";
 import { FaEye } from "react-icons/fa";
 import { FaLink } from "react-icons/fa";
 import { FaSave } from "react-icons/fa";
-import EditableTextArea from "./editable_textarea";
-import { useSnippet } from "./snippet_container";
+import EditableTextArea from "../items/editable_textarea";
 import { useContext } from "react";
-import { FilterContext } from "../../provider/filters_provider";
+import { FilterContext } from "../../../provider/filters_provider";
+import { useSnippet } from "./snippet_container";
 
 export default function SnippetCard({
   setClosed,

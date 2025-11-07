@@ -1,16 +1,21 @@
 import { useEffect, useRef, useState, type Dispatch, type SetStateAction } from "react";
-import type { PistonRequest, PistonResponse } from "../../types/general/piston";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../assets/accordion";
-import SnippetCode from "./snippet_code";
-import SnippetConsole from "./snippet_console";
-import Fetcher from "../../lib/fetcher";
-import { Custom } from "../../lib/logger";
-import useGetSession from "../../hooks/get_session";
-import LoginDialog from "./login_dialog";
+import type { PistonRequest, PistonResponse } from "../../../types/general/piston";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "../../assets/accordion";
+import Fetcher from "../../../lib/fetcher";
+import { Custom } from "../../../lib/logger";
+import useGetSession from "../../../hooks/get_session";
+import LoginDialog from "../auth/login_dialog";
 import { boolean } from "zod";
-import { useSnippet } from "./snippet_container";
+import SnippetFormCode from "./snipppet_form_code";
+import { useSnippet } from "../snippet/snippet_container";
+import SnippetConsole from "../snippet/snippet_console";
 
-export default function SnippetAccordion({
+export default function SnippetFormAccordion({
   setClosed,
 }: {
   setClosed: React.Dispatch<React.SetStateAction<boolean>>;
@@ -117,7 +122,7 @@ export default function SnippetAccordion({
               <div>{snippet.language.language}</div>
             </AccordionTrigger>
             <AccordionContent className="flex flex-col gap-4 text-balance">
-              <SnippetCode run={run} runLoading={runLoading} />
+              <SnippetFormCode run={run} runLoading={runLoading} />
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-2">
