@@ -341,9 +341,9 @@ paths:
           "401":
             $ref: "#/components/responses/UnauthorizedError"
 
-  /dashboard/liked/pages_number:
+  /dashboard/pages_number:
     get:
-      summary: Récupère le nombre de pages aimées
+      summary: Récupère le nombre de pages du dashboard selon les paramètres
       tags: [Dashboard]
       responses:
         "200":
@@ -351,19 +351,9 @@ paths:
         "401":
           $ref: "#/components/responses/UnauthorizedError"
 
-  /dashboard/personals/pages_number:
+  /dashboard/{page}:
     get:
-      summary: Récupère le nombre de pages personnelles
-      tags: [Dashboard]
-      responses:
-        "200":
-          description: Succès
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
-
-  /dashboard/liked/{page}:
-    get:
-      summary: Récupère la page aimée spécifiée
+      summary: Récupère la page du dashboard spécifiée selon les paramètres
       tags: [Dashboard]
       parameters:
         - in: path
@@ -372,23 +362,6 @@ paths:
           schema:
             type: string
           description: Numéro ou identifiant de la page aimée
-      responses:
-        "200":
-          description: Succès
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
-
-  /dashboard/personals/{page}:
-    get:
-      summary: Récupère la page personnelle spécifiée
-      tags: [Dashboard]
-      parameters:
-        - in: path
-          name: page
-          required: true
-          schema:
-            type: string
-          description: Numéro ou identifiant de la page personnelle
       responses:
         "200":
           description: Succès

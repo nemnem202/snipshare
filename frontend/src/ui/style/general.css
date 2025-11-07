@@ -8,12 +8,11 @@ body,
   align-items: center;
   width: 100%;
   min-height: 100vh;
-  max-width: 1800px;
-  margin: auto;
-  padding: 10px;
 }
 #root {
   margin-bottom: 2rem;
+  margin: auto;
+  max-width: 1800px;
 }
 
 .npm__react-simple-code-editor__textarea {

@@ -46,8 +46,6 @@ export default class Fetcher {
         return { message: "Invalid JSON response", success: false };
       }
 
-      Custom.log("fetcher", "Received response", data);
-
       if (data && typeof data === "object" && "message" in data && "success" in data) {
         Toaster.toastServer(data as ServerResponse);
         return data as ServerResponse;
@@ -89,8 +87,6 @@ export default class Fetcher {
         !silent && Toaster.toastServer({ message: "Invalid JSON response", success: false });
         return { message: "Invalid JSON response", success: false };
       }
-
-      Custom.log("fetcher", "Received response", data);
 
       if (data && typeof data === "object" && "message" in data && "success" in data) {
         !silent && Toaster.toastServer(data as ServerResponse);

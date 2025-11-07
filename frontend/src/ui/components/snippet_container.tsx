@@ -9,11 +9,14 @@ import {
 } from "react";
 import CommentCard from "./comment_card";
 import SnippetCard from "./snippet_card";
-import type { Snippet } from "../../types/general/snippet";
+import type { ExplorerSnippet } from "../../types/general/explorersnippet";
+import { Custom } from "../../lib/logger";
+import Fetcher from "../../lib/fetcher";
+import type { ExplorerComment } from "../../types/general/explorerComment";
 
 const SnippetContext = createContext<{
-  snippet: Snippet | null;
-  setSnippet: Dispatch<SetStateAction<Snippet | null>>;
+  snippet: ExplorerSnippet | null;
+  setSnippet: Dispatch<SetStateAction<ExplorerSnippet | null>>;
 } | null>(null);
 
 interface SnippetProviderProps {
@@ -21,7 +24,7 @@ interface SnippetProviderProps {
 }
 
 export const SnippetProvider: React.FC<SnippetProviderProps> = ({ children }) => {
-  const [snippet, setSnippet] = useState<Snippet | null>(null);
+  const [snippet, setSnippet] = useState<ExplorerSnippet | null>(null);
   return (
     <SnippetContext.Provider value={{ snippet, setSnippet }}>{children}</SnippetContext.Provider>
   );
@@ -38,9 +41,24 @@ export default function SnippetContainer({
   snipp,
 }: {
   editables: boolean;
-  snipp: Snippet;
+  snipp: ExplorerSnippet;
 }) {
   const [closed, setClosed] = useState(true);
+  const [snippetComments, setSnippetComments] = useState<ExplorerComment[]>([]);
+
+  const getCommentsOnFirstOpen = async () => {
+    Custom.log("Get comment at", "/social/comment/" + snipp.code_snippet);
+    const comment = await Fetcher.get<ExplorerComment[]>("/social/comment/" + snipp.code_snippet);
+
+    if ("success" in comment) return;
+    Custom.log("comments", comment);
+    setSnippetComments(comment);
+  };
+
+  useEffect(() => {
+    if (closed || snippetComments.length > 0) return;
+    getCommentsOnFirstOpen();
+  }, [closed]);
 
   return (
     <SnippetProvider>
@@ -49,6 +67,8 @@ export default function SnippetContainer({
         editables={editables}
         closed={closed}
         setClosed={setClosed}
+        comments={snippetComments}
+        setComments={setSnippetComments}
       />
     </SnippetProvider>
   );
@@ -59,11 +79,15 @@ function InnerSnippetContainer({
   snipp,
   closed,
   setClosed,
+  comments,
+  setComments,
 }: {
   editables: boolean;
-  snipp: Snippet;
+  snipp: ExplorerSnippet;
   closed: boolean;
   setClosed: Dispatch<SetStateAction<boolean>>;
+  comments: ExplorerComment[];
+  setComments: Dispatch<SetStateAction<ExplorerComment[]>>;
 }) {
   const { snippet, setSnippet } = useSnippet();
 
@@ -74,7 +98,7 @@ function InnerSnippetContainer({
   return (
     <div className="flex gap-3">
       <SnippetCard setClosed={setClosed} editable={editables} />
-      <CommentCard closed={closed} />
+      <CommentCard closed={closed} comments={comments} setComments={setComments} />
     </div>
   );
 }

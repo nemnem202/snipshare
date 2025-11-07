@@ -29,8 +29,14 @@ model UserAccount {
   comments        UserCommentSnippet[]
 }
 
+
 model CodeLanguage {
-  name     String   @id
+  id       Int      @id @default(autoincrement())
+  language String
+  version  String
+  aliases  String[]
+  runtime  String?
+
   snippets Snippet[]
 }
 
@@ -50,9 +56,9 @@ model Snippet {
   
   // Relations
   user_id      Int
-  languageName String
+  langageId    Int
   user         UserAccount @relation(fields: [user_id], references: [id])
-  language     CodeLanguage @relation(fields: [languageName], references: [name])
+  language     CodeLanguage @relation(fields: [langageId], references: [id])
 
   likes      UserLikesSnippet[]
   filters    Filtrer[]

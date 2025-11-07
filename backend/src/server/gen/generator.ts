@@ -1,3 +1,4 @@
+import languages from "../config/languages";
 import { Custom } from "../lib/tools/logger";
 import prisma from "../runtime/prisma";
 import { faker } from "@faker-js/faker";
@@ -12,30 +13,8 @@ export default async function populateDb() {
       return;
     }
 
-    // 1. Créer des langages de programmation
-    const languages = [
-      "JavaScript",
-      "TypeScript",
-      "Python",
-      "Java",
-      "C++",
-      "C#",
-      "Go",
-      "Rust",
-      "PHP",
-      "Ruby",
-      "Swift",
-      "Kotlin",
-    ];
-
     Custom.log("Gen", "Creating languages...");
-    for (const lang of languages) {
-      await prisma.codeLanguage.upsert({
-        where: { name: lang },
-        update: {},
-        create: { name: lang },
-      });
-    }
+    await prisma.codeLanguage.createMany({ data: languages });
 
     // 2. Créer des hashtags
     const hashtags = [
@@ -90,6 +69,9 @@ export default async function populateDb() {
       "async function fetchData() {\n  const res = await fetch('/api');\n  return res.json();\n}",
     ];
 
+    const createdLanguages = await prisma.codeLanguage.findMany();
+    const languageIds = createdLanguages.map((lang) => lang.id);
+
     for (let i = 0; i < 300; i++) {
       const snippet = await prisma.snippet.create({
         data: {
@@ -102,7 +84,7 @@ export default async function populateDb() {
             probability: 0.3,
           }),
           user_id: faker.helpers.arrayElement(userIds),
-          languageName: faker.helpers.arrayElement(languages),
+          langageId: faker.helpers.arrayElement(languageIds),
         },
       });
       snippetIds.push(snippet.code_snippet);

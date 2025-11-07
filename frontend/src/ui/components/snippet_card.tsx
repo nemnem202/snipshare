@@ -1,10 +1,19 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../assets/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../assets/card";
 import SnippetAccordion from "./snippet_accordion";
 import { FaEye } from "react-icons/fa";
 import { FaLink } from "react-icons/fa";
 import { FaSave } from "react-icons/fa";
 import EditableTextArea from "./editable_textarea";
 import { useSnippet } from "./snippet_container";
+import { useContext } from "react";
+import { FilterContext } from "../../provider/filters_provider";
 
 export default function SnippetCard({
   setClosed,
@@ -14,11 +23,16 @@ export default function SnippetCard({
   editable?: boolean;
 }) {
   const { snippet, setSnippet } = useSnippet();
+  const filtersContext = useContext(FilterContext);
+
+  if (!filtersContext) return;
 
   return (
     snippet && (
       <Card className="p-2">
-        <CardHeader className="p-0 text-muted-foreground text-sm">{snippet.user_id}</CardHeader>
+        <CardHeader className="p-0 text-muted-foreground text-sm">
+          _{snippet.user.username}
+        </CardHeader>
         <CardContent>
           <Card className="w-[500px] border-none shadow-none">
             <CardHeader>
@@ -49,6 +63,18 @@ export default function SnippetCard({
             </CardContent>
           </Card>
         </CardContent>
+        <CardFooter className="p-1 gap-3">
+          {snippet.filters.map((f) => (
+            <div
+              className="text-sm bold italic opacity-70 cursor-pointer hover:opacity-100 animate"
+              onClick={() =>
+                filtersContext.setFilters((prev) => ({ ...prev, tags: [f.hashtagName] }))
+              }
+            >
+              #{f.hashtagName}
+            </div>
+          ))}
+        </CardFooter>
       </Card>
     )
   );

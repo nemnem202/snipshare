@@ -10,25 +10,13 @@ dashboard.put(
 );
 
 dashboard.get(
-  "/liked/pages_number",
+  "/pages_number",
   (req, res, next) => AuthMiddleware.protectUser(req, res, next),
   (req, res) => res.sendStatus(200)
 );
 
 dashboard.get(
-  "/personals/pages_number",
-  (req, res, next) => AuthMiddleware.protectUser(req, res, next),
-  (req, res) => res.sendStatus(200)
-);
-
-dashboard.get(
-  "/liked/:page",
-  (req, res, next) => AuthMiddleware.protectUser(req, res, next),
-  (req, res) => res.sendStatus(200)
-);
-
-dashboard.get(
-  "/personals/:page",
+  "/:page",
   (req, res, next) => AuthMiddleware.protectUser(req, res, next),
   (req, res) => res.sendStatus(200)
 );

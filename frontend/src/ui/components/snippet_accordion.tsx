@@ -58,8 +58,6 @@ export default function SnippetAccordion({
   const [openItemsState, setOpenItems] = useState<string[]>([]);
   const { snippet, setSnippet } = useSnippet();
   const handleValueChange = (openItems: string[]) => {
-    Custom.log("open items", openItems);
-
     setClosed(openItems.length === 0);
 
     if (!accordionRef.current) return;
@@ -104,10 +102,6 @@ export default function SnippetAccordion({
     setRunLoading(false);
   };
 
-  useEffect(() => {
-    Custom.log("openitems", openItemsState);
-  }, [openItemsState]);
-
   return (
     snippet && (
       <>
@@ -119,7 +113,9 @@ export default function SnippetAccordion({
           value={openItemsState}
         >
           <AccordionItem value="item-1">
-            <AccordionTrigger>{snippet.languageName}</AccordionTrigger>
+            <AccordionTrigger>
+              <div>{snippet.language.language}</div>
+            </AccordionTrigger>
             <AccordionContent className="flex flex-col gap-4 text-balance">
               <SnippetCode run={run} runLoading={runLoading} />
             </AccordionContent>
