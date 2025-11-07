@@ -11,14 +11,14 @@ export default function Account() {
   const [sess, setSess] = useState<boolean>(false);
   const nav = useNavigate();
   const session = useGetSession();
+
   useEffect(() => {
     if (session) {
       setSess(true);
-    } else {
-      nav("/login?redirect=/account");
+      setLoading(false);
+    } else if (session === null) {
+      nav("/login");
     }
-
-    setLoading(false);
   }, [session]);
   if (!session) return;
   if (loading) {

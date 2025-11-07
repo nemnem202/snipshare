@@ -13,7 +13,7 @@ export default function useGetSession() {
   const { sessionUsername, setSession } = ctx;
 
   useEffect(() => {
-    if (!sessionUsername) {
+    if (sessionUsername === undefined) {
       (async () => {
         const response = await Fetcher.get<{ sessionUsername: string | null }>(
           "/auth/session",
