@@ -82,14 +82,31 @@ export default function Searchbar() {
     setInputText(input.value);
   };
 
-  useEffect(() => {
-    if (inputText.length === 0 || !inputText.endsWith(" ") || !inputRef.current) return;
+  const addTag = () => {
+    if (!inputRef.current || inputText.length === 0) return;
+
+    const cleanTag = inputText.startsWith("#") ? inputText.slice(1) : inputText;
+
     inputRef.current.value = "";
+
     filtersContext.setFilters((prev) => ({
       ...prev,
-      tags: [...(prev.tags ?? []), inputText.slice(0, inputText.length - 1)],
+      tags: [...(prev.tags ?? []), cleanTag],
     }));
+
+    setInputText("");
+  };
+  useEffect(() => {
+    if (!inputText.endsWith(" ") || !inputRef.current) return;
+    addTag();
   }, [inputText]);
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      addTag();
+    }
+  };
+
   return (
     <Input
       ref={inputRef}
@@ -99,6 +116,7 @@ export default function Searchbar() {
       onFocus={handleFocus}
       onBlur={handleBlur}
       onInput={handleInput}
+      onKeyDown={handleKeyDown}
     />
   );
 }

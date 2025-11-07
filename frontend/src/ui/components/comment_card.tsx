@@ -41,6 +41,7 @@ export default function CommentCard({
   if (!snippet) return null;
 
   const handleLike = async () => {
+    await send();
     if (liked) {
       Custom.log("code snippet", snippet.code_snippet);
       const liked = await Fetcher.get<ServerResponse>("/social/unlike/" + snippet.code_snippet);

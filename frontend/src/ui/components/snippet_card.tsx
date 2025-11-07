@@ -12,6 +12,8 @@ import { FaLink } from "react-icons/fa";
 import { FaSave } from "react-icons/fa";
 import EditableTextArea from "./editable_textarea";
 import { useSnippet } from "./snippet_container";
+import { useContext } from "react";
+import { FilterContext } from "../../provider/filters_provider";
 
 export default function SnippetCard({
   setClosed,
@@ -21,6 +23,9 @@ export default function SnippetCard({
   editable?: boolean;
 }) {
   const { snippet, setSnippet } = useSnippet();
+  const filtersContext = useContext(FilterContext);
+
+  if (!filtersContext) return;
 
   return (
     snippet && (
@@ -60,7 +65,14 @@ export default function SnippetCard({
         </CardContent>
         <CardFooter className="p-1 gap-3">
           {snippet.filters.map((f) => (
-            <div className="text-sm bold italic opacity-70">#{f.hashtagName}</div>
+            <div
+              className="text-sm bold italic opacity-70 cursor-pointer hover:opacity-100 animate"
+              onClick={() =>
+                filtersContext.setFilters((prev) => ({ ...prev, tags: [f.hashtagName] }))
+              }
+            >
+              #{f.hashtagName}
+            </div>
           ))}
         </CardFooter>
       </Card>
