@@ -11,16 +11,16 @@ export default function Searchbar() {
   const filtersContext = useContext(FilterContext);
 
   if (!filtersContext) return;
-  const startTyping = () => {
-    typedRef.current = new Typed(inputRef.current, {
-      strings: ["#Math", "#Learn", "#JS", "#Music"],
-      typeSpeed: 90,
-      backSpeed: 40,
-      loop: true,
-      attr: "placeholder",
-      showCursor: false,
-    });
-  };
+  // const startTyping = () => {
+  //   typedRef.current = new Typed(inputRef.current, {
+  //     strings: ["#Math", "#Learn", "#JS", "#Music"],
+  //     typeSpeed: 90,
+  //     backSpeed: 40,
+  //     loop: true,
+  //     attr: "placeholder",
+  //     showCursor: false,
+  //   });
+  // };
 
   const stopTyping = () => {
     if (typedRef.current) {
@@ -39,13 +39,13 @@ export default function Searchbar() {
     }
   };
 
-  const handleFocus = () => {
-    focusedRef.current = true;
+  // const handleFocus = () => {
+  //   focusedRef.current = true;
 
-    timeoutRef.current = window.setTimeout(() => {
-      if (focusedRef.current) startTyping();
-    }, 120);
-  };
+  //   timeoutRef.current = window.setTimeout(() => {
+  //     if (focusedRef.current) startTyping();
+  //   }, 120);
+  // };
 
   const handleBlur = () => {
     focusedRef.current = false;
@@ -113,7 +113,7 @@ export default function Searchbar() {
       type="text"
       placeholder="search"
       className="animate w-100 rounded-full"
-      onFocus={handleFocus}
+      // onFocus={handleFocus}
       onBlur={handleBlur}
       onInput={handleInput}
       onKeyDown={handleKeyDown}
