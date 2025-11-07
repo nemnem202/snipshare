@@ -7,4 +7,6 @@ export type SnippetForm = {
     languageName: string;
     version: string;
   };
+  visibility: boolean;
+  private_url: boolean;
 };

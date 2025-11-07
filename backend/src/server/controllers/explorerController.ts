@@ -29,6 +29,7 @@ export default class ExplorerController {
 
       const snippets = await prisma.snippet.findMany({
         where: {
+          visibility: true,
           ...(language && {
             language: {
               language: language,
@@ -92,6 +93,7 @@ export default class ExplorerController {
 
       const snippetsNumber = await prisma.snippet.count({
         where: {
+          visibility: true,
           ...(language && {
             language: {
               language: language,

@@ -20,12 +20,13 @@ export default function SnippetFormCode({
 
   const snippetFormContext = useContext(SnippetFormContext);
 
-  // useEffect(() => {
-  //   if (!snippetFormContext) return;
-  //   setCode(snippet.code);
-  // }, [snippetFormContext?.snippetForm]);
+  useEffect(() => {
+    if (!snippetFormContext || !snippetFormContext.snippetForm) return;
+    const { snippetForm } = snippetFormContext;
+    setCode(snippetForm.code);
+  }, []);
 
-  if (!snippetFormContext) return;
+  if (!snippetFormContext || !snippetFormContext.snippetForm) return;
 
   const { snippetForm, setSnippetForm } = snippetFormContext;
 
@@ -39,7 +40,10 @@ export default function SnippetFormCode({
         </div>
         <Editor
           value={code}
-          onValueChange={setCode}
+          onValueChange={(v) => {
+            setCode(v);
+            setSnippetForm((prev) => ({ ...prev, code: v }));
+          }}
           highlight={(code) => Prism.highlight(code, Prism.languages.typescript, "typescript")}
           padding={0}
           className="font-mono "
