@@ -12,10 +12,7 @@ auth.post("/register", (req, res) => AuthController.register(req, res));
 auth.get(
   "/session",
   (req, res, next) => AuthMiddleware.protectUser(req, res, next),
-  (req, res) => {
-    Custom.warn("session", "authorized for user");
-    res.json({ session: true });
-  }
+  (req, res) => AuthController.getSession(req, res)
 );
 
 auth.delete(

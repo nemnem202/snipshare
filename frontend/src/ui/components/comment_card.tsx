@@ -83,7 +83,7 @@ export default function CommentCard({
           <div className="my-4 border" />
           <div className="grid w-full gap-3">
             <Label htmlFor="message" className="font-mono">
-              Username
+              {session ?? "OEOE"}
             </Label>
             <TextareaAutosize
               placeholder="Écrivez votre message ici !"

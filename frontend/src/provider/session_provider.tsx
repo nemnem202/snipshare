@@ -1,14 +1,21 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
+import { Custom } from "../lib/logger";
 
 export const SessionContext = createContext<{
-  session: boolean | undefined;
-  setSession: React.Dispatch<React.SetStateAction<boolean | undefined>>;
+  sessionUsername: string | null;
+  setSession: React.Dispatch<React.SetStateAction<string | null>>;
 } | null>(null);
 
 export default function SessionProvider({ children }: { children: React.ReactNode }) {
-  const [session, setSession] = useState<boolean | undefined>(undefined);
+  const [sessionUsername, setSession] = useState<string | null>(null);
+
+  useEffect(() => {
+    Custom.log("sessionUsename", sessionUsername);
+  }, [sessionUsername]);
 
   return (
-    <SessionContext.Provider value={{ session, setSession }}>{children}</SessionContext.Provider>
+    <SessionContext.Provider value={{ sessionUsername, setSession }}>
+      {children}
+    </SessionContext.Provider>
   );
 }

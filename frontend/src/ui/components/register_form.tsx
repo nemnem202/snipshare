@@ -41,14 +41,17 @@ export default function RegisterForm({
   });
   const ctx = useContext(SessionContext);
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    const res = await Fetcher.post<ServerResponse>(values, "/auth/register");
+    const res = await Fetcher.post<ServerResponse & { sessionUsername: string }>(
+      values,
+      "/auth/register"
+    );
 
     if (!ctx) return Custom.error("SessionProvider error");
 
-    const { session, setSession } = ctx;
+    const { sessionUsername, setSession } = ctx;
 
-    if (res.success) {
-      setSession(true);
+    if (res.success && "sessionUsername" in res) {
+      setSession(res.sessionUsername);
       behaviorOnSuccess();
     }
   };

@@ -56,7 +56,23 @@ export default function Searchbar() {
     if (!inputRef.current || typedRef.current) return;
 
     typedRef.current = new Typed(inputRef.current, {
-      strings: ["Maths", "Learn", "Js", "Music"],
+      strings: [
+        "tutorial",
+        "beginner",
+        "advanced",
+        "algorithm",
+        "data-structures",
+        "web-dev",
+        "mobile",
+        "api",
+        "frontend",
+        "backend",
+        "database",
+        "testing",
+        "security",
+        "performance",
+        "best-practices",
+      ].map((t) => `#${t.charAt(0).toUpperCase()}${t.slice(1)}`),
       typeSpeed: 90,
       backSpeed: 40,
       loop: true,

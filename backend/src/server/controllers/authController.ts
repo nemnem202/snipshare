@@ -10,8 +10,8 @@ import CookieParser from "../lib/middlewares/cookieParser";
 export default class AuthController {
   static register = async (
     req: Request,
-    res: Response<ServerResponse>
-  ): Promise<Response<ServerResponse>> => {
+    res: Response<ServerResponse & { sessionUsername?: string }>
+  ): Promise<Response<ServerResponse & { sessionUsername?: string }>> => {
     try {
       const { username, email, password } = req.body;
 
@@ -57,7 +57,7 @@ export default class AuthController {
 
       CookieParser.addSession(res, user.id);
 
-      return res.json({ message: "Welcome !", success: true });
+      return res.json({ message: "Welcome !", success: true, sessionUsername: user.username });
     } catch (err) {
       if (err instanceof ZodError) {
         const firstMessage = err.issues[0].message;
@@ -70,8 +70,8 @@ export default class AuthController {
 
   static login = async (
     req: Request,
-    res: Response<ServerResponse>
-  ): Promise<Response<ServerResponse>> => {
+    res: Response<ServerResponse & { sessionUsername?: string }>
+  ): Promise<Response<ServerResponse & { sessionUsername?: string }>> => {
     try {
       const { email, password } = req.body;
 
@@ -106,13 +106,33 @@ export default class AuthController {
 
       CookieParser.addSession(res, user.id);
 
-      return res.json({ message: "Welcome !", success: true });
+      return res.json({ message: "Welcome !", success: true, sessionUsername: user.username });
     } catch (err) {
       Custom.error("Login route", err);
       return res.json({
         message: "An internal error occurred, please try again !",
         success: false,
       });
+    }
+  };
+
+  static getSession = async (
+    req: Request,
+    res: Response<ServerResponse & { sessionUsername?: string }>
+  ): Promise<Response<ServerResponse & { sessionUsername?: string }>> => {
+    try {
+      if (!req.userId || isNaN(req.userId)) throw new Error();
+
+      const user = await prisma.userAccount.findFirst({ where: { id: req.userId } });
+
+      if (!user) {
+        throw new Error();
+      }
+
+      return res.json({ message: "Welcome !", success: true, sessionUsername: user.username });
+    } catch (err) {
+      Custom.error("getSession", err);
+      return res.json({ message: "An internal error occured, please try again !", success: false });
     }
   };
 }

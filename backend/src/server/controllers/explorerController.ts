@@ -37,7 +37,7 @@ export default class ExplorerController {
           ...(tags.length > 0 && {
             filters: {
               some: {
-                hashtagName: { in: tags },
+                hashtagName: { in: tags.map((t) => t.toLowerCase()) },
               },
             },
           }),
