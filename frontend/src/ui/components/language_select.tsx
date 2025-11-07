@@ -70,7 +70,9 @@ export default function LanguageSelect() {
                       setValue(null);
                       setOpen(false);
                     }}
-                  ></CommandItem>
+                  >
+                    All
+                  </CommandItem>
                   {languages.map((l, index) => (
                     <CommandItem
                       key={index}

@@ -3,11 +3,14 @@ import { FaHeart } from "react-icons/fa";
 import TextareaAutosize from "react-textarea-autosize";
 import { Label } from "../assets/label";
 import { Button } from "../assets/button";
-import { useContext, useState, type Dispatch, type SetStateAction } from "react";
+import { useContext, useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import LoginDialog from "./login_dialog";
 import useGetSession from "../../hooks/get_session";
 import { useSnippet } from "./snippet_container";
 import type { ExplorerComment } from "../../types/general/explorerComment";
+import Fetcher from "../../lib/fetcher";
+import type { ServerResponse } from "../../types/general/response";
+import { Custom } from "../../lib/logger";
 
 export default function CommentCard({
   closed,
@@ -20,13 +23,38 @@ export default function CommentCard({
 }) {
   const [open, setOpenLogin] = useState(false);
   const { snippet } = useSnippet();
+  const [liked, setLiked] = useState(false);
 
   const session = useGetSession();
 
-  if (!snippet) return null;
   const send = async () => {
     if (!session) {
       setOpenLogin(true);
+    }
+  };
+
+  useEffect(() => {
+    if (!snippet) return;
+    setLiked(snippet.likes);
+  }, [snippet]);
+
+  if (!snippet) return null;
+
+  const handleLike = async () => {
+    if (liked) {
+      Custom.log("code snippet", snippet.code_snippet);
+      const liked = await Fetcher.get<ServerResponse>("/social/unlike/" + snippet.code_snippet);
+
+      if (liked.success === true) {
+        setLiked(false);
+      }
+    } else {
+      Custom.log("code snippet", snippet.code_snippet);
+      const liked = await Fetcher.get<ServerResponse>("/social/like/" + snippet.code_snippet);
+
+      if (liked.success === true) {
+        setLiked(true);
+      }
     }
   };
   return (
@@ -41,7 +69,10 @@ export default function CommentCard({
           <CardHeader className="p-3 ">
             <FaHeart
               size={24}
-              className="cursor-pointer animate text-[var(--primary)] hover:text-[var(--secondary)]"
+              onClick={() => handleLike()}
+              className={`${
+                liked ? "text-[var(--primary)]" : "text-[var(--secondary)] opacity-50"
+              } cursor-pointer animate hover:text-[var(--primary)] `}
             />
           </CardHeader>
           <div className="opacity-50">{snippet._count.likes}</div>

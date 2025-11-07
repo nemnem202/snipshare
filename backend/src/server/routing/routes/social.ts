@@ -15,13 +15,13 @@ social.get("/comment/:snippet_id", (req, res) => SocialController.getCommentsFor
 social.get(
   "/like/:snippet_id",
   (req, res, next) => AuthMiddleware.protectUser(req, res, next),
-  (req, res) => res.sendStatus(200)
+  (req, res) => SocialController.likeSnippet(req, res)
 );
 
 social.get(
   "/unlike/:snippet_id",
   (req, res, next) => AuthMiddleware.protectUser(req, res, next),
-  (req, res) => res.sendStatus(200)
+  (req, res) => SocialController.unlikeSnippet(req, res)
 );
 
 export default social;

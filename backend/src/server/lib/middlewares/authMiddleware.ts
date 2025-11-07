@@ -21,4 +21,12 @@ export default class AuthMiddleware {
       redirect: "/login",
     });
   };
+
+  static getUserId = async (req: Request, res: Response<ServerResponse>, next: NextFunction) => {
+    const session = await CookieParser.getSession(req);
+    if (session) {
+      req.userId = session;
+    }
+    return next();
+  };
 }

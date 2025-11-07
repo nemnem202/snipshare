@@ -46,6 +46,7 @@ export default class ExplorerController {
         skip: index * 10,
         take: 10,
         include: {
+          likes: { select: { userId: true } },
           filters: true,
           user: {
             select: {
@@ -57,7 +58,17 @@ export default class ExplorerController {
         },
       });
 
-      return res.status(200).json(snippets);
+      const snippetsWithLikeFlag = snippets.map((snippet) => ({
+        ...snippet,
+        likes: snippet.likes.some((like) => like.userId === req.userId),
+      }));
+
+      // Custom.log(
+      //   "nombre de snippets likés par l'utilisateur",
+      //   snippetsWithLikeFlag.filter((s) => s.likes).length
+      // );
+
+      return res.status(200).json(snippetsWithLikeFlag);
     } catch (err) {
       console.error("Error in getAPage:", err);
       return res.status(500).json({

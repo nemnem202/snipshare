@@ -1,4 +1,5 @@
 export type ExplorerSnippet = {
+  likes: boolean;
   language: {
     language: string;
     id: number;
@@ -16,7 +17,6 @@ export type ExplorerSnippet = {
   _count: {
     likes: number;
   };
-} & {
   code_snippet: number;
   private_url: string | null;
   title: string;

@@ -27,4 +27,87 @@ export default class SocialController {
       return res.json({ message: "Internal server error", success: false });
     }
   };
+  static likeSnippet = async (
+    req: Request,
+    res: Response<ServerResponse>
+  ): Promise<Response<ServerResponse>> => {
+    try {
+      if (!req.userId) {
+        return res.json({ message: "Unauthorized", success: false });
+      }
+
+      const snippetId = parseInt(req.params.snippet_id);
+      if (isNaN(snippetId)) {
+        return res.json({ message: "Invalid snippet id", success: false });
+      }
+
+      const snippet = await prisma.snippet.findUnique({
+        where: { code_snippet: snippetId },
+      });
+      if (!snippet) {
+        return res.json({ message: "Snippet not found", success: false });
+      }
+
+      const alreadyLiked = await prisma.userLikesSnippet.findUnique({
+        where: {
+          userId_snippetId: {
+            userId: req.userId,
+            snippetId: snippetId,
+          },
+        },
+      });
+      if (alreadyLiked) {
+        return res.json({ message: "You already liked this snippet!", success: true });
+      }
+
+      await prisma.userLikesSnippet.create({
+        data: {
+          snippetId: snippetId,
+          userId: req.userId,
+        },
+      });
+
+      return res.json({ message: "Snippet added to your likes!", success: true });
+    } catch (error) {
+      console.error("Error in likeSnippet:", error);
+      return res.json({ message: "Internal server error", success: false });
+    }
+  };
+
+  static unlikeSnippet = async (
+    req: Request,
+    res: Response<ServerResponse>
+  ): Promise<Response<ServerResponse>> => {
+    try {
+      if (!req.userId) {
+        return res.json({ message: "Unauthorized", success: false });
+      }
+
+      const snippetId = parseInt(req.params.snippet_id);
+      if (isNaN(snippetId)) {
+        return res.json({ message: "Invalid snippet id", success: false });
+      }
+
+      const snippet = await prisma.snippet.findUnique({
+        where: { code_snippet: snippetId },
+      });
+      if (!snippet) {
+        return res.json({ message: "Snippet not found", success: false });
+      }
+
+      const alreadyLiked = await prisma.userLikesSnippet.delete({
+        where: {
+          userId_snippetId: {
+            userId: req.userId,
+            snippetId: snippetId,
+          },
+        },
+      });
+
+      return res.json({ message: "Snippet removed from your likes!", success: true });
+    } catch (error) {
+      console.error("Error in likeSnippet:", error);
+      return res.json({ message: "Internal server error", success: false });
+    }
+  };
 }
