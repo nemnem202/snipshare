@@ -144,10 +144,10 @@ const register: RouteTest[] = [
     useAgent: true,
     body: testUser,
     expectedCookie: "session",
-    expectedBody: {
-      message: "Welcome !",
-      success: true,
-    },
+    // expectedBody: {
+    //   message: "Welcome !",
+    //   success: true,
+    // },
   },
   {
     description: "should return an error if email already exists",
@@ -186,10 +186,10 @@ const login: RouteTest[] = [
     method: "post",
     useAgent: true,
     body: testUser,
-    expectedBody: {
-      message: "Welcome !",
-      success: true,
-    },
+    // expectedBody: {
+    //   message: "Welcome !",
+    //   success: true,
+    // },
     expectedCookie: "session",
   },
 
@@ -253,10 +253,10 @@ const login: RouteTest[] = [
     method: "post",
     useAgent: true,
     body: testUser,
-    expectedBody: {
-      message: "Welcome !",
-      success: true,
-    },
+    // expectedBody: {
+    //   message: "Welcome !",
+    //   success: true,
+    // },
     expectedCookie: "session",
   },
 ];

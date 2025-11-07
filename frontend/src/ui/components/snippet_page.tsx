@@ -49,14 +49,22 @@ export default function SnippetPage({ forPrivate }: { forPrivate: boolean }) {
   const joinFilters = (filtersToJoin: Filters): string => {
     if (
       !filtersToJoin ||
-      (!filtersToJoin.language && !filtersToJoin.tags && !filtersToJoin.orderByPopularity)
+      (!filtersToJoin.language &&
+        !filtersToJoin.tags &&
+        !filtersToJoin.orderByPopularity &&
+        !filtersToJoin.madeByUser)
     )
       return "";
 
     const params = new URLSearchParams();
 
     if (filtersToJoin.language) params.append("language", filtersToJoin.language);
+
+    if (filtersToJoin.madeByUser === true && forPrivate)
+      params.append("madeByUser", String(filtersToJoin.madeByUser));
+
     filtersToJoin.tags?.forEach((tag) => params.append("tags", tag));
+
     params.append("orderBy", filtersToJoin.orderByPopularity ? "popularity" : "date");
 
     return "?" + params.toString();
