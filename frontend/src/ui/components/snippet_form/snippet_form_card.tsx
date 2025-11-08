@@ -8,10 +8,8 @@ import {
 } from "../../assets/card";
 import { FaEye, FaPlus } from "react-icons/fa";
 import { FaLink } from "react-icons/fa";
-import { FaSave } from "react-icons/fa";
 import EditableTextArea from "../items/editable_textarea";
-import type { SnippetForm } from "../../../types/general/snippetForm";
-import { useContext, useEffect, useState, type Dispatch, type SetStateAction } from "react";
+import { useContext, useState } from "react";
 import useGetSession from "../../../hooks/get_session";
 import { SnippetFormContext } from "./snippet_card_modal";
 import SnippetFormAccordion from "./snippet_form_accordion";

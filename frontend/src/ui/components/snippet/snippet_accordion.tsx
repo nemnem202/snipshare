@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type Dispatch, type SetStateAction } from "react";
+import { useContext, useEffect, useRef, useState, type Dispatch, type SetStateAction } from "react";
 import type { PistonRequest, PistonResponse } from "../../../types/general/piston";
 import {
   Accordion,
@@ -14,6 +14,7 @@ import useGetSession from "../../../hooks/get_session";
 import LoginDialog from ".././auth/login_dialog";
 import { boolean } from "zod";
 import { useSnippet } from "./snippet_container";
+import { CodeLanguageContext } from "../../../provider/language_procider";
 
 export default function SnippetAccordion({
   setClosed,
@@ -62,6 +63,7 @@ export default function SnippetAccordion({
   const accordionRef = useRef<HTMLDivElement>(null);
   const [openItemsState, setOpenItems] = useState<string[]>([]);
   const { snippet, setSnippet } = useSnippet();
+  const languagesContext = useContext(CodeLanguageContext);
   const handleValueChange = (openItems: string[]) => {
     setClosed(openItems.length === 0);
 
@@ -84,11 +86,14 @@ export default function SnippetAccordion({
       return setOpenLogin(true);
     }
 
+    if (!snippet) return;
+
     setRunLoading(true);
+
     const body = {
       content: content,
-      language: "typescript",
-      version: "5.0.3",
+      language: snippet.language.language,
+      version: snippet.language.version,
     };
 
     const res = await Fetcher.post<PistonResponse>(body, "/code");
