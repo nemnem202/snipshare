@@ -7,7 +7,7 @@ const social = Router();
 social.post(
   "/comment/:snippet_id",
   (req, res, next) => AuthMiddleware.protectUser(req, res, next),
-  (req, res) => res.sendStatus(200)
+  (req, res) => SocialController.postComment(req, res)
 );
 
 social.get("/comment/:snippet_id", (req, res) => SocialController.getCommentsForSnippet(req, res));

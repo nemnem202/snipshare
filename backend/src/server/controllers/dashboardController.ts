@@ -6,6 +6,8 @@ import prisma from "../runtime/prisma";
 import languages from "../config/languages";
 import { Langage } from "../types/global/language";
 import { ExplorerSnippet } from "../types/global/explorerSnippet";
+import { ZodError } from "zod";
+import SchemaParser from "../lib/middlewares/schemaParser";
 
 export default class DashboardController {
   static getAPage = async (
@@ -126,6 +128,33 @@ export default class DashboardController {
         message: "Internal server error",
         success: false,
       });
+    }
+  };
+
+  static changeUsername = async (
+    req: Request,
+    res: Response<ServerResponse>
+  ): Promise<Response<ServerResponse>> => {
+    try {
+      const { username } = req.body;
+
+      if (!req.userId || isNaN(req.userId)) throw new Error();
+
+      SchemaParser.Username(username);
+
+      const user = await prisma.userAccount.update({
+        where: { id: req.userId },
+        data: { username },
+      });
+
+      return res.json({ message: "Nom d'utilisateur mis à jour !", success: true });
+    } catch (err) {
+      if (err instanceof ZodError) {
+        const firstMessage = err.issues[0].message;
+        return res.json({ success: false, message: firstMessage });
+      }
+      Custom.error("user create", err);
+      return res.json({ message: "An internal error occured, please try again !", success: false });
     }
   };
 }

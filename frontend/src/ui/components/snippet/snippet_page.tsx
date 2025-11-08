@@ -200,6 +200,7 @@ export default function SnippetPage({ forPrivate }: { forPrivate: boolean }) {
             </PaginationContent>
           </Pagination>
         )}
+        <div className="h-10"></div>
       </div>
     </>
   );

@@ -20,6 +20,18 @@ export default class SchemaParser {
     }
   }
 
+  static Username(data: unknown) {
+    const schema = z
+      .string()
+      .min(3, "Le nom d'utilisateur doit contenir au moins 3 caractères.")
+      .max(30, "Le nom d'utilisateur ne peut pas dépasser 30 caractères.");
+
+    const parsed = schema.safeParse(data);
+    if (!parsed.success) {
+      throw parsed.error;
+    }
+  }
+
   static CodeLanguage(data: unknown) {
     const schema = z.object({
       name: z

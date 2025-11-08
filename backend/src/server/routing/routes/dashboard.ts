@@ -4,10 +4,10 @@ import DashboardController from "../../controllers/dashboardController";
 
 const dashboard = Router();
 
-dashboard.put(
-  "/change-username/:id",
+dashboard.post(
+  "/change-username",
   (req, res, next) => AuthMiddleware.protectUser(req, res, next),
-  (req, res) => res.sendStatus(200)
+  (req, res) => DashboardController.changeUsername(req, res)
 );
 
 dashboard.get(

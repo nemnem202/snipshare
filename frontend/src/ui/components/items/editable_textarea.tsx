@@ -6,15 +6,23 @@ export default function EditableTextArea({
   defaultValue,
   width = 50,
   onValueChange,
+  onFocusEnd,
 }: {
   defaultValue: string;
   width?: number;
   onValueChange?: (value: string) => void;
+  onFocusEnd?: (value: string) => void;
 }) {
   const [editMode, setEditMode] = useState(false);
   const [value, setValue] = useState(defaultValue);
   const [showPen, setShowPen] = useState(false);
-  const handleBlur = () => setEditMode(false);
+
+  const handleBlur = (e: React.FocusEvent<HTMLElement>) => {
+    const currentValue = e.currentTarget.innerHTML || " ";
+    setEditMode(false);
+    console.log(currentValue);
+    onFocusEnd && onFocusEnd(currentValue);
+  };
   const handleMouseEnter = () => {
     if (editMode === false) {
       setShowPen(true);
@@ -22,6 +30,7 @@ export default function EditableTextArea({
   };
 
   useEffect(() => {
+    console.log(value);
     if (onValueChange) onValueChange(value);
   }, [value]);
 
@@ -34,8 +43,9 @@ export default function EditableTextArea({
       <div className="w-[90%]">
         <ContentEditable
           html={value}
-          onChange={(e) => setValue(e.target.value !== "" ? e.target.value : " ")}
+          onChange={(e) => setValue(e.currentTarget.innerHTML || " ")}
           onBlur={handleBlur}
+          disabled={false}
           spellCheck={false}
           className=" focus:outline-1 focus:outline-muted"
         />

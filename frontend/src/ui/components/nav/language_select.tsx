@@ -82,7 +82,7 @@ export default function LanguageSelect() {
                         setOpen(false);
                       }}
                     >
-                      {l.language}
+                      {l.language} <span className="text-muted">{l.version}</span>
                       <Check className={cn("ml-auto", value === l ? "opacity-100" : "opacity-0")} />
                     </CommandItem>
                   ))}
