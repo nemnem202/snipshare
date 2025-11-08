@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaPen } from "react-icons/fa";
-import TextareaAutosize from "react-textarea-autosize";
+import ContentEditable from "react-contenteditable";
 
 export default function EditableTextArea({
   defaultValue,
@@ -14,7 +14,6 @@ export default function EditableTextArea({
   const [editMode, setEditMode] = useState(false);
   const [value, setValue] = useState(defaultValue);
   const [showPen, setShowPen] = useState(false);
-
   const handleBlur = () => setEditMode(false);
   const handleMouseEnter = () => {
     if (editMode === false) {
@@ -30,42 +29,20 @@ export default function EditableTextArea({
     <div
       onMouseEnter={handleMouseEnter}
       onMouseLeave={() => setShowPen(false)}
-      className="flex w-full justify-between gap-3 items-center min-w-50"
+      className={`w-full flex justify-between gap-3 items-top min-w-50`}
     >
-      {editMode ? (
-        <TextareaAutosize
-          value={value}
+      <div className="w-[90%]">
+        <ContentEditable
+          html={value}
           onChange={(e) => setValue(e.target.value !== "" ? e.target.value : " ")}
           onBlur={handleBlur}
           spellCheck={false}
-          autoFocus
-          className={`w-${width} bg-transparent border-none outline-none resize-none
-                     text-inherit font-inherit leading-inherit
-                     text-left text-current text-opacity-inherit
-                    tracking-inherit
-                     whitespace-pre-wrap align-baseline focus:outline-none`}
+          className=" focus:outline-1 focus:outline-muted"
         />
-      ) : (
-        <span
-          className={`w-${width}   text-inherit font-inherit leading-inherit
-                     text-left text-current text-opacity-inherit
-                    tracking-inherit
-                     whitespace-pre-wrap align-baseline white-space: pre-wrap word-wrap: break-word`}
-          onClick={() => {
-            setEditMode(true);
-            setShowPen(false);
-          }}
-        >
-          {value}
-        </span>
-      )}
-      {showPen && (
-        <FaPen
-          size={12}
-          //   className="opacity-0 group-hover:opacity-60 cursor-pointer transition-opacity"
-          onClick={() => setEditMode(true)}
-        />
-      )}
+      </div>
+      <div className="w-[10%]">
+        {showPen && <FaPen size={12} onClick={() => setEditMode(true)} />}
+      </div>
     </div>
   );
 }

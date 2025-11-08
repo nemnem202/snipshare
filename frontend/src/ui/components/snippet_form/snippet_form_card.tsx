@@ -69,7 +69,6 @@ export default function SnippetFormCard({
                     />
                   </CardDescription>
                 </div>
-
                 <div className="flex gap-2">
                   <FaEye
                     className={`${
