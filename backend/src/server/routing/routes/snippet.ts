@@ -16,6 +16,12 @@ snippet.post(
   (req, res) => SnippetController.changeSnippet(req, res)
 );
 
-snippet.get("/unref/:path", (req, res) => res.sendStatus(200));
+snippet.get(
+  "/unref/snippetId/:snippet_id",
+  (req, res, next) => AuthMiddleware.protectUser(req, res, next),
+  (req, res) => SnippetController.getUnrefUrl(req, res)
+);
+
+snippet.get("/unref/:path", (req, res) => SnippetController.getUnref(req, res));
 
 export default snippet;

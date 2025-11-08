@@ -12,8 +12,8 @@ const router = Router();
 router.use("/auth", auth);
 router.use("/explorer", explorer);
 router.use("/code", code);
-router.use("/dashboard", (req, res, next) => AuthMiddleware.protectUser(req, res, next), dashboard);
-router.use("/social", (req, res, next) => AuthMiddleware.protectUser(req, res, next), social);
-router.use("/snippet", (req, res, next) => AuthMiddleware.protectUser(req, res, next), snippet);
+router.use("/dashboard", dashboard);
+router.use("/social", social);
+router.use("/snippet", snippet);
 
 export default router;

@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../../assets/card";
-import { FaEye, FaPlus } from "react-icons/fa";
+import { FaCopy, FaEye, FaEyeSlash, FaPlus, FaRegCopy } from "react-icons/fa";
 import { FaLink } from "react-icons/fa";
 import EditableTextArea from "../items/editable_textarea";
 import { useContext, useState } from "react";
@@ -39,6 +39,7 @@ export default function SnippetFormCard({ isAnUpdate = false }: { isAnUpdate?: f
       window.location.reload();
     }
   };
+
   return (
     snippetForm && (
       <Card className="p-2">
@@ -69,14 +70,26 @@ export default function SnippetFormCard({ isAnUpdate = false }: { isAnUpdate?: f
                   </CardDescription>
                 </div>
                 <div className="flex gap-2">
-                  <FaEye
-                    className={`${
-                      snippetForm.visibility ? "text-primary" : "text-muted-foreground"
-                    }  transition-colors cursor-pointer hover:opacity-70 text-xl`}
-                    onClick={() =>
-                      setSnippetForm((prev) => ({ ...prev, visibility: !snippetForm.visibility }))
-                    }
-                  />
+                  {snippetForm.visibility ? (
+                    <FaEye
+                      className={`${
+                        snippetForm.visibility ? "text-primary" : "text-muted-foreground"
+                      }  transition-colors cursor-pointer hover:opacity-70 text-xl`}
+                      onClick={() =>
+                        setSnippetForm((prev) => ({ ...prev, visibility: !snippetForm.visibility }))
+                      }
+                    />
+                  ) : (
+                    <FaEyeSlash
+                      className={`${
+                        snippetForm.visibility ? "text-primary" : "text-muted-foreground"
+                      }  transition-colors cursor-pointer hover:opacity-70 text-xl`}
+                      onClick={() =>
+                        setSnippetForm((prev) => ({ ...prev, visibility: !snippetForm.visibility }))
+                      }
+                    />
+                  )}
+
                   <FaLink
                     className={`${
                       snippetForm.private_url ? "text-primary" : "text-muted-foreground"

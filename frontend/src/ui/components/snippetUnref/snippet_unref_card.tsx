@@ -6,47 +6,29 @@ import {
   CardHeader,
   CardTitle,
 } from "../../assets/card";
-import SnippetAccordion from "./snippet_accordion";
-import { FaEye, FaPen, FaRegCopy } from "react-icons/fa";
+import SnippetAccordion from "../snippet/snippet_accordion";
+import { FaEye, FaPen } from "react-icons/fa";
 import { FaLink } from "react-icons/fa";
 import { FaSave } from "react-icons/fa";
 import EditableTextArea from "../items/editable_textarea";
 import { useContext, useState } from "react";
 import { FilterContext } from "../../../provider/filters_provider";
-import { useSnippet } from "./snippet_container";
+import { useSnippet } from "../snippet/snippet_container";
 import { SessionContext } from "../../../provider/session_provider";
 import useGetSession from "../../../hooks/get_session";
 import SnippetCardModal from "../snippet_form/snippet_card_modal";
-import Fetcher from "../../../lib/fetcher";
-import { Custom } from "../../../lib/logger";
-import Toaster from "../../../lib/toaster";
+import type { ExplorerSnippet } from "../../../types/general/explorersnippet";
+import SnippetUnrefAccordion from "./snippet_unref_accordion";
 
-export default function SnippetCard({
+export default function SnippetUnrefCard({
   setClosed,
+  snippet,
 }: {
   setClosed: React.Dispatch<React.SetStateAction<boolean>>;
+  snippet: ExplorerSnippet;
 }) {
-  const { snippet, setSnippet } = useSnippet();
-  const filtersContext = useContext(FilterContext);
   const session = useGetSession();
   const [snippetModalOpen, setSnippetModalOpen] = useState<boolean>(false);
-  if (!filtersContext) return;
-
-  const copyPrivatUrl = async () => {
-    if (!snippet) return;
-
-    const privateUrl = await Fetcher.get<{ url: string }>(
-      "/snippet/unref/snippetId/" + snippet.code_snippet
-    );
-
-    Custom.log("private url", privateUrl);
-
-    if ("success" in privateUrl) return;
-
-    await navigator.clipboard.writeText(privateUrl.url);
-
-    Toaster.toastServer({ message: "Lien privé copié dans le presse papier !", success: true });
-  };
 
   return (
     snippet && (
@@ -56,22 +38,12 @@ export default function SnippetCard({
           <CardHeader className=" p-0 w-full">
             <div className="flex justify-between w-full px-1">
               <div className="text-muted-foreground text-sm w-min">_{snippet.user.username}</div>
-              <div className="flex gap-2 items-center">
-                {snippet.user.username === session && (
-                  <>
-                    {snippet.private_url && (
-                      <FaRegCopy
-                        className="text-muted-foreground animate cursor-pointer text-sm w-min hover:text-secondary"
-                        onClick={copyPrivatUrl}
-                      />
-                    )}
-                    <FaPen
-                      onClick={() => setSnippetModalOpen(true)}
-                      className="text-muted-foreground text-sm w-min hover:text-secondary animate cursor-pointer"
-                    />
-                  </>
-                )}
-              </div>
+              {snippet.user.username === session && (
+                <FaPen
+                  onClick={() => setSnippetModalOpen(true)}
+                  className="text-muted-foreground text-sm w-min hover:text-secondary animate cursor-pointer"
+                />
+              )}
             </div>
           </CardHeader>
           <CardContent>
@@ -85,18 +57,13 @@ export default function SnippetCard({
                 </div>
               </CardHeader>
               <CardContent>
-                <SnippetAccordion setClosed={setClosed} />
+                <SnippetUnrefAccordion snippet={snippet} setClosed={setClosed} />
               </CardContent>
             </Card>
           </CardContent>
           <CardFooter className="p-1 gap-3">
             {snippet.filters.map((f) => (
-              <div
-                className="text-sm bold italic opacity-70 cursor-pointer hover:opacity-100 animate"
-                onClick={() =>
-                  filtersContext.setFilters((prev) => ({ ...prev, tags: [f.hashtagName] }))
-                }
-              >
+              <div className="text-sm bold italic opacity-70 cursor-pointer hover:opacity-100 animate">
                 #{f.hashtagName}
               </div>
             ))}

@@ -5,6 +5,7 @@ import { ZodError } from "zod";
 import SchemaParser from "../lib/middlewares/schemaParser";
 import prisma from "../runtime/prisma";
 import { SnippetForm } from "../types/global/snippetForm";
+import { ExplorerSnippet } from "../types/global/explorerSnippet";
 
 export default class SnippetController {
   static addNewSnippet = async (
@@ -126,6 +127,79 @@ export default class SnippetController {
       }
       Custom.error("snippet update", err);
       return res.json({ message: "An internal error occured, please try again !", success: false });
+    }
+  };
+
+  static getUnref = async (
+    req: Request,
+    res: Response<ServerResponse | ExplorerSnippet>
+  ): Promise<Response<ServerResponse | ExplorerSnippet>> => {
+    try {
+      const privateUrl = req.params.path;
+
+      const snippet = await prisma.snippet.findFirst({
+        where: {
+          private_url: privateUrl,
+        },
+        include: {
+          likes: { select: { userId: true } },
+          filters: true,
+          user: {
+            select: {
+              username: true,
+            },
+          },
+          language: true,
+          _count: { select: { likes: true } },
+        },
+      });
+
+      if (!snippet) return res.json({ message: "Snippet not found !", success: false });
+
+      const snippetWithLikeFlag = {
+        ...snippet,
+        likes: snippet.likes.some((like) => like.userId === req.userId),
+      };
+
+      return res.json(snippetWithLikeFlag);
+    } catch (err) {
+      console.error("Error in getUnref:", err);
+      return res.status(500).json({
+        message: "Internal server error",
+        success: false,
+      });
+    }
+  };
+
+  static getUnrefUrl = async (
+    req: Request,
+    res: Response<ServerResponse | { url: string }>
+  ): Promise<Response<ServerResponse | { url: string }>> => {
+    try {
+      const snippetId = parseInt(req.params.snippet_id);
+      const userId = req.userId;
+      const origin = req.get("origin") || req.get("referer");
+      Custom.log("origin", origin);
+
+      if (isNaN(snippetId)) return res.json({ message: "Invalid snippet", success: false });
+
+      const snippet = await prisma.snippet.findFirst({
+        where: {
+          code_snippet: snippetId,
+          user_id: userId,
+        },
+        select: { private_url: true },
+      });
+
+      if (!snippet) return res.json({ message: "Snippet not found !", success: false });
+
+      return res.json({ url: origin + "/unref/" + snippet.private_url });
+    } catch (err) {
+      console.error("Error in getUnref:", err);
+      return res.status(500).json({
+        message: "Internal server error",
+        success: false,
+      });
     }
   };
 }

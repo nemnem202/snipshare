@@ -105,7 +105,7 @@ export default function CommentCard({
               size={24}
               onClick={() => handleLike()}
               className={`${
-                liked ? "text-[var(--primary)]" : "text-[var(--secondary)] opacity-50"
+                liked ? "text-[var(--primary)]" : "text-[var(--on_background)] opacity-50"
               } cursor-pointer animate hover:text-[var(--primary)] `}
             />
           </CardHeader>
