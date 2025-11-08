@@ -1,9 +1,9 @@
-import { Badge } from "../assets/badge";
+import { Badge } from "../../assets/badge";
 import { IoClose } from "react-icons/io5";
-import { Button } from "../assets/button";
+import { Button } from "../../assets/button";
 import { useContext } from "react";
-import { FilterContext } from "../../provider/filters_provider";
-import { Custom } from "../../lib/logger";
+import { FilterContext } from "../../../provider/filters_provider";
+import { Custom } from "../../../lib/logger";
 
 export default function Tag({ content }: { content: string }) {
   const filtersContext = useContext(FilterContext);

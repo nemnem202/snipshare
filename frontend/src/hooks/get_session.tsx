@@ -10,20 +10,24 @@ export default function useGetSession() {
     return null;
   }
 
-  const { session, setSession } = ctx;
+  const { sessionUsername, setSession } = ctx;
 
   useEffect(() => {
-    if (!session) {
+    if (sessionUsername === undefined) {
       (async () => {
-        const response = await Fetcher.get<{ session: boolean }>("/auth/session", true);
-        if ("session" in response) {
-          setSession(response.session);
+        const response = await Fetcher.get<{ sessionUsername: string | null }>(
+          "/auth/session",
+          true
+        );
+        Custom.warn("session", response);
+        if ("sessionUsername" in response) {
+          setSession(response.sessionUsername);
         } else {
-          setSession(false);
+          setSession(null);
         }
       })();
     }
-  }, [session, setSession]);
+  }, [sessionUsername, setSession]);
 
-  return session;
+  return sessionUsername;
 }

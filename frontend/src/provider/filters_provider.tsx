@@ -7,7 +7,7 @@ export const FilterContext = createContext<{
 } | null>(null);
 
 export default function FiltersProvider({ children }: { children: React.ReactNode }) {
-  const [filters, setFilters] = useState<Filters>({ orderByPopularity: false });
+  const [filters, setFilters] = useState<Filters>({ orderByPopularity: false, madeByUser: true });
 
   return (
     <FilterContext.Provider value={{ filters, setFilters }}>{children}</FilterContext.Provider>

@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Label } from "../assets/label";
+import { Label } from "../../assets/label";
 import {
   Select,
   SelectTrigger,
@@ -7,9 +7,9 @@ import {
   SelectGroup,
   SelectItem,
   SelectValue,
-} from "../assets/select";
+} from "../../assets/select";
 import { FaSortAmountDown } from "react-icons/fa";
-import { FilterContext } from "../../provider/filters_provider";
+import { FilterContext } from "../../../provider/filters_provider";
 
 export default function SortingSelect() {
   const filtersContext = useContext(FilterContext);

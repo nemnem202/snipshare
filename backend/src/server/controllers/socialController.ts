@@ -3,6 +3,8 @@ import { ServerResponse } from "../types/global/response";
 import prisma from "../runtime/prisma";
 import { ExplorerComment } from "../types/global/explorerComment";
 import { Custom } from "../lib/tools/logger";
+import { ZodError } from "zod";
+import SchemaParser from "../lib/middlewares/schemaParser";
 
 export default class SocialController {
   static getCommentsForSnippet = async (
@@ -108,6 +110,38 @@ export default class SocialController {
     } catch (error) {
       console.error("Error in likeSnippet:", error);
       return res.json({ message: "Internal server error", success: false });
+    }
+  };
+
+  static postComment = async (
+    req: Request,
+    res: Response<ServerResponse | ExplorerComment>
+  ): Promise<Response<ServerResponse | ExplorerComment>> => {
+    try {
+      const { comment } = req.body;
+
+      const entity = {
+        content: comment,
+        userId: req.userId!,
+        snippetId: parseInt(req.params.snippet_id),
+        commentDate: new Date(),
+      };
+
+      SchemaParser.UserCommentSnippet(entity);
+
+      const commentInDb = await prisma.userCommentSnippet.create({
+        data: entity,
+        include: { user: { select: { username: true } } },
+      });
+
+      return res.json(commentInDb);
+    } catch (err) {
+      if (err instanceof ZodError) {
+        const firstMessage = err.issues[0].message;
+        return res.json({ success: false, message: firstMessage });
+      }
+      Custom.error("user create", err);
+      return res.json({ message: "An internal error occured, please try again !", success: false });
     }
   };
 }

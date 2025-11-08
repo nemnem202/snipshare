@@ -1,4 +1,10 @@
 import { useContext, useEffect, useState } from "react";
+import SnippetContainer from "./snippet_container";
+import { FilterContext } from "../../../provider/filters_provider";
+import type { ExplorerSnippet } from "../../../types/general/explorersnippet";
+import { Custom } from "../../../lib/logger";
+import Fetcher from "../../../lib/fetcher";
+import type { Filters } from "../../../types/general/explorerFilters";
 import {
   Pagination,
   PaginationContent,
@@ -7,14 +13,8 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "../../ui/assets/pagination";
-import SnippetContainer from "./snippet_container";
-import Fetcher from "../../lib/fetcher";
-import { Custom } from "../../lib/logger";
-import type { Filters } from "../../types/general/explorerFilters";
-import { FilterContext } from "../../provider/filters_provider";
-import { Spinner } from "../assets/spinner";
-import type { ExplorerSnippet } from "../../types/general/explorersnippet";
+} from "../../assets/pagination";
+import { Spinner } from "../../assets/spinner";
 
 export default function SnippetPage({ forPrivate }: { forPrivate: boolean }) {
   const filtersContext = useContext(FilterContext);
@@ -49,14 +49,22 @@ export default function SnippetPage({ forPrivate }: { forPrivate: boolean }) {
   const joinFilters = (filtersToJoin: Filters): string => {
     if (
       !filtersToJoin ||
-      (!filtersToJoin.language && !filtersToJoin.tags && !filtersToJoin.orderByPopularity)
+      (!filtersToJoin.language &&
+        !filtersToJoin.tags &&
+        !filtersToJoin.orderByPopularity &&
+        !filtersToJoin.madeByUser)
     )
       return "";
 
     const params = new URLSearchParams();
 
     if (filtersToJoin.language) params.append("language", filtersToJoin.language);
+
+    if (filtersToJoin.madeByUser === true && forPrivate)
+      params.append("madeByUser", String(filtersToJoin.madeByUser));
+
     filtersToJoin.tags?.forEach((tag) => params.append("tags", tag));
+
     params.append("orderBy", filtersToJoin.orderByPopularity ? "popularity" : "date");
 
     return "?" + params.toString();
@@ -135,7 +143,7 @@ export default function SnippetPage({ forPrivate }: { forPrivate: boolean }) {
     <>
       <div className="flex flex-col items-center gap-5 w-full">
         {snippets.map((snipp, index) => (
-          <SnippetContainer editables={forPrivate} key={index} snipp={snipp} />
+          <SnippetContainer key={index} snipp={snipp} />
         ))}
         {pages >= 2 && (
           <Pagination>
@@ -192,6 +200,7 @@ export default function SnippetPage({ forPrivate }: { forPrivate: boolean }) {
             </PaginationContent>
           </Pagination>
         )}
+        <div className="h-10"></div>
       </div>
     </>
   );

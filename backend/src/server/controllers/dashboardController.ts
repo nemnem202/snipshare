@@ -6,13 +6,18 @@ import prisma from "../runtime/prisma";
 import languages from "../config/languages";
 import { Langage } from "../types/global/language";
 import { ExplorerSnippet } from "../types/global/explorerSnippet";
+import { ZodError } from "zod";
+import SchemaParser from "../lib/middlewares/schemaParser";
 
-export default class ExplorerController {
+export default class DashboardController {
   static getAPage = async (
     req: Request,
     res: Response<Snippet[] | ServerResponse>
   ): Promise<Response<ExplorerSnippet[] | ServerResponse>> => {
     try {
+      const userId = req.userId;
+      if (!userId) throw new Error("No user id");
+
       let index = parseInt(req.params.page_index);
       if (isNaN(index) || index < 0) index = 0;
 
@@ -23,13 +28,16 @@ export default class ExplorerController {
         ? [String(req.query.tags)]
         : [];
 
+      const madeByUser = req.query.madeByUser === "true";
+
       const orderBy = req.query.orderBy;
 
       Custom.log("Get a page", { index, language, tags, orderBy });
 
       const snippets = await prisma.snippet.findMany({
         where: {
-          visibility: true,
+          ...(madeByUser && { user_id: userId }),
+          ...(!madeByUser && { likes: { some: { userId: userId } } }),
           ...(language && {
             language: {
               language: language,
@@ -64,11 +72,6 @@ export default class ExplorerController {
         likes: snippet.likes.some((like) => like.userId === req.userId),
       }));
 
-      // Custom.log(
-      //   "nombre de snippets likés par l'utilisateur",
-      //   snippetsWithLikeFlag.filter((s) => s.likes).length
-      // );
-
       return res.status(200).json(snippetsWithLikeFlag);
     } catch (err) {
       console.error("Error in getAPage:", err);
@@ -84,6 +87,9 @@ export default class ExplorerController {
     res: Response
   ): Promise<Response<ServerResponse | { number: number }>> => {
     try {
+      const userId = req.userId;
+      if (!userId) throw new Error("No user id");
+
       const language = req.query.language ? String(req.query.language) : null;
       const tags = Array.isArray(req.query.tags)
         ? req.query.tags.map(String)
@@ -91,9 +97,13 @@ export default class ExplorerController {
         ? [String(req.query.tags)]
         : [];
 
+      const madeByUser = req.query.madeByUser === "true";
+
       const snippetsNumber = await prisma.snippet.count({
         where: {
-          visibility: true,
+          ...(madeByUser && { user_id: userId }),
+          ...(!madeByUser && { likes: { some: { userId: userId } } }),
+          user_id: userId,
           ...(language && {
             language: {
               language: language,
@@ -121,21 +131,30 @@ export default class ExplorerController {
     }
   };
 
-  static getAvailablesLanguages = async (
+  static changeUsername = async (
     req: Request,
-    res: Response
-  ): Promise<Response<string[] | Langage[]>> => {
+    res: Response<ServerResponse>
+  ): Promise<Response<ServerResponse>> => {
     try {
-      const onlyNames = req.query.onlyNames;
-      return onlyNames === "true"
-        ? res.json(languages.map((l) => l.language))
-        : res.json(languages);
-    } catch (err) {
-      console.error("Error in getAvailablesLanguages:", err);
-      return res.status(500).json({
-        message: "Internal server error",
-        success: false,
+      const { username } = req.body;
+
+      if (!req.userId || isNaN(req.userId)) throw new Error();
+
+      SchemaParser.Username(username);
+
+      const user = await prisma.userAccount.update({
+        where: { id: req.userId },
+        data: { username },
       });
+
+      return res.json({ message: "Nom d'utilisateur mis à jour !", success: true });
+    } catch (err) {
+      if (err instanceof ZodError) {
+        const firstMessage = err.issues[0].message;
+        return res.json({ success: false, message: firstMessage });
+      }
+      Custom.error("user create", err);
+      return res.json({ message: "An internal error occured, please try again !", success: false });
     }
   };
 }

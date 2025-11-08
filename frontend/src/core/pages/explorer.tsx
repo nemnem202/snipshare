@@ -1,18 +1,18 @@
 import { useContext, useEffect, useState } from "react";
-import Headline from "../../ui/components/headline";
-import Searchbar from "../../ui/components/searchbar";
-import SnippetPage from "../../ui/components/snippet_page";
-import SortSelectGroup from "../../ui/components/sort_select_group";
-import Tag from "../../ui/components/tag";
+import Headline from "../../ui/components/items/headline";
+import Searchbar from "../../ui/components/explorer/searchbar";
+import Tag from "../../ui/components/items/tag";
 import FiltersProvider, { FilterContext } from "../../provider/filters_provider";
+import SortSelectGroup from "../../ui/components/nav/sort_select_group";
+import SnippetPage from "../../ui/components/snippet/snippet_page";
 
 function SearchBarContainer() {
   const filtersContext = useContext(FilterContext);
   if (!filtersContext) return;
   return (
-    <div className="flex flex-col items-center gap-2 h-[100px]">
+    <div className="flex flex-col items-center gap-2 min-h-[100px]">
       <Searchbar />
-      <div className="h-5 flex gap-2">
+      <div className=" flex gap-2 max-w-[700px] flex-wrap items center justify-center">
         {filtersContext.filters.tags &&
           filtersContext.filters.tags.map((tag, index) => <Tag content={tag} key={index} />)}
       </div>

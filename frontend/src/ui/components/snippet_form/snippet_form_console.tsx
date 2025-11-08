@@ -1,7 +1,7 @@
-import type { PistonResponse } from "../../types/general/piston";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../assets/tabs";
+import type { PistonResponse } from "../../../types/general/piston";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../assets/tabs";
 
-export default function SnippetConsole({ console }: { console: PistonResponse }) {
+export default function SnippetFormConsole({ console }: { console: PistonResponse }) {
   return (
     <Tabs defaultValue="output" className="w-full">
       <TabsList>

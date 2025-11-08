@@ -1,4 +1,4 @@
-import "../style/components/logo.css";
+import "../../style/components/logo.css";
 
 export default function Logo({ size }: { size: number }) {
   return (

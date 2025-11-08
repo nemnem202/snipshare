@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Label } from "../assets/label";
+import { Label } from "../../assets/label";
 import {
   Select,
   SelectTrigger,
@@ -7,11 +7,11 @@ import {
   SelectGroup,
   SelectItem,
   SelectValue,
-} from "../assets/select";
+} from "../../assets/select";
 import { FaCode } from "react-icons/fa";
-import { CodeLanguageContext } from "../../provider/language_procider";
-import { Popover, PopoverContent, PopoverTrigger } from "../assets/popover";
-import { Button } from "../assets/button";
+import { CodeLanguageContext } from "../../../provider/language_procider";
+import { Popover, PopoverContent, PopoverTrigger } from "../../assets/popover";
+import { Button } from "../../assets/button";
 import { Check, ChevronsUpDown } from "lucide-react";
 import {
   Command,
@@ -20,10 +20,10 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "../assets/command";
-import { cn } from "../../lib/utils";
-import type { Langage } from "../../types/general/language";
-import { FilterContext } from "../../provider/filters_provider";
+} from "../../assets/command";
+import { cn } from "../../../lib/utils";
+import type { Langage } from "../../../types/general/language";
+import { FilterContext } from "../../../provider/filters_provider";
 
 export default function LanguageSelect() {
   const languages = useContext(CodeLanguageContext);
@@ -82,7 +82,7 @@ export default function LanguageSelect() {
                         setOpen(false);
                       }}
                     >
-                      {l.language}
+                      {l.language} <span className="text-muted">{l.version}</span>
                       <Check className={cn("ml-auto", value === l ? "opacity-100" : "opacity-0")} />
                     </CommandItem>
                   ))}

@@ -1,4 +1,5 @@
 import z, { ZodError } from "zod";
+import { Custom } from "../tools/logger";
 
 export default class SchemaParser {
   static UserAccount(data: unknown) {
@@ -13,6 +14,18 @@ export default class SchemaParser {
         .min(6, "Le mot de passe doit contenir au moins 6 caractères.")
         .max(100, "Le mot de passe ne peut pas dépasser 100 caractères."),
     });
+
+    const parsed = schema.safeParse(data);
+    if (!parsed.success) {
+      throw parsed.error;
+    }
+  }
+
+  static Username(data: unknown) {
+    const schema = z
+      .string()
+      .min(3, "Le nom d'utilisateur doit contenir au moins 3 caractères.")
+      .max(30, "Le nom d'utilisateur ne peut pas dépasser 30 caractères.");
 
     const parsed = schema.safeParse(data);
     if (!parsed.success) {
@@ -79,7 +92,17 @@ export default class SchemaParser {
 
     const parsed = schema.safeParse(data);
     if (!parsed.success) {
-      throw parsed.error;
+      // Formater l'erreur de manière plus lisible
+      const errors = parsed.error.issues
+        .map((err) => {
+          const field = err.path.join(".");
+          return `Champ "${field}": ${err.message}`;
+        })
+        .join("\n");
+
+      Custom.error("Parsing", errors);
+
+      throw new Error(`Erreur de validation:\n${errors}`);
     }
   }
 
@@ -127,5 +150,77 @@ export default class SchemaParser {
     if (!parsed.success) {
       throw parsed.error;
     }
+  }
+
+  static SnippetForm(data: unknown) {
+    const langageSchema = z.object({
+      language: z
+        .string()
+        .min(1, "Le nom du langage ne peut pas être vide.")
+        .max(50, "Le nom du langage est trop long (maximum 50 caractères)."),
+      version: z
+        .string()
+        .min(1, "La version du langage ne peut pas être vide.")
+        .max(20, "La version du langage est trop longue (maximum 20 caractères)."),
+      aliases: z
+        .array(
+          z
+            .string()
+            .min(1, "Un alias ne peut pas être vide.")
+            .max(30, "Un alias est trop long (maximum 30 caractères).")
+        )
+        .optional()
+        .default([]),
+      runtime: z
+        .string()
+        .max(50, "Le nom du runtime est trop long (maximum 50 caractères).")
+        .optional()
+        .nullable(),
+    });
+
+    const schema = z.object({
+      title: z
+        .string()
+        .min(3, "Le titre doit contenir au moins 3 caractères.")
+        .max(100, "Le titre ne peut pas dépasser 100 caractères."),
+      description: z
+        .string()
+        .max(500, "La description est trop longue (maximum 500 caractères).")
+        .optional()
+        .default(""),
+      code: z
+        .string()
+        .min(1, "Le code ne peut pas être vide.")
+        .max(10_000, "Le code ne peut pas excéder 10 000 caractères."),
+      filters: z
+        .array(
+          z
+            .string()
+            .min(1, "Un filtre ne peut pas être vide.")
+            .max(50, "Un filtre est trop long (maximum 50 caractères).")
+        )
+        .optional()
+        .default([]),
+      language: langageSchema,
+      visibility: z.boolean(),
+      private_url: z.boolean(),
+    });
+
+    const parsed = schema.safeParse(data);
+    if (!parsed.success) {
+      // Formater l'erreur de manière plus lisible
+      const errors = parsed.error.issues
+        .map((err) => {
+          const field = err.path.join(".");
+          return `Champ "${field}": ${err.message}`;
+        })
+        .join("\n");
+
+      Custom.error("Parsing", errors);
+
+      throw new Error(`Erreur de validation:\n${errors}`);
+    }
+
+    return parsed.data;
   }
 }

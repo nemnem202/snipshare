@@ -1,6 +1,6 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
-import Headline from "../../ui/components/headline";
-import LoginForm from "../../ui/components/login_form";
+import Headline from "../../ui/components/items/headline";
+import LoginForm from "../../ui/components/auth/login_form";
 
 export default function LoginPage() {
   const nav = useNavigate();

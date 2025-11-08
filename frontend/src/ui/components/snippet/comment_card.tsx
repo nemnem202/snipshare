@@ -1,16 +1,24 @@
-import { Card, CardContent, CardHeader } from "../assets/card";
+import { Card, CardContent, CardHeader } from "../../assets/card";
 import { FaHeart } from "react-icons/fa";
 import TextareaAutosize from "react-textarea-autosize";
-import { Label } from "../assets/label";
-import { Button } from "../assets/button";
-import { useContext, useEffect, useState, type Dispatch, type SetStateAction } from "react";
-import LoginDialog from "./login_dialog";
-import useGetSession from "../../hooks/get_session";
+import { Label } from "../../assets/label";
+import { Button } from "../../assets/button";
+import {
+  useContext,
+  useEffect,
+  useState,
+  type Dispatch,
+  type FormEvent,
+  type SetStateAction,
+} from "react";
+import LoginDialog from "../auth/login_dialog";
+import useGetSession from "../../../hooks/get_session";
 import { useSnippet } from "./snippet_container";
-import type { ExplorerComment } from "../../types/general/explorerComment";
-import Fetcher from "../../lib/fetcher";
-import type { ServerResponse } from "../../types/general/response";
-import { Custom } from "../../lib/logger";
+import type { ExplorerComment } from "../../../types/general/explorerComment";
+import Fetcher from "../../../lib/fetcher";
+import type { ServerResponse } from "../../../types/general/response";
+import { Custom } from "../../../lib/logger";
+import { Spinner } from "../../assets/spinner";
 
 export default function CommentCard({
   closed,
@@ -24,14 +32,10 @@ export default function CommentCard({
   const [open, setOpenLogin] = useState(false);
   const { snippet } = useSnippet();
   const [liked, setLiked] = useState(false);
+  const [comment, setComment] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const session = useGetSession();
-
-  const send = async () => {
-    if (!session) {
-      setOpenLogin(true);
-    }
-  };
 
   useEffect(() => {
     if (!snippet) return;
@@ -41,7 +45,9 @@ export default function CommentCard({
   if (!snippet) return null;
 
   const handleLike = async () => {
-    await send();
+    if (!session) {
+      setOpenLogin(true);
+    }
     if (liked) {
       Custom.log("code snippet", snippet.code_snippet);
       const liked = await Fetcher.get<ServerResponse>("/social/unlike/" + snippet.code_snippet);
@@ -58,6 +64,33 @@ export default function CommentCard({
       }
     }
   };
+
+  const handleInput = (event: FormEvent<HTMLTextAreaElement>) => {
+    const textarea = event.target as HTMLTextAreaElement;
+
+    setComment(textarea.value);
+  };
+
+  const sendComment = async () => {
+    if (!session) {
+      setOpenLogin(true);
+    }
+    if (loading) return;
+
+    setLoading(true);
+
+    const res = await Fetcher.post<ExplorerComment>(
+      { comment },
+      "/social/comment/" + snippet.code_snippet
+    );
+
+    if ("content" in res) {
+      setComment("");
+      setComments((prev) => [...prev, res]);
+    }
+
+    setLoading(false);
+  };
   return (
     <>
       <Card
@@ -72,7 +105,7 @@ export default function CommentCard({
               size={24}
               onClick={() => handleLike()}
               className={`${
-                liked ? "text-[var(--primary)]" : "text-[var(--secondary)] opacity-50"
+                liked ? "text-[var(--primary)]" : "text-[var(--on_background)] opacity-50"
               } cursor-pointer animate hover:text-[var(--primary)] `}
             />
           </CardHeader>
@@ -83,16 +116,18 @@ export default function CommentCard({
           <div className="my-4 border" />
           <div className="grid w-full gap-3">
             <Label htmlFor="message" className="font-mono">
-              Username
+              {session ?? "username"}
             </Label>
             <TextareaAutosize
               placeholder="Écrivez votre message ici !"
               id="message"
               className="font-mono text-sm border p-2 placeholder-gray-400 rounded-sm focus:outline-none"
               minRows={3}
+              onInput={handleInput}
+              value={comment}
             />
             <div className="flex w-full justify-end">
-              <Button onClick={() => send()}>Envoyer</Button>
+              <Button onClick={() => sendComment()}>{loading ? <Spinner /> : "Envoyer"}</Button>
             </div>
           </div>
           <div className="my-4 border" />

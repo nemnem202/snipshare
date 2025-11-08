@@ -84,15 +84,17 @@ model Filtrer {
 
   @@id([snippetId, hashtagName])
 }
-
 model UserCommentSnippet {
-  userId     Int
-  snippetId  Int
-  content    String
-  commentDate DateTime
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  snippetId   Int
+  content     String
+  commentDate DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  user    UserAccount @relation(fields: [userId], references: [id])
-  snippet Snippet     @relation(fields: [snippetId], references: [code_snippet])
+  user    UserAccount @relation(fields: [userId], references: [id], onDelete: Cascade)
+  snippet Snippet     @relation(fields: [snippetId], references: [code_snippet], onDelete: Cascade)
 
-  @@id([userId, snippetId])
+  @@index([snippetId])
+  @@index([userId])
 }

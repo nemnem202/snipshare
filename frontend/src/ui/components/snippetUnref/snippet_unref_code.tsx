@@ -3,22 +3,22 @@ import Editor from "react-simple-code-editor";
 import Prism from "prismjs";
 import "prismjs/components/prism-typescript";
 import "prismjs/themes/prism-tomorrow.css";
-import "../style/components/snippet_code.css";
-import { Button } from "../assets/button";
-import { Spinner } from "../assets/spinner";
-import { useSnippet } from "./snippet_container";
+import "../../style/components/snippet_code.css";
+import { Button } from "../../assets/button";
+import { Spinner } from "../../assets/spinner";
+import type { ExplorerSnippet } from "../../../types/general/explorersnippet";
 
-export default function SnippetCode({
+export default function SnippetUnrefCode({
   run,
   runLoading,
+  snippet,
 }: {
   run: (content: string) => any;
   runLoading: boolean;
+  snippet: ExplorerSnippet;
 }) {
   const [code, setCode] = useState("");
   const lines = code.split("\n");
-
-  const { snippet, setSnippet } = useSnippet();
 
   useEffect(() => {
     if (!snippet) return;
