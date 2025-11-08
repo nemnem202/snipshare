@@ -10,7 +10,11 @@ snippet.post(
   (req, res) => SnippetController.addNewSnippet(req, res)
 );
 
-snippet.put("/:id", (req, res) => res.sendStatus(200));
+snippet.post(
+  "/:snippet_id",
+  (req, res, next) => AuthMiddleware.protectUser(req, res, next),
+  (req, res) => SnippetController.changeSnippet(req, res)
+);
 
 snippet.get("/unref/:path", (req, res) => res.sendStatus(200));
 

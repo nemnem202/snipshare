@@ -5,7 +5,7 @@ export type ExplorerSnippet = {
     id: number;
     version: string;
     aliases: string[];
-    runtime: string | null;
+    runtime?: string;
   };
   user: {
     username: string;

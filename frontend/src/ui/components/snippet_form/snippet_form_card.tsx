@@ -18,11 +18,7 @@ import Fetcher from "../../../lib/fetcher";
 import type { ServerResponse } from "../../../types/general/response";
 import { defaultSnippetForm } from "../../../config/defaultSnippetForm";
 
-export default function SnippetFormCard({
-  setClosed,
-}: {
-  setClosed: React.Dispatch<React.SetStateAction<boolean>>;
-}) {
+export default function SnippetFormCard({ isAnUpdate = false }: { isAnUpdate?: false | number }) {
   const [formSubmitLoading, setFormLoading] = useState(false);
   const snippetFormContext = useContext(SnippetFormContext);
   const session = useGetSession();
@@ -33,7 +29,10 @@ export default function SnippetFormCard({
     if (formSubmitLoading || !snippetForm) return;
     setFormLoading(true);
 
-    const posted = await Fetcher.post<ServerResponse>(snippetForm, "/snippet/new");
+    const posted = await Fetcher.post<ServerResponse>(
+      snippetForm,
+      isAnUpdate ? "/snippet/" + isAnUpdate : "/snippet/new"
+    );
 
     if (posted.success) {
       setSnippetForm(defaultSnippetForm);
@@ -95,10 +94,10 @@ export default function SnippetFormCard({
           </Card>
         </CardContent>
         <CardFooter className="p-1 gap-3">
-          <div className="flex flex-col w-full gap-3">
-            <div className="text-sm bold italic opacity-70 cursor-pointer hover:opacity-100 animate">
+          <div className="flex w-full gap-3 items-end">
+            <div className="text-sm bold italic opacity-70 cursor-pointer hover:opacity-100 animate w-full">
               <EditableTextArea
-                width={120}
+                width={80}
                 defaultValue={snippetForm.filters.map((f) => `${f}`).join(" ")}
                 onValueChange={(value) =>
                   setSnippetForm((prev) => ({
@@ -108,7 +107,7 @@ export default function SnippetFormCard({
                 }
               ></EditableTextArea>
             </div>
-            <div className="w-full flex justify-end">
+            <div className="flex justify-end">
               <Button onClick={submitForm}>Save</Button>
             </div>
           </div>

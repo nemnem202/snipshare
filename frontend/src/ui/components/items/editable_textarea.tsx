@@ -38,7 +38,7 @@ export default function EditableTextArea({
     <div
       onMouseEnter={handleMouseEnter}
       onMouseLeave={() => setShowPen(false)}
-      className={`w-full flex justify-between gap-3 items-top min-w-50`}
+      className={`w-${width} flex justify-between items-top min-w-50`}
     >
       <div className="w-[90%]">
         <ContentEditable

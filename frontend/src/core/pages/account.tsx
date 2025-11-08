@@ -42,7 +42,7 @@ export default function Account() {
   return (
     <FiltersProvider>
       <div className="main-container">
-        <div className="h-[250px] pt-10 flex w-full justify-center">
+        <div className="h-[250px] pt-10 flex w-full justify-center pl-[20px]">
           <Headline
             content={<EditableTextArea defaultValue={session} onFocusEnd={updateUserName} />}
           />

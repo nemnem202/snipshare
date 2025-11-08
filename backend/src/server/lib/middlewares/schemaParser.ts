@@ -1,4 +1,5 @@
 import z, { ZodError } from "zod";
+import { Custom } from "../tools/logger";
 
 export default class SchemaParser {
   static UserAccount(data: unknown) {
@@ -91,7 +92,17 @@ export default class SchemaParser {
 
     const parsed = schema.safeParse(data);
     if (!parsed.success) {
-      throw parsed.error;
+      // Formater l'erreur de manière plus lisible
+      const errors = parsed.error.issues
+        .map((err) => {
+          const field = err.path.join(".");
+          return `Champ "${field}": ${err.message}`;
+        })
+        .join("\n");
+
+      Custom.error("Parsing", errors);
+
+      throw new Error(`Erreur de validation:\n${errors}`);
     }
   }
 
@@ -163,7 +174,8 @@ export default class SchemaParser {
       runtime: z
         .string()
         .max(50, "Le nom du runtime est trop long (maximum 50 caractères).")
-        .optional(),
+        .optional()
+        .nullable(),
     });
 
     const schema = z.object({
@@ -196,7 +208,17 @@ export default class SchemaParser {
 
     const parsed = schema.safeParse(data);
     if (!parsed.success) {
-      throw parsed.error;
+      // Formater l'erreur de manière plus lisible
+      const errors = parsed.error.issues
+        .map((err) => {
+          const field = err.path.join(".");
+          return `Champ "${field}": ${err.message}`;
+        })
+        .join("\n");
+
+      Custom.error("Parsing", errors);
+
+      throw new Error(`Erreur de validation:\n${errors}`);
     }
 
     return parsed.data;

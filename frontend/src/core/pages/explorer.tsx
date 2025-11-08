@@ -10,9 +10,9 @@ function SearchBarContainer() {
   const filtersContext = useContext(FilterContext);
   if (!filtersContext) return;
   return (
-    <div className="flex flex-col items-center gap-2 h-[100px]">
+    <div className="flex flex-col items-center gap-2 min-h-[100px]">
       <Searchbar />
-      <div className="h-5 flex gap-2">
+      <div className=" flex gap-2 max-w-[700px] flex-wrap items center justify-center">
         {filtersContext.filters.tags &&
           filtersContext.filters.tags.map((tag, index) => <Tag content={tag} key={index} />)}
       </div>
