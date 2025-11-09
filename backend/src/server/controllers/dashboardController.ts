@@ -138,22 +138,29 @@ export default class DashboardController {
     try {
       const { username } = req.body;
 
-      if (!req.userId || isNaN(req.userId)) throw new Error();
+      if (!req.userId || isNaN(req.userId)) throw new Error("user id is nan");
 
       SchemaParser.Username(username);
 
-      const user = await prisma.userAccount.update({
-        where: { id: req.userId },
-        data: { username },
-      });
-
+      try {
+        const user = await prisma.userAccount.update({
+          where: { id: req.userId },
+          data: { username },
+        });
+      } catch (err: any) {
+        if (err.code === "P2002") {
+          res.json({ message: "Ce nom d’utilisateur est déjà pris.", success: false });
+        } else {
+          res.json({ message: "Erreur serveur.", success: false });
+        }
+      }
       return res.json({ message: "Nom d'utilisateur mis à jour !", success: true });
     } catch (err) {
       if (err instanceof ZodError) {
         const firstMessage = err.issues[0].message;
         return res.json({ success: false, message: firstMessage });
       }
-      Custom.error("user create", err);
+      Custom.error("username change", err);
       return res.json({ message: "An internal error occured, please try again !", success: false });
     }
   };

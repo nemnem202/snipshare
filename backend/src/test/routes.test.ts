@@ -2,10 +2,12 @@ import { describe, expect, it } from "vitest";
 import request from "supertest";
 import routesTests from "./routes-test-arrays.ts";
 import app from "../server/runtime/app.ts";
+import populateDb from "../server/gen/generator.ts";
 
-describe("[Routes Behavior]", () => {
+describe("[Routes Behavior]", async () => {
   const agent = request.agent(app);
 
+  await populateDb();
   for (const routesTest of routesTests) {
     for (const test of routesTest) {
       it(`[ ${test.url} ] ${test.description}`, async () => {
