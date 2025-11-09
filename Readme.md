@@ -89,15 +89,29 @@ La couverture élevée des routes garantit la fiabilité des endpoints de l'API.
 ## 📁 Structure du projet
 
 ```
-snipshare/
-├── docs/                  # Documentation
+# Structure principale
+├── backend                 # API et logique métier
+│   ├── src                # Code source principal
+│   │   ├── doc           # Documentation API
+│   │   └── server        # Serveur et routes
+│   └── prisma            # ORM et schéma DB
+├── docs                   # Documentation projet
+│   ├── database_schema    # Schéma base de données
 │   └── test.png          # Rapport de tests
-├── .env.dev              # Configuration développement
-├── .env.test             # Configuration tests
-├── .env.preprod          # Configuration préproduction
-├── .env.prod             # Configuration production
-├── Makefile              # Commandes de déploiement
-└── README.md             # Ce fichier
+└── frontend              # Interface utilisateur
+   ├── src               # Code source React
+   │   ├── core         # Pages et routage
+   │   ├── hooks        # Hooks personnalisés
+   │   ├── provider     # Providers React
+   │   └── ui           # Composants UI
+   └── public            # Assets statiques
+
+# Fichiers de configuration
+├── docker-compose.*.yml   # Config Docker par env
+├── .env.*                # Variables d'environnement
+└── makefile              # Commandes automatisées
+```
+
 ```
 
 ## 🛠️ Technologies
@@ -115,3 +129,4 @@ Les contributions sont les bienvenues ! N'hésitez pas à ouvrir une issue ou un
 ---
 
 **Développé avec ❤️ pour la communauté des développeurs**
+```
