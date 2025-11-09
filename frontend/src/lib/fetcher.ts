@@ -41,7 +41,11 @@ export default class Fetcher {
       try {
         data = await res.json();
       } catch (jsonErr) {
-        Custom.error("fetcher", "Failed to parse JSON response", jsonErr);
+        Custom.error(
+          "fetcher",
+          `Failed to parse JSON response with url: ${this.url + this.formatPath(path)}`,
+          jsonErr
+        );
         Toaster.toastServer({ message: "Invalid JSON response", success: false });
         return { message: "Invalid JSON response", success: false };
       }
@@ -83,7 +87,11 @@ export default class Fetcher {
       try {
         data = await res.json();
       } catch (jsonErr) {
-        Custom.error("fetcher", "Failed to parse JSON response", jsonErr);
+        Custom.error(
+          "fetcher",
+          `Failed to parse JSON response with url: ${this.url + this.formatPath(path)}`,
+          jsonErr
+        );
         !silent && Toaster.toastServer({ message: "Invalid JSON response", success: false });
         return { message: "Invalid JSON response", success: false };
       }

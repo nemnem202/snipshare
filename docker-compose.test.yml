@@ -24,9 +24,9 @@ services:
     environment:
       - DATABASE_URL=${DATABASE_URL}
       - PORT=${BACKEND_PORT}
+      - FRONTEND_PORT=${FRONTEND_PORT}
       - JWT_SECRET=${BACKEND_JWT_SECRET}
       - JWT_RT_TTL=${BACKEND_JWT_RT_TTL}
-      - CORS_ALLOWED=${BACKEND_CORS_ALLOWED}
     ports:
       - ${BACKEND_PORT}:3000
     depends_on:
