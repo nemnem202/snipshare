@@ -6,7 +6,7 @@
     "db_push": "npx prisma db push",
     "watch": "tsx watch src/server/runtime/app_bootstrap.ts",
     "dev": "npm run db_push && npm run test && npm run watch",
-    "test": "vitest --run",
+    "test": "npm run db_push && vitest run --coverage",
     "test:watch": "npm run db_push && vitest --watch",
     "start": "npm run db_push && npm run test && tsx src/server/runtime/app_bootstrap.ts"
   },
@@ -16,6 +16,7 @@
   "description": "",
   "dependencies": {
     "@prisma/client": "^6.18.0",
+    "@vitest/coverage-v8": "^4.0.8",
     "argon2": "^0.44.0",
     "concurrently": "^9.2.1",
     "cookie-parser": "^1.4.7",

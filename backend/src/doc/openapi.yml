@@ -4,7 +4,7 @@ info:
   version: 1.0.0
   description: |
     Documentation des routes de ton backend Express.
-    ⚙️ Toutes les routes renvoient actuellement un statut `200 OK`.
+    ⚙️ Toutes les routes renvoient actuellement un statut `200 OK` en cas d'erreur métier, mais les erreurs d'authentification ou de validation Piston renvoient des statuts appropriés.
 servers:
   - url: /
     description: Serveur local de développement
@@ -36,44 +36,45 @@ paths:
                 - password
       responses:
         "200":
-          description: Succès de la connexion
+          description: Succès de la connexion ou erreur métier (email/mot de passe manquant, identifiants invalides)
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Welcome !
-                  success:
-                    type: boolean
-                    example: true
-        "400":
-          description: Erreur de validation (email ou mot de passe manquant)
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: No email provided
-                  success:
-                    type: boolean
-                    example: false
-        "401":
-          description: Identifiants invalides
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Invalid credentials
-                  success:
-                    type: boolean
-                    example: false
+                oneOf:
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Welcome !
+                      success:
+                        type: boolean
+                        example: true
+                      sessionUsername:
+                        type: string
+                        example: myusername
+                  - $ref: "#/components/schemas/ServerResponse"
+              examples:
+                success:
+                  summary: Connexion réussie
+                  value:
+                    message: "Welcome !"
+                    success: true
+                    sessionUsername: "testUser.username"
+                emailMissing:
+                  summary: Email manquant
+                  value:
+                    message: "No email provided"
+                    success: false
+                passwordMissing:
+                  summary: Mot de passe manquant
+                  value:
+                    message: "No password provided"
+                    success: false
+                invalidCredentials:
+                  summary: Identifiants invalides
+                  value:
+                    message: "Invalid credentials"
+                    success: false
 
   /auth/register:
     post:
@@ -109,44 +110,81 @@ paths:
                 - password
       responses:
         "200":
-          description: Succès de l'inscription
+          description: Succès de l'inscription ou erreur métier (validation, email/username existant)
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Welcome !
-                  success:
-                    type: boolean
-                    example: true
-        "400":
-          description: Erreur de validation (champs manquants ou invalides)
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: No username provided
-                  success:
-                    type: boolean
-                    example: false
-        "409":
-          description: Conflit (email ou nom d'utilisateur déjà existant)
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Account already existing, try to login !
-                  success:
-                    type: boolean
-                    example: false
+                oneOf:
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Welcome !
+                      success:
+                        type: boolean
+                        example: true
+                      sessionUsername:
+                        type: string
+                        example: myusername
+                  - $ref: "#/components/schemas/ServerResponse"
+                  - $ref: "#/components/schemas/ZodErrorResponse"
+              examples:
+                success:
+                  summary: Inscription réussie
+                  value:
+                    message: "Welcome !"
+                    success: true
+                    sessionUsername: "testUser.username"
+                usernameMissing:
+                  summary: Nom d'utilisateur manquant
+                  value:
+                    message: "No username provided"
+                    success: false
+                emailMissing:
+                  summary: Email manquant
+                  value:
+                    message: "No email provided"
+                    success: false
+                passwordMissing:
+                  summary: Mot de passe manquant
+                  value:
+                    message: "No password provided"
+                    success: false
+                passwordTooShort:
+                  summary: Mot de passe trop court
+                  value:
+                    success: false
+                    message: "Le mot de passe doit contenir au moins 6 caractères."
+                passwordTooLong:
+                  summary: Mot de passe trop long
+                  value:
+                    success: false
+                    message: "Le mot de passe ne peut pas dépasser 100 caractères."
+                usernameTooShort:
+                  summary: Nom d'utilisateur trop court
+                  value:
+                    success: false
+                    message: "Le nom d'utilisateur doit contenir au moins 3 caractères."
+                usernameTooLong:
+                  summary: Nom d'utilisateur trop long
+                  value:
+                    success: false
+                    message: "Le nom d'utilisateur ne peut pas dépasser 30 caractères."
+                invalidEmail:
+                  summary: Email invalide
+                  value:
+                    success: false
+                    message: "L'adresse e-mail n'est pas valide."
+                emailAlreadyExists:
+                  summary: Email déjà existant
+                  value:
+                    message: "Account already existing, try to login !"
+                    success: false
+                usernameAlreadyExists:
+                  summary: Nom d'utilisateur déjà existant
+                  value:
+                    message: "Duplicate username, try another one !"
+                    success: false
 
   /auth/session:
     get:
@@ -155,6 +193,17 @@ paths:
       responses:
         "200":
           description: Succès (session active)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  sessionUsername:
+                    type: string
+                    example: "myusername"
         "401":
           $ref: "#/components/responses/UnauthorizedError"
     delete:
@@ -175,46 +224,125 @@ paths:
         "401":
           $ref: "#/components/responses/UnauthorizedError"
   # --- EXPLORER ---
-  /explorer:
+  /explorer/languages:
     get:
-      summary: Récupère la liste des éléments explorables
+      summary: Récupère la liste des langages disponibles pour l'exécution de code.
       tags: [Explorer]
+      parameters:
+        - in: query
+          name: onlyNames
+          schema:
+            type: boolean
+          description: Si `true`, renvoie uniquement les noms des langages.
+          example: true
       responses:
         "200":
-          description: Succès
+          description: Succès de la récupération des langages.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: array
+                    items:
+                      type: object
+                      properties:
+                        language:
+                          type: string
+                          example: "typescript"
+                        version:
+                          type: string
+                          example: "5.0.3"
+                  - type: array
+                    items:
+                      type: string
+                    example: ["typescript", "javascript"]
 
   /explorer/pages_number:
     get:
-      summary: Récupère le nombre total de pages
+      summary: Récupère le nombre total de pages pour les snippets publics.
       tags: [Explorer]
+      parameters:
+        - in: query
+          name: language
+          schema:
+            type: string
+          description: Filtre par langage.
+          example: "typescript"
+        - in: query
+          name: tags
+          schema:
+            type: array
+            items:
+              type: string
+          description: Filtre par tags (peut être répété pour plusieurs tags).
+          example: ["web", "api"]
       responses:
         "200":
-          description: Succès
+          description: Succès de la récupération du nombre de pages.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  number:
+                    type: number
+                    example: 5
 
-  /explorer/comments/{id}:
+  /explorer/{page_index}:
     get:
-      summary: Récupère les commentaires associés à un élément
+      summary: Récupère une liste de snippets publics paginée.
       tags: [Explorer]
       parameters:
         - in: path
-          name: id
+          name: page_index
           required: true
           schema:
+            type: integer
+            minimum: 0
+          description: Index de la page à récupérer.
+          example: 0
+        - in: query
+          name: language
+          schema:
             type: string
-            format: uuid
-          description: Identifiant unique de l’élément
+          description: Filtre par langage.
+          example: "typescript"
+        - in: query
+          name: tags
+          schema:
+            type: array
+            items:
+              type: string
+          description: Filtre par tags (peut être répété pour plusieurs tags).
+          example: ["web", "api"]
+        - in: query
+          name: orderBy
+          schema:
+            type: string
+            enum: [popularity, date]
+          description: Ordre de tri des snippets.
+          example: "popularity"
       responses:
         "200":
-          description: Succès
-
+          description: Succès de la récupération des snippets.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Snippet" # Supposons un schéma Snippet
+              examples:
+                success:
+                  summary: Liste de snippets
+                  value: [] # Exemple vide, mais contiendra des objets Snippet
   # --- CODE ---
   /code:
-    post: # Cette définition est pour l'exécution de code via Piston
+    post:
       summary: Exécute un snippet de code via l'API Piston
       description: Permet d'exécuter du code dans différents langages de programmation en utilisant l'API Piston (emkc.org). Nécessite une authentification.
       tags: [Code]
       security:
-        - bearerAuth: []
+        - cookieAuth: [] # Utilisation de l'authentification par cookie (session)
       requestBody:
         required: true
         content:
@@ -231,21 +359,21 @@ paths:
                   minLength: 1
                   maxLength: 50
                   description: Nom du langage de programmation
-                  example: "python"
+                  example: "typescript"
                 content:
                   type: string
                   minLength: 1
                   maxLength: 10000
                   description: Code source à exécuter
-                  example: "print('Hello World')"
+                  example: "console.log('Hello world !')"
                 version:
                   type: string
                   pattern: '^\d+(\.\d+)*$'
                   description: Version du langage (format X.Y.Z)
-                  example: "3.10.0"
+                  example: "5.0.3"
       responses:
         "200":
-          description: Code exécuté avec succès
+          description: Code exécuté avec succès ou erreur Piston API
           content:
             application/json:
               schema:
@@ -256,46 +384,56 @@ paths:
                 success:
                   summary: Exécution réussie
                   value:
-                    language: "python"
-                    version: "3.10.0"
+                    language: "typescript"
+                    version: "5.0.3"
                     run:
-                      stdout: "Hello World\n"
+                      stdout: "Hello world !\n"
                       stderr: ""
                       code: 0
                       signal: null
-                      output: "Hello World\n"
+                      output: "Hello world !\n"
                 apiError:
                   summary: Erreur API Piston
                   value:
                     success: false
                     message: "An error occured while sending data to the code runner api"
         "400":
-          description: Données invalides
+          description: Données invalides (champs manquants ou format incorrect)
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ServerResponse"
               examples:
-                emptyCode:
-                  summary: Code vide
+                contentMissing:
+                  summary: Contenu manquant
                   value:
                     success: false
-                    message: "Le code ne peut pas être vide"
-                codeTooLong:
-                  summary: Code trop long
+                    message: "Invalid input: expected string, received undefined"
+                contentTooLong:
+                  summary: Contenu trop long
                   value:
                     success: false
                     message: "Le code ne peut excéder 10 000 caractères"
-                invalidLanguage:
-                  summary: Langage invalide
+                languageMissing:
+                  summary: Langage manquant
                   value:
                     success: false
-                    message: "Le nom du langage ne peut pas être vide."
-                invalidVersion:
+                    message: "Invalid input: expected string, received undefined"
+                languageTooLong:
+                  summary: Langage trop long
+                  value:
+                    success: false
+                    message: "Le nom du langage est trop long (maximum 50 caractères)."
+                versionMissing:
+                  summary: Version manquante
+                  value:
+                    success: false
+                    message: "Invalid input: expected string, received undefined"
+                invalidVersionFormat:
                   summary: Format de version invalide
                   value:
                     success: false
-                    message: "An internal error occured, please try again !"
+                    message: "Le format de version est invalide (ex: 5.0.3)"
         "401":
           $ref: "#/components/responses/UnauthorizedError"
         "500":
@@ -307,72 +445,190 @@ paths:
               example:
                 success: false
                 message: "An internal error occured, please try again !"
-    # --- DASHBOARD ---
-    /dashboard/change-username/{id}:
-      put:
-        summary: Change le nom d’utilisateur
-        tags: [Dashboard]
-        parameters:
-          - in: path
-            name: id
-            required: true
+
+  # --- DASHBOARD ---
+  /dashboard/change-username:
+    post:
+      summary: Change le nom d’utilisateur de l'utilisateur courant.
+      tags: [Dashboard]
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
             schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  minLength: 3
+                  maxLength: 30
+                  description: Le nouveau nom d'utilisateur
+                  example: newValidAndUniqueUsername
+              required:
+                - username
+      responses:
+        "200":
+          description: Succès ou erreur de validation/conflit.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/ServerResponse"
+                  - $ref: "#/components/schemas/ZodErrorResponse"
+              examples:
+                success:
+                  summary: Nom d'utilisateur mis à jour
+                  value:
+                    success: true
+                    message: "Nom d'utilisateur mis à jour !"
+                usernameMissing:
+                  summary: Nom d'utilisateur manquant
+                  value:
+                    success: false
+                    message: "Invalid input: expected string, received undefined"
+                usernameTooShort:
+                  summary: Nom d'utilisateur trop court
+                  value:
+                    success: false
+                    message: "Le nom d'utilisateur doit contenir au moins 3 caractères."
+                usernameTooLong:
+                  summary: Nom d'utilisateur trop long
+                  value:
+                    success: false
+                    message: "Le nom d'utilisateur ne peut pas dépasser 30 caractères."
+                usernameTaken:
+                  summary: Nom d'utilisateur déjà pris
+                  value:
+                    success: false
+                    message: "Ce nom d’utilisateur est déjà pris."
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+
+  /dashboard/pages_number:
+    get:
+      summary: Récupère le nombre de pages pour les snippets de l'utilisateur.
+      tags: [Dashboard]
+      security:
+        - cookieAuth: []
+      parameters:
+        - in: query
+          name: language
+          schema:
+            type: string
+          description: Filtre par langage.
+          example: "typescript"
+        - in: query
+          name: tags
+          schema:
+            type: array
+            items:
               type: string
-              format: uuid
-            description: Identifiant unique de l'utilisateur (peut être un JWT pour l'utilisateur courant)
-        requestBody:
-          required: true
+          description: Filtre par tags (peut être répété).
+          example: ["web", "api"]
+        - in: query
+          name: madeByUser
+          schema:
+            type: boolean
+          description: Si `false`, renvoie le nombre de pages pour les snippets aimés par l'utilisateur.
+          example: false
+      responses:
+        "200":
+          description: Succès.
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  username:
-                    type: string
-                    minLength: 3
-                    maxLength: 30
-                    description: Le nouveau nom d'utilisateur
-                    example: newUsername
-                required:
-                  - username
-        responses:
-          "200":
-            description: Succès
-          "401":
-            $ref: "#/components/responses/UnauthorizedError"
-
-  /dashboard/pages_number:
-    get:
-      summary: Récupère le nombre de pages du dashboard selon les paramètres
-      tags: [Dashboard]
-      responses:
-        "200":
-          description: Succès
+                  number:
+                    type: number
+                    example: 0
         "401":
           $ref: "#/components/responses/UnauthorizedError"
 
-  /dashboard/{page}:
+  /dashboard/{page_index}:
     get:
-      summary: Récupère la page du dashboard spécifiée selon les paramètres
+      summary: Récupère une page de snippets du dashboard de l'utilisateur.
       tags: [Dashboard]
+      security:
+        - cookieAuth: []
       parameters:
         - in: path
-          name: page
+          name: page_index
           required: true
           schema:
+            type: integer
+            minimum: 0
+          description: Index de la page à récupérer.
+          example: 0
+        - in: query
+          name: language
+          schema:
             type: string
-          description: Numéro ou identifiant de la page aimée
+          description: Filtre par langage.
+          example: "typescript"
+        - in: query
+          name: tags
+          schema:
+            type: array
+            items:
+              type: string
+          description: Filtre par tags (peut être répété).
+          example: ["web", "api"]
+        - in: query
+          name: madeByUser
+          schema:
+            type: boolean
+          description: Si `false`, renvoie les snippets aimés par l'utilisateur.
+          example: false
+        - in: query
+          name: orderBy
+          schema:
+            type: string
+            enum: [popularity, date]
+          description: Ordre de tri des snippets.
+          example: "popularity"
       responses:
         "200":
-          description: Succès
+          description: Succès.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Snippet"
+              examples:
+                success:
+                  summary: Liste de snippets
+                  value: [] # Exemple vide, mais contiendra des objets Snippet
         "401":
           $ref: "#/components/responses/UnauthorizedError"
+        "400": # Ajouté pour le cas où page_index est invalide et ton code retourne un tableau
+          description: Erreur de validation de l'index de page.
+          content:
+            application/json:
+              schema:
+                type: array # Ton test indique expect.any(Array)
+                items:
+                  type: object
+                  properties:
+                    # Définir ici la structure attendue si elle est connue, sinon un objet générique
+                    # Par exemple: error: { message: string }
+                    pass:
+                      type: boolean
+                      example: false
+                    expected:
+                      type: string
+                      example: "expected a number"
 
   # --- SOCIAL ---
   /social/comment/{snippet_id}:
     post:
-      summary: Publie un commentaire sur un snippet
+      summary: Publie un commentaire sur un snippet.
       tags: [Social]
+      security:
+        - cookieAuth: []
       parameters:
         - in: path
           name: snippet_id
@@ -380,7 +636,8 @@ paths:
           schema:
             type: string
             format: uuid
-          description: Identifiant unique du snippet
+          description: Identifiant unique du snippet.
+          example: "a1b2c3d4-e5f6-7890-1234-567890abcdef"
       requestBody:
         required: true
         content:
@@ -390,20 +647,26 @@ paths:
               properties:
                 comment:
                   type: string
-                  description: Le contenu du commentaire
+                  description: Le contenu du commentaire.
                   example: "Ceci est un commentaire intéressant !"
               required:
                 - comment
       responses:
         "200":
-          description: Succès
+          description: Succès ou erreur.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerResponse"
         "401":
           $ref: "#/components/responses/UnauthorizedError"
 
   /social/like/{snippet_id}:
     get:
-      summary: Aime un snippet
+      summary: Aime un snippet.
       tags: [Social]
+      security:
+        - cookieAuth: []
       parameters:
         - in: path
           name: snippet_id
@@ -411,17 +674,24 @@ paths:
           schema:
             type: string
             format: uuid
-          description: Identifiant unique du snippet à aimer
+          description: Identifiant unique du snippet à aimer.
+          example: "a1b2c3d4-e5f6-7890-1234-567890abcdef"
       responses:
         "200":
-          description: Succès
+          description: Succès.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerResponse"
         "401":
           $ref: "#/components/responses/UnauthorizedError"
 
   /social/unlike/{snippet_id}:
     get:
-      summary: Retire un like d’un snippet
+      summary: Retire un like d’un snippet.
       tags: [Social]
+      security:
+        - cookieAuth: []
       parameters:
         - in: path
           name: snippet_id
@@ -429,18 +699,25 @@ paths:
           schema:
             type: string
             format: uuid
-          description: Identifiant unique du snippet à "unliker"
+          description: Identifiant unique du snippet à "unliker".
+          example: "a1b2c3d4-e5f6-7890-1234-567890abcdef"
       responses:
         "200":
-          description: Succès
+          description: Succès.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerResponse"
         "401":
           $ref: "#/components/responses/UnauthorizedError"
 
   # --- SNIPPET ---
   /snippet/new:
     post:
-      summary: Crée un nouveau snippet
+      summary: Crée un nouveau snippet.
       tags: [Snippet]
+      security:
+        - cookieAuth: []
       requestBody:
         required: true
         content:
@@ -450,38 +727,90 @@ paths:
               properties:
                 title:
                   type: string
-                  description: Titre du snippet
+                  description: Titre du snippet.
                   example: Mon super snippet
+                description:
+                  type: string
+                  description: Description du snippet.
+                  example: Une brève description.
                 code:
                   type: string
-                  description: Le code du snippet
+                  description: Le code du snippet.
                   example: console.log("Hello World");
                 language:
-                  type: string
-                  description: Langage du code
-                  example: javascript
+                  type: object
+                  properties:
+                    language:
+                      type: string
+                      example: "typescript"
+                    version:
+                      type: string
+                      example: "5.0.3"
+                  required:
+                    - language
+                    - version
+                filters:
+                  type: array
+                  items:
+                    type: string
+                  description: Tags ou filtres associés au snippet.
+                  example: ["web", "api"]
+                visibility:
+                  type: boolean
+                  description: Si le snippet est public ou privé.
+                  example: true
+                private_url:
+                  type: boolean
+                  description: Si une URL privée est générée pour le snippet.
+                  example: false
               required:
                 - title
                 - code
                 - language
+                - description
+                - filters
+                - visibility
+                - private_url
       responses:
         "200":
-          description: Succès
+          description: Succès ou erreur de validation.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerResponse"
+              examples:
+                success:
+                  summary: Snippet ajouté avec succès
+                  value:
+                    success: true
+                    message: "Snippet ajouté !"
+                invalidForm:
+                  summary: Formulaire invalide (ex. titre vide)
+                  value:
+                    success: false
+                    message: "Le titre ne peut pas être vide"
+                invalidLanguage:
+                  summary: Langage invalide
+                  value:
+                    success: false
+                    message: "Language invalide !"
         "401":
           $ref: "#/components/responses/UnauthorizedError"
 
-  /snippet/{id}:
-    put:
-      summary: Met à jour un snippet existant
+  /snippet/{snippet_id}:
+    post: # Il semble que tu utilises POST pour la mise à jour, ajustons la doc
+      summary: Met à jour un snippet existant.
       tags: [Snippet]
+      security:
+        - cookieAuth: []
       parameters:
         - in: path
-          name: id
+          name: snippet_id
           required: true
           schema:
-            type: string
-            format: uuid
-          description: Identifiant unique du snippet à mettre à jour
+            type: integer # Tes tests suggèrent un ID numérique
+          description: Identifiant unique du snippet à mettre à jour.
+          example: 1
       requestBody:
         required: true
         content:
@@ -491,41 +820,162 @@ paths:
               properties:
                 title:
                   type: string
-                  description: Nouveau titre du snippet
-                  example: Mon snippet mis à jour
+                  description: Titre du snippet.
+                  example: Mon super snippet mis à jour
+                description:
+                  type: string
+                  description: Description du snippet.
+                  example: Une brève description mise à jour.
                 code:
                   type: string
-                  description: Nouveau code du snippet
-                  example: console.log("Updated Hello World");
+                  description: Le code du snippet.
+                  example: console.log("Hello World mis à jour");
                 language:
-                  type: string
-                  description: Nouveau langage du code
-                  example: javascript
+                  type: object
+                  properties:
+                    language:
+                      type: string
+                      example: "typescript"
+                    version:
+                      type: string
+                      example: "5.0.3"
+                  required:
+                    - language
+                    - version
+                filters:
+                  type: array
+                  items:
+                    type: string
+                  description: Tags ou filtres associés au snippet.
+                  example: ["web", "database"]
+                visibility:
+                  type: boolean
+                  description: Si le snippet est public ou privé.
+                  example: false
+                private_url:
+                  type: boolean
+                  description: Si une URL privée est générée pour le snippet.
+                  example: true
+              required:
+                - title
+                - code
+                - language
+                - description
+                - filters
+                - visibility
+                - private_url
       responses:
         "200":
-          description: Succès
+          description: Succès ou erreur de validation.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerResponse"
+              examples:
+                invalidSnippetId:
+                  summary: ID de snippet invalide
+                  value:
+                    success: false
+                    message: "Le snippet demandé est invalide"
+                invalidForm:
+                  summary: Formulaire invalide (ex. titre vide)
+                  value:
+                    success: false
+                    message: "Le titre ne peut pas être vide"
+                invalidLanguage:
+                  summary: Langage invalide
+                  value:
+                    success: false
+                    message: "Language invalide !"
+                # success:
+                #   summary: Snippet mis à jour avec succès (décommenter si le test est activé)
+                #   value:
+                #     success: true
+                #     message: "Snippet modifié !"
         "401":
           $ref: "#/components/responses/UnauthorizedError"
 
-  /snippet/unref/{path}:
+  /snippet/unref/snippetId/{snippet_id}:
     get:
-      summary: Supprime la référence d’un snippet
+      summary: Récupère l'URL de déréférencement privée d'un snippet.
+      tags: [Snippet]
+      security:
+        - cookieAuth: []
+      parameters:
+        - in: path
+          name: snippet_id
+          required: true
+          schema:
+            type: integer
+          description: Identifiant numérique du snippet.
+          example: 1
+      responses:
+        "200":
+          description: Succès ou erreur.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: object
+                    properties:
+                      url:
+                        type: string
+                        format: url
+                        example: "/unref/a1b2c3d4-e5f6-7890-1234-567890abcdef"
+                  - $ref: "#/components/schemas/ServerResponse"
+              examples:
+                invalidSnippet:
+                  summary: Snippet ID invalide
+                  value:
+                    success: false
+                    message: "Invalid snippet"
+                notFound:
+                  summary: Snippet non trouvé
+                  value:
+                    success: false
+                    message: "Snippet not found !"
+                # success:
+                #   summary: URL de déréférencement renvoyée (décommenter si le test est activé)
+                #   value:
+                #     url: "/unref/a1b2c3d4-e5f6-7890-1234-567890abcdef"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+
+  /snippet/unref/{unref_path}:
+    get:
+      summary: Accède à un snippet via son URL de déréférencement privée.
       tags: [Snippet]
       parameters:
         - in: path
-          name: path
+          name: unref_path
           required: true
           schema:
             type: string
-            format: uuid # Assumant que 'path' est un UUID pour l'exemple
-          description: Identifiant unique ou chemin du snippet à déréférencer
+            format: uuid # Le test utilise crypto.randomUUID()
+          description: Le chemin UUID du snippet déréférencé.
+          example: "a1b2c3d4-e5f6-7890-1234-567890abcdef"
       responses:
         "200":
-          description: Succès
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
+          description: Succès ou erreur.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerResponse"
+              examples:
+                notFound:
+                  summary: Snippet non trouvé
+                  value:
+                    success: false
+                    message: "Snippet not found !"
 
 components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: session
+      description: Authentification via le cookie de session.
+
   schemas:
     UnauthorizedResponse:
       type: object
@@ -539,6 +989,93 @@ components:
         redirect:
           type: string
           example: "/login"
+    ServerResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Opération réussie !"
+        success:
+          type: boolean
+          example: true
+    ZodErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: "Le mot de passe doit contenir au moins 6 caractères."
+    PistonResponse:
+      type: object
+      properties:
+        language:
+          type: string
+          example: "python"
+        version:
+          type: string
+          example: "3.10.0"
+        run:
+          type: object
+          properties:
+            stdout:
+              type: string
+              example: "Hello World\n"
+            stderr:
+              type: string
+              example: ""
+            code:
+              type: integer
+              example: 0
+            signal:
+              type: string
+              nullable: true
+              example: null
+            output:
+              type: string
+              example: "Hello World\n"
+    Snippet: # Exemple de schéma pour un snippet
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: "Mon Super Snippet"
+        description:
+          type: string
+          example: "Un exemple de code utile."
+        code:
+          type: string
+          example: "console.log('Hello');"
+        language:
+          type: string
+          example: "typescript"
+        version:
+          type: string
+          example: "5.0.3"
+        author:
+          type: string
+          example: "myusername"
+        likes:
+          type: integer
+          example: 10
+        commentsCount:
+          type: integer
+          example: 5
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        isLiked:
+          type: boolean
+          example: true
+          description: Indique si l'utilisateur courant a aimé ce snippet (présent si authentifié)
+
   responses:
     UnauthorizedError:
       description: Non autorisé

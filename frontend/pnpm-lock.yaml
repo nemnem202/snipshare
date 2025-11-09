@@ -114,6 +114,9 @@ importers:
       '@types/node':
         specifier: ^24.9.1
         version: 24.10.0
+      '@types/prismjs':
+        specifier: ^1.26.5
+        version: 1.26.5
       '@types/react':
         specifier: ^19.1.16
         version: 19.2.2
