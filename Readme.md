@@ -122,10 +122,6 @@ La couverture élevée des routes garantit la fiabilité des endpoints de l'API.
 - **Conteneurisation** : Docker & Docker Compose
 - **Support hors-ligne** : Progressive Web App (PWA)
 
-## 👥 Contribution
-
-Les contributions sont les bienvenues ! N'hésitez pas à ouvrir une issue ou une pull request.
-
 ---
 
 **Développé avec ❤️ pour la communauté des développeurs**
