@@ -112,8 +112,6 @@ La couverture élevée des routes garantit la fiabilité des endpoints de l'API.
 └── makefile              # Commandes automatisées
 ```
 
-```
-
 ## 🛠️ Technologies
 
 - **Frontend** : Interface utilisateur moderne et responsive avec React
@@ -121,8 +119,3 @@ La couverture élevée des routes garantit la fiabilité des endpoints de l'API.
 - **Base de données** : Gestion via Adminer
 - **Conteneurisation** : Docker & Docker Compose
 - **Support hors-ligne** : Progressive Web App (PWA)
-
----
-
-**Développé avec ❤️ pour la communauté des développeurs**
-```
