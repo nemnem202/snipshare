@@ -54,6 +54,8 @@ make preprod
 make prod
 ```
 
+> ⚠️ **Note**: En cas d'échec lors de la construction des images, quittez simplement le processus et relancez la commande. Ce problème est occasionnel et une seconde tentative résout généralement le souci.
+
 ## 🌐 Accès aux services
 
 Une fois l'environnement lancé, les services sont accessibles aux adresses suivantes :
