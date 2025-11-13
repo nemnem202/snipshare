@@ -13,12 +13,12 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: ["http://localhost:" + process.env.FRONTEND_PORT],
+    origin: `http://${process.env.SERVER_IP}:${process.env.FRONTEND_PORT}`,
     credentials: true,
   })
 );
 
-Custom.log("cors", "allowed for http://localhost:" + process.env.FRONTEND_PORT);
+Custom.log("cors", `allowed for http://${process.env.SERVER_IP}:${process.env.FRONTEND_PORT}`);
 
 app.use(router);
 

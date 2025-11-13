@@ -67,6 +67,7 @@ export default class Fetcher {
     path: string,
     silent?: boolean
   ): Promise<Success | ServerResponse> => {
+    Custom.log("fetcher", "base url :", this.url);
     try {
       const res = await fetch(this.url + this.formatPath(path), {
         method: "Get",

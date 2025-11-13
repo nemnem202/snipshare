@@ -34,3 +34,10 @@ rm_all:
 	@echo "🧹 Nettoyage complet de Docker..."
 	docker system prune -a --volumes -f
 	@echo "✅ Nettoyage terminé !"
+
+
+post:
+	docker build --no-cache -t ghcr.io/nemnem202/snipshare-backend:latest -f backend/dockerfile.prod backend
+	docker build --build-arg VITE_API_URL=$$(grep FRONTEND_VITE_API_URL .env.prod | cut -d '=' -f2) --no-cache -t ghcr.io/nemnem202/snipshare-frontend:latest -f frontend/dockerfile.prod frontend
+	docker push ghcr.io/nemnem202/snipshare-backend:latest
+	docker push ghcr.io/nemnem202/snipshare-frontend:latest

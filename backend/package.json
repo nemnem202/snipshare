@@ -8,7 +8,7 @@
     "dev": "npm run db_push && npm run test && npm run watch",
     "test": "npm run db_push && vitest run --coverage",
     "test:watch": "npm run db_push && vitest --watch",
-    "start": "npm run db_push && npm run test && tsx src/server/runtime/app_bootstrap.ts"
+    "start": "npm run db_push &&  tsx src/server/runtime/app_bootstrap.ts"
   },
   "keywords": [],
   "author": "",
